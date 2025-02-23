@@ -20,7 +20,7 @@ body {
 
 /* left side */
 .left {
-    background-image    : url("http://codeblocks.website/images/Login-background.jpg");
+   
     background-position : center center;
     background-size     : cover;
     height              : 100vh;
@@ -129,6 +129,27 @@ body {
     width: 50%;
     height: auto;
     right: 0;
+}
+
+/* Login Button */
+.login-button {
+    background-color: #0099ff; /* Primary blue color */
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 24px;
+    cursor: pointer;
+    width: 200px;
+    text-transform: uppercase;
+    transition: background 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover Effect */
+.login-button:hover {
+    background-color: #372EEA;
 }
 
 @media only screen and (max-width: 1200px) {
