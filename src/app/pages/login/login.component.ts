@@ -1,33 +1,44 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service'; 
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
+  imports: [FormsModule],  //  Add FormsModule
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
-  imports: [FormsModule]  // ✅ Import FormsModule for ngModel support
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  loginObj = { email: '', password: '' };
+  email = '';
+  password = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   onLogin() {
-    this.authService.login(this.loginObj).subscribe({
-      next: (res: any) => {
-        if (res.token) {
-          alert("✅ Login Successful!");
-          window.location.href = '/dashboard';
-        } else {
-          alert("❌ Invalid Credentials");
-        }
+    this.authService.login(this.email, this.password).subscribe(
+      (res: any) => {
+        this.authService.storeUserData(res.token, res.role);
+        window.alert(`Login successful! Role: ${res.role}`);
+        this.redirectToDashboard(res.role);
       },
-      error: (err: any) => {
-        alert("⚠️ API Error: Unable to connect.");
-        console.error("Login Error:", err);
+      (error: any) => {
+        window.alert('Login failed. Please check your credentials and try again.');
+        console.error('Login failed', error);
       }
-    });
+    );
+  }
+
+  redirectToDashboard(role: string) {
+    if (role === 'admin') {
+      this.router.navigate(['/admin-dashboard']);
+    } else if (role === 'tutor') {
+      this.router.navigate(['/tutor-dashboard']);
+    } else if (role === 'student') {
+      this.router.navigate(['/student-dashboard']);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 }

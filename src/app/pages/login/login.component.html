@@ -1,25 +1,23 @@
 <div class="login-container">
-    <div class="left">
-        <div class="background-container">
-            <div class="info">
-                <p>eTutoring</p>
-            </div>
-        </div>
+  <div class="left">
+    <div class="background-container">
+      <div class="info">
+        <p>eTutoring</p>
+      </div>
     </div>
-    <div class="right">
-        <div class="login-form-container">
-            <h1 class="welcome-text">Welcome!</h1>
-            <p class="login-subtext">Login to continue your journey with us</p>
-            <form class="login-form" (ngSubmit)="onLogin()">
-                <label class="text-left" for="email">Email</label>
-                <input type="email" id="email" name="email" [(ngModel)]="loginObj.email" required>
-
-                <label class="text-left" for="password">Password</label>
-                <input type="password" id="password" name="password" [(ngModel)]="loginObj.password" required>
-                <p><br></p>
-                <button type="submit" class="login-button">Login</button>
-            </form>
-        </div>
+  </div>
+  <div class="right">
+    <div class="login-form-container">
+      <h1 class="welcome-text">Welcome!</h1>
+      <p class="login-subtext">Login to continue your journey with us</p>
+      <form class="login-form" (ngSubmit)="onLogin()">
+        <label class="text-left" for="email">Email</label>
+        <input type="email" id="email" name="email" [(ngModel)]="email" required>
+        <label class="text-left" for="password">Password</label>
+        <input type="password" id="password" name="password" [(ngModel)]="password" required>
+        <button type="submit" class="login-button">Login</button>
+      </form>
     </div>
-    <img src="/bottom-wave.svg" class="bottom-wave" alt="Bottom Wave">
+  </div>
+  <img src="/assets/bottom-wave.svg" class="bottom-wave" alt="Bottom Wave">
 </div>

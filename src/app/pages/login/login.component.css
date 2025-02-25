@@ -150,6 +150,7 @@ body {
     transition: background 0.3s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%; /* Ensure the button takes the full width */
+    margin-top: 20px; 
 }
 
 /* Hover Effect */

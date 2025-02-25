@@ -1,15 +1,20 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { AppComponent } from './app/app.component';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './app/services/auth.interceptor';
 import { provideRouter } from '@angular/router';
+import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
+import { importProvidersFrom } from '@angular/core';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
+import { AuthInterceptor } from './app/services/auth.interceptor';
+import { AuthGuard } from './app/services/auth.guard';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideHttpClient(withInterceptors([authInterceptor])), // Updated Interceptor
     provideRouter(routes),
-    CookieService // Removed provideServiceWorker
+    importProvidersFrom(HttpClientModule, FormsModule),
+    CookieService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    AuthGuard
   ]
 }).catch(err => console.error(err));
