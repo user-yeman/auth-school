@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+  styleUrls: ['./login.component.css'],
   imports: [FormsModule]  // ✅ Import FormsModule for ngModel support
 })
 export class LoginComponent {
