@@ -229,7 +229,7 @@ body {
     }
 }
 .background-container {
-    background: url('/books.jpg') no-repeat center center;
+    background: url('/assets/books.jpg') no-repeat center center;
     background-size: cover;
     position: absolute;
     width: 100%;
