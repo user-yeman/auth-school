@@ -1,21 +1,157 @@
-.modal-overlay {
+/* Student List */
+.student-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.student-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: 14px;
+  color: #333;
+}
+
+.student-name {
+  font-weight: bold;
+}
+
+.student-id {
+  color: #666;
+  font-size: 12px;
+}
+
+/* Tutor Select */
+.tutor-select {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  border-radius: 8px;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-wrapper {
+  padding: 0 12px;
+}
+
+.mat-select-panel {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mat-option {
+  padding: 12px;
+  font-size: 14px;
+}
+
+.mat-option:hover {
+  background-color: #f0f4f8;
+}
+
+/* Dialog Layout */
+.model-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
-.modal-content {
-  background: white;
-  padding: 20px;
+.model-content {
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  width: 800px;
+  max-width: 90%;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+button.mat-raised-button {
+  background-color: #1976d2;
+  color: #fff;
   border-radius: 8px;
-  width: 500px;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button.mat-raised-button:hover {
+  background-color: #1565c0;
+}
+
+button.mat-button {
+  color: #1976d2;
+}
+/* Dialog Content */
+.dialog-content {
+  overflow: hidden;
+  padding: 16px;
+}
+.dialog-header {
+  margin: 0;
+  padding: 16px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff; /* White text for contrast */
+  text-transform: uppercase; /* Optional: Makes the text look more formal */
+  letter-spacing: 1px; /* Adds spacing between letters for elegance */
+  background: linear-gradient(
+    90deg,
+    #6a11cb,
+    #2575fc
+  ); /* Gradient background */
+  border-radius: 8px 8px 0 0; /* Rounded corners at the top */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  text-align: center;
+}
+.selected_container {
+  background: #f9f9f9; /* Light gray background */
+  border: 1px solid #ddd; /* Subtle border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px;
+  max-height: 200px; /* Limit height to enable scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Custom Scrollbar Styling (Optional) */
+.selected_container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.selected_container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.selected_container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+h4 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Tutor Select */
+.tutor-select {
+  width: 100%;
+  margin-bottom: 16px;
 }

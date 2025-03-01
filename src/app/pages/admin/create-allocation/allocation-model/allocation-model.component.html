@@ -1,22 +1,27 @@
 <div class="model-overlay">
   <div class="model-content">
-    <h2 mat-dialog-title>Allocate Students to Tutor</h2>
-    <mat-dialog-content>
+    <h2 mat-dialog-title class="dialog-header text-center fw-bold">
+      Allocate Students to Tutor
+    </h2>
+    <mat-dialog-content class="dialog-content p-2">
       <form [formGroup]="allocationForm">
-        <h4>Selected Students:</h4>
-        <ul>
-          <li *ngFor="let student of data.selectedStudents">
-            {{ student.name }} ({{ student.StudentID }})
-          </li>
-        </ul>
+        <div class="selected_container">
+          <h4>Selected Students</h4>
+          <div class="student-list">
+            <div *ngFor="let student of selectedStudents" class="student-item">
+              <span class="student-name">{{ student.name }}</span>
+              <span class="student-id">({{ student.StudentID }})</span>
+            </div>
+          </div>
+        </div>
 
-        <h4>Select Tutor:</h4>
-        <mat-form-field appearance="fill">
+        <h4>Select Tutor</h4>
+        <mat-form-field appearance="outline" class="tutor-select">
           <mat-label>Select Tutor</mat-label>
-          <mat-select formControlName="tutor">
-            <mat-option *ngFor="let tutor of tutors" [value]="tutor">{{
-              tutor.name
-            }}</mat-option>
+          <mat-select formControlName="tutor" required>
+            <mat-option *ngFor="let tutor of tutors || []" [value]="tutor">
+              {{ tutor.name }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </form>
@@ -25,11 +30,11 @@
       <button mat-button (click)="onCancel()">Cancel</button>
       <button
         mat-raised-button
-        color="primary"
+        background-color="primary"
         (click)="onSubmit()"
         [disabled]="allocationForm.invalid"
       >
-        Allocate
+        Confirm
       </button>
     </mat-dialog-actions>
   </div>

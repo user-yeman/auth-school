@@ -93,3 +93,6 @@
   padding: 10px;
   background: var(--background);
 }
+.mdc-list-item .mdc-list-item__primary-text {
+  color: #f3f4f9 !important;
+}
