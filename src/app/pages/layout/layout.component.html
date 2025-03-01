@@ -1,1 +1,9 @@
-<p>layout works!</p>
+<div class="layout_Container container-fluid">
+  <div class="layout_SideBar">
+    <app-sidebar></app-sidebar>
+  </div>
+  <div class="layout_Body">
+    <router-outlet></router-outlet>
+    <!-- Renders child routes of /admin -->
+  </div>
+</div>
