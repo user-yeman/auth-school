@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
-import { TutorDashboardComponent } from './pages/tutor-dashboard/tutor-dashboard.component';
-import { StudentDashboardComponent } from './pages/student-dashboard/student-dashboard.component';
+import { TutorDashboardComponent } from './pages/tutor/tutor-dashboard/tutor-dashboard.component';
+import { StudentDashboardComponent } from './pages/student/student-dashboard/student-dashboard.component';
 import { AuthGuard } from './services/auth.guard';
 import { LayoutComponent } from './pages/layout/layout.component';
 import { AllocationComponent } from './pages/admin/allocation/allocation.component';
