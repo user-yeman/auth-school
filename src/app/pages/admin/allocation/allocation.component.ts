@@ -17,5 +17,5 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./allocation.component.css'],
 })
 export class AllocationComponent {
-  title = 'Personal Tutor Allocation';
+  // title = 'Personal Tutor Allocation';
 }

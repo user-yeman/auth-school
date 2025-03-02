@@ -1,1 +1,66 @@
-<p>allocationlist works!</p>
+<div class="allocationlist_container container-fluid">
+    <h2 class="title">{{ title }}</h2>
+    <div class="student_display_container container mt-3">
+        <mat-card>
+            <!-- <mat-card-title>{{ title }}</mat-card-title> -->
+            <div class="search-bar mb-3">
+                <input type="text" placeholder="Search by Student ID or Name" (input)="applyFilter($event)"
+                    [(ngModel)]="filterValue" class="form-control" />
+            </div>
+            <!-- Table -->
+            <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)"
+                class="mat-elevation-z8">
+                <!-- StudentID Column -->
+                <ng-container matColumnDef="StudentID">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Student ID</th>
+                    <td mat-cell *matCellDef="let row">{{ row.StudentID }}</td>
+                </ng-container>
+
+                <!-- Student Name Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Name</th>
+                    <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+                </ng-container>
+
+                <!-- Allocation Date Column -->
+                <ng-container matColumnDef="allocation_date">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Allocation Date</th>
+                    <td mat-cell *matCellDef="let row">{{ row.allocation_date }}</td>
+                </ng-container>
+
+                <!-- Allocation By Column -->
+                <ng-container matColumnDef="allocated_by">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Allocation By</th>
+                    <td mat-cell *matCellDef="let row">{{ row.allocated_by }}</td>
+                </ng-container>
+
+                <!-- Reallocation Column -->
+                <ng-container matColumnDef="reallocation">
+                    <th mat-header-cell *matHeaderCellDef>Reallocation</th>
+                    <td mat-cell *matCellDef="let row">
+                        <button mat-icon-button (click)="editAllocation(row)">
+                            <!-- <mat-icon>edit</mat-icon> -->
+                            <img src="/assets/reallocation.png" alt="Reallocation" width="24" height="24">
+                        </button>
+                    </td>
+                </ng-container>
+
+                <!-- Header and Row Declarations -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <!-- Pagination -->
+            <div class="pagination mt-3">
+                <button mat-button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+                    Previous
+                </button>
+                <span *ngFor="let page of pages" (click)="onPageChange(page)" [class.active]="page === currentPage">
+                    {{ page }}
+                </span>
+                <button mat-button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
+                    Next
+                </button>
+            </div>
+        </mat-card>
+    </div>
+</div>

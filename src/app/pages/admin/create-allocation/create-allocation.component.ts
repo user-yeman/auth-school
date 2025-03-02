@@ -45,6 +45,7 @@ export class CreateAllocationComponent implements OnInit {
   selectedStudents$ = new BehaviorSubject<Student[]>([]); //table data
   allData: Student[] = []; // Store all fetched data
   @ViewChild(MatSort) sort!: MatSort;
+  title = 'Personal Tutor Allocation';
 
   // Pagination
   totalItems = 0;
