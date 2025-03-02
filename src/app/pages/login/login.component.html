@@ -12,12 +12,24 @@
       <p class="login-subtext">Login to continue your journey with us</p>
       <form class="login-form" (ngSubmit)="onLogin()">
         <label class="text-left" for="email">Email</label>
-        <input type="email" id="email" name="email" [(ngModel)]="email" required>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+        />
         <label class="text-left" for="password">Password</label>
-        <input type="password" id="password" name="password" [(ngModel)]="password" required>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+        />
         <button type="submit" class="login-button">Login</button>
       </form>
     </div>
   </div>
-  <img src="/assets/bottom-wave.svg" class="bottom-wave" alt="Bottom Wave">
+  <img src="/assets/bottom-wave.svg" class="bottom-wave" alt="Bottom Wave" />
 </div>

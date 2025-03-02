@@ -5,7 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = 'http://127.0.0.1:8000/api/login';
@@ -18,7 +18,15 @@ export class AuthService {
   }
 
   storeUserData(token: string, role: string) {
-    this.cookieService.set('authToken', token);
+    this.cookieService.set(
+      'authToken',
+      token,
+      undefined,
+      '/',
+      undefined,
+      false,
+      'Lax'
+    );
     this.cookieService.set('userRole', role);
   }
 

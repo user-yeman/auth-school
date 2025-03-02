@@ -1,0 +1,57 @@
+<mat-sidenav-container class="sidenav-contianer">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <div class="sidenav-header d-flex justify-content-center mt-3">
+      <h2 class="sidenav-title logo">{{ logo }}</h2>
+    </div>
+
+    <mat-nav-list>
+      <!-- Loop through nav list -->
+      <ng-container *ngFor="let item of navItems">
+        <mat-divider></mat-divider>
+        <!-- Regular link (no children) -->
+        <a
+          *ngIf="!item.children && item.route"
+          mat-list-item
+          [routerLink]="item.route"
+          (click)="logNavigation(item.route)"
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span class="menu-text">{{ item.label }}</span>
+        </a>
+
+        <!-- Links inside expandable sections -->
+        <mat-expansion-panel *ngIf="item.children" class="menu-panel">
+          <mat-expansion-panel-header>
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <span class="menu-text">{{ item.label }}</span>
+          </mat-expansion-panel-header>
+          <mat-nav-list>
+            <a
+              *ngFor="let child of item.children"
+              mat-list-item
+              [routerLink]="child.route"
+              routerLinkActive="active-link"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <mat-icon>{{ child.icon }}</mat-icon>
+              <span>{{ child.label }}</span>
+            </a>
+          </mat-nav-list>
+        </mat-expansion-panel>
+      </ng-container>
+    </mat-nav-list>
+    <!-- Divider -->
+    <mat-divider></mat-divider>
+    <!-- sidebar footer -->
+    <div
+      class="sidebar-footer d-flex align-items-center justify-content-center flex-column"
+    >
+      <button class="logout-button" (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Logout</span>
+      </button>
+    </div>
+  </mat-sidenav>
+</mat-sidenav-container>

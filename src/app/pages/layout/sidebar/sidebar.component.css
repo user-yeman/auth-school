@@ -1,0 +1,98 @@
+.sidenav-container {
+  height: 100vh;
+  display: flex;
+  width: 100%; /* Ensures it takes the full width */
+}
+
+.sidenav {
+  width: 250px;
+  background: var(--background);
+  color: white;
+  padding: 10px;
+  position: fixed; /* Keeps the sidebar fixed on the left side */
+  top: 0; /* Ensure it aligns at the top */
+  left: 0;
+  bottom: 0; /* Ensure it stretches full height */
+  z-index: 1000; /* Bring it on top of other elements */
+}
+
+.mat-sidenav-content {
+  margin-left: 250px; /* This ensures content doesn't overlap with the sidebar */
+}
+
+.mat-nav-list a {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  color: var(--white);
+  text-decoration: none;
+}
+
+.mat-nav-list a:hover {
+  background: #3a3a3a;
+  border-radius: 5px;
+}
+
+.mat-icon {
+  margin-right: 10px;
+  color: white;
+}
+
+.menu-panel {
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.menu-text {
+  font-size: 16px;
+  margin-left: 10px;
+  color: var(--white);
+}
+
+.mat-expansion-panel-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  color: var(--white);
+}
+
+.mat-expansion-panel-header:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mat-expansion-panel {
+  background: transparent;
+  color: var(--white);
+}
+.mat-expansion-panel .mat-nav-list span {
+  color: var(--white);
+}
+.mat-divider {
+  background-color: rgba(255, 255, 255, 0.2); /* Light gray divider */
+  margin: 10px 0;
+}
+.logout-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: var(--white);
+  cursor: pointer;
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+}
+
+.logout-button mat-icon {
+  margin-bottom: 5px;
+  font-size: 30px;
+}
+
+.sidebar-footer {
+  padding: 10px;
+  background: var(--background);
+}
+.mdc-list-item .mdc-list-item__primary-text {
+  color: #f3f4f9 !important;
+}

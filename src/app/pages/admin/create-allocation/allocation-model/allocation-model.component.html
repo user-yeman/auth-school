@@ -1,0 +1,41 @@
+<div class="model-overlay">
+  <div class="model-content">
+    <h2 mat-dialog-title class="dialog-header text-center fw-bold">
+      Allocate Students to Tutor
+    </h2>
+    <mat-dialog-content class="dialog-content p-2">
+      <form [formGroup]="allocationForm">
+        <div class="selected_container">
+          <h4>Selected Students</h4>
+          <div class="student-list">
+            <div *ngFor="let student of selectedStudents" class="student-item">
+              <span class="student-name">{{ student.name }}</span>
+              <span class="student-id">({{ student.StudentID }})</span>
+            </div>
+          </div>
+        </div>
+
+        <h4>Select Tutor</h4>
+        <mat-form-field appearance="outline" class="tutor-select">
+          <mat-label>Select Tutor</mat-label>
+          <mat-select formControlName="tutor" required>
+            <mat-option *ngFor="let tutor of tutors || []" [value]="tutor">
+              {{ tutor.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions [align]="'end'">
+      <button mat-button (click)="onCancel()">Cancel</button>
+      <button
+        mat-raised-button
+        background-color="primary"
+        (click)="onSubmit()"
+        [disabled]="allocationForm.invalid"
+      >
+        Confirm
+      </button>
+    </mat-dialog-actions>
+  </div>
+</div>

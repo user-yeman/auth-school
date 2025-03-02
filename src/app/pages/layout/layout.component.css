@@ -1,0 +1,15 @@
+.layout_Container {
+  display: flex;
+  height: 100vh; /* Ensure the layout takes the full screen height */
+}
+
+.layout_SideBar {
+  width: 250px; /* Define a width for the sidebar */
+  padding: 20px;
+  height: 100%; /* Ensure it takes full height */
+}
+
+.layout_Body {
+  flex: 1;
+  padding: 20px;
+}
