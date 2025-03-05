@@ -11,6 +11,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
+import { MatSnackBar, MatSnackBarModule, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-reallocation-form',
@@ -28,8 +30,10 @@ import { MatOptionModule } from '@angular/material/core';
     MatDatepickerModule,
     MatNativeDateModule,
     MatDialogModule,
+    MatSnackBarModule,
     MatOptionModule
-  ]
+  ],
+  providers: [DatePipe]
 })
 export class ReallocationFormComponent implements OnInit {
   reallocationForm: FormGroup;
@@ -37,7 +41,9 @@ export class ReallocationFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
+    private http: HttpClient, // Add this line to inject HttpClient
+    private snackBar: MatSnackBar, // Add this line to inject MatSnackBar
+    private datePipe: DatePipe, // Add this line to inject DatePipe
     public dialogRef: MatDialogRef<ReallocationFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -46,7 +52,7 @@ export class ReallocationFormComponent implements OnInit {
       currentTutor: [{ value: data.currentTutor, disabled: true }, Validators.required],
       newTutor: ['', Validators.required],
       reallocationDate: ['', Validators.required],
-      reason: ['', Validators.required]
+      reason: [''] // Make reason optional by removing Validators.required
     });
   }
 
@@ -57,7 +63,7 @@ export class ReallocationFormComponent implements OnInit {
   fetchTutors(): void {
     // Replace with your API endpoint to fetch the list of tutors
     this.http.get<any>('http://127.0.0.1:8000/api/tutors').subscribe({
-      next: (response) => {
+      next: (response: any) => {
         // Extract the tutors array from the response object
         if (response && Array.isArray(response.tutors)) {
           this.tutors = response.tutors;
@@ -65,7 +71,7 @@ export class ReallocationFormComponent implements OnInit {
           console.error('Expected an array of tutors, but got:', response);
         }
       },
-      error: (err) => {
+      error: (err:any) => {
         console.error('Error fetching tutors:', err);
       }
     });
@@ -78,15 +84,21 @@ export class ReallocationFormComponent implements OnInit {
       const allocationId = this.data.allocationId;
       const student_id = this.data.studentId;
       const tutor_id = this.reallocationForm.value.newTutor;
-      const allocation_date = this.reallocationForm.value.reallocationDate;
+      // const allocation_date = this.reallocationForm.value.reallocationDate;
+      const allocation_date = this.datePipe.transform(this.reallocationForm.value.reallocationDate, 'dd/MM/yyyy'); // Format date to DD/MM/YYYY
       const reason = this.reallocationForm.value.reason;
 
       this.http.put(`http://127.0.0.1:8000/api/allocations/${allocationId}`, { student_id , tutor_id, reason, allocation_date }).subscribe({
-                 next: (response) => {
+                 next: (response: any) => {
             console.log('Reallocation successful:', response);
+            const config = new MatSnackBarConfig();
+            config.duration = 3000;
+            config.panelClass = ['snackbar-success'];
+            config.verticalPosition = 'top'; // Set the vertical position to top
+            this.snackBar.open('Reallocate Successfully', 'Close', config);
             this.dialogRef.close({ success: true });
           },
-          error: (err) => {
+          error: (err: any) => {
             console.error('Error reallocating:', err);
           }
         });

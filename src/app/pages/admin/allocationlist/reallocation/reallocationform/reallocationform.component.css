@@ -119,3 +119,17 @@ mat-form-field select {
     min-width: 90% !important;
   }
 }
+
+/* Snackbar Success Style */
+.snackbar-success {
+  background-color: #4caf50; /* Green background for success */
+  color: #ffffff; /* White text */
+}
+
+/* Example of customizing the color and shade */
+.snackbar-custom {
+  background-color: #2196f3; /* Custom blue background */
+  color: #ffffff; /* White text */
+  font-size: 16px; /* Custom font size */
+  font-weight: bold; /* Custom font weight */
+}
