@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReallocationFormComponent } from './reallocationform.component';
 
-import { ReallocationformComponent } from './reallocationform.component';
-
-describe('ReallocationformComponent', () => {
-  let component: ReallocationformComponent;
-  let fixture: ComponentFixture<ReallocationformComponent>;
+describe('ReallocationFormComponent', () => {
+  let component: ReallocationFormComponent;
+  let fixture: ComponentFixture<ReallocationFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReallocationformComponent]
+      imports: [ReallocationFormComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ReallocationformComponent);
+    fixture = TestBed.createComponent(ReallocationFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

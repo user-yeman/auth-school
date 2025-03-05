@@ -38,9 +38,8 @@
                 <ng-container matColumnDef="reallocation">
                     <th mat-header-cell *matHeaderCellDef>Reallocation</th>
                     <td mat-cell *matCellDef="let row">
-                        <button mat-icon-button (click)="editAllocation(row)">
-                            <!-- <mat-icon>edit</mat-icon> -->
-                            <img src="/assets/reallocation.png" alt="Reallocation" width="24" height="24">
+                        <button mat-button (click)="editAllocation(row)">
+                            <img src="assets/reallocation.png" alt="Reallocation" />
                         </button>
                     </td>
                 </ng-container>

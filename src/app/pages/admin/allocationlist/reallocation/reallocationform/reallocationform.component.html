@@ -1,1 +1,45 @@
-<p>reallocationform works!</p>
+<mat-dialog-content class="reallocation-container">
+  <h2>Reallocation Form</h2>
+
+  <form [formGroup]="reallocationForm" (ngSubmit)="submitReallocation()">
+    <div class="form-column">
+      <mat-form-field>
+        <mat-label>Student Name</mat-label>
+        <input matInput formControlName="studentName" id="studentName" readonly />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Current Tutor</mat-label>
+        <input matInput formControlName="currentTutor" id="currentTutor" readonly />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>New Tutor Name</mat-label>
+        <mat-select formControlName="newTutor" id="newTutor" required>
+          <mat-option *ngFor="let tutor of tutors" [value]="tutor.id">
+            {{ tutor.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Reallocation Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="reallocationDate" id="reallocationDate" required />
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Reallocation Reason</mat-label>
+        <textarea matInput formControlName="reason" id="reason" required></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="horizontal-line"></div> <!-- Horizontal line -->
+
+    <div class="form-buttons">
+      <button mat-button type="button" (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="!reallocationForm.valid">Submit</button>
+    </div>
+  </form>
+</mat-dialog-content>

@@ -12,6 +12,8 @@ import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import * as _ from 'lodash';
 import { MatSortModule, MatSort } from '@angular/material/sort';
+import { Router } from '@angular/router';
+import { ReallocationFormComponent } from './reallocation/reallocationform/reallocationform.component';
 
 export interface Student {
   id: number;
@@ -20,6 +22,7 @@ export interface Student {
   email: string;
   allocation_date: string;
   allocated_by: string;
+  allocationId: number; // Allocation ID
   selected?: boolean; // For checkbox selection
 }
 
@@ -101,7 +104,7 @@ export class AllocationlistComponent implements OnInit {
   // Filtering
   filterValue = ''; // Search input value
 
-  constructor(private http: HttpClient, private dialog: MatDialog) {}
+  constructor(private http: HttpClient, private dialog: MatDialog, private router: Router) {}
 
   ngOnInit(): void {
     this.fetchAllocations();
@@ -118,6 +121,7 @@ export class AllocationlistComponent implements OnInit {
       next: (response) => {
         this.allData = response.data.map((allocation: Allocation) => ({
           id: allocation.student.id,
+          allocationId: allocation.id, // Add allocation ID
           StudentID: allocation.student.StudentID,
           name: allocation.student.name,
           email: allocation.student.email,
@@ -346,8 +350,21 @@ export class AllocationlistComponent implements OnInit {
 
   // Edit allocation
   editAllocation(row: Student) {
-    console.log('Edit allocation for student:', row);
-    // Implement the logic to edit the allocation
+    const dialogRef = this.dialog.open(ReallocationFormComponent, {
+      width: '400px',
+      data: { 
+        allocationId: row.allocationId,
+        studentId: row.id,
+        studentName: row.name,
+        currentTutor: row.allocated_by
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.success) {
+        this.fetchAllocations();
+      }
+    });
   }
 }
 

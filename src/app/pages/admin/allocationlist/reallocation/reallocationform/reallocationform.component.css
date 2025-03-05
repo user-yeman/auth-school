@@ -1,0 +1,121 @@
+.reallocation-container {
+  width: 100%;
+  max-width: 100%; /* Allow the container to take full width */
+  max-height: fit-content;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden; /* Prevents unwanted scrollbars */
+}
+
+h2 {
+  text-align: left;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* Each Column */
+.form-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Space between fields */
+  width: 100%;
+}
+
+/* Fix Input Field Heights */
+mat-form-field {
+  width: 100%;
+  min-height: 60px; /* Ensures uniform field height */
+  margin-bottom: 12px;
+}
+
+.reallocation-card {
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* Ensure All Input Fields Have Same Height */
+input, textarea, mat-select {
+  height: 48px !important; /* Makes all inputs equal */
+}
+
+/* Adjust height for specific input fields */
+mat-form-field input#studentName,
+mat-form-field input#currentTutor {
+  height: calc(1.5 * 1em + 1.5 * 0.75em + 2px) !important; /* 1.5 lines height */
+}
+
+/* Fix for vertical divider */
+.vertical-line {
+  background-color: #ccc;
+  width: 1px;
+  height: auto;
+}
+
+/* Horizontal Line */
+.horizontal-line {
+  background-color: #ccc;
+  height: 1px;
+  width: 100%;
+  margin: 10px 0;
+}
+
+/* Remove Scrollbar from Dialog */
+.mat-dialog-container {
+  max-height: 95vh !important;
+  max-width: 100% !important; /* Allow the dialog to take full width */
+  min-width: 550px !important;
+  padding: 20px !important;
+  overflow: hidden !important; /* No scrolling */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Button Alignment */
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+button.mat-button, button.mat-raised-button {
+  background-color: #007BFF; /* Light blue background */
+  color: #FFFFFF; /* White text */
+  text-align: center;
+  font-family: Inter, sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 100%; /* 20px */
+}
+
+button.mat-button:hover, button.mat-raised-button:hover {
+  background-color: #0056b3; /* Slightly darker blue on hover */
+}
+
+/* Ensure Inputs Have Consistent Height */
+mat-form-field input,
+mat-form-field textarea,
+mat-form-field select {
+  min-height: 56px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Responsive Fix */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr; /* Stack fields vertically */
+  }
+
+  .vertical-line {
+    display: none;
+  }
+
+  .mat-dialog-container {
+    max-width: 100% !important;
+    min-width: 90% !important;
+  }
+}

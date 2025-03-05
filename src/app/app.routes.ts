@@ -8,6 +8,7 @@ import { LayoutComponent } from './pages/layout/layout.component';
 import { AllocationComponent } from './pages/admin/allocation/allocation.component';
 import { CreateAllocationComponent } from './pages/admin/create-allocation/create-allocation.component';
 import { AllocationlistComponent } from './pages/admin/allocationlist/allocationlist.component';
+import { ReallocationFormComponent } from './pages/admin/allocationlist/reallocation/reallocationform/reallocationform.component'; 
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -19,13 +20,13 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'admin-dashboard', pathMatch: 'full' },
       { path: 'admin-dashboard', component: AdminDashboardComponent },
-
       {
         path: 'allocation',
         component: AllocationComponent, // Parent component
         children: [
           { path: 'create-allocation', component: CreateAllocationComponent },
           { path: 'allocationlist', component: AllocationlistComponent },
+          { path: 'reallocationform', component: ReallocationFormComponent }, // Correct class name
         ],
       },
     ],
