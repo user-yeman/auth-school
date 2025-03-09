@@ -21,7 +21,11 @@ export class LoginComponent {
     this.authService.login(this.email, this.password).subscribe(
       (res: any) => {
         this.authService.storeUserData(res.token, res.role);
-        window.alert(`Login successful! Role: ${res.role}`);
+        if (res.first_login) {
+          window.alert(`Welcome to the first login!`);
+        } else {
+          window.alert(`Login successful! Role: ${res.role}`);
+        }
         console.log('Login successful', res);
         this.redirectToDashboard(res.role);
       },
