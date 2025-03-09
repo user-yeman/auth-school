@@ -5,7 +5,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
@@ -25,7 +25,6 @@ export interface Student {
   allocationId: number; // Allocation ID
   selected?: boolean; // For checkbox selection
   tutor_name: string;
-
 }
 
 export interface Allocation {
@@ -84,6 +83,7 @@ export interface Allocation {
   ],
   templateUrl: './allocationlist.component.html',
   styleUrls: ['./allocationlist.component.css'],
+  providers: [DatePipe]
 })
 export class AllocationlistComponent implements OnInit {
   displayedColumns: string[] = ['StudentID', 'name', 'allocation_date', 'allocated_by', 'tutor_name', 'reallocation'];
@@ -106,7 +106,7 @@ export class AllocationlistComponent implements OnInit {
   // Filtering
   filterValue = ''; // Search input value
 
-  constructor(private http: HttpClient, private dialog: MatDialog, private router: Router) { }
+  constructor(private http: HttpClient, private dialog: MatDialog, private router: Router, private datePipe: DatePipe) { }
 
   ngOnInit(): void {
     this.fetchAllocations();
@@ -127,7 +127,7 @@ export class AllocationlistComponent implements OnInit {
           StudentID: allocation.student.StudentID,
           name: allocation.student.name,
           email: allocation.student.email,
-          allocation_date: allocation.allocation_date,
+          allocation_date: this.datePipe.transform(new Date(allocation.allocation_date), 'EEE MMM dd yyyy'), // Format date to Wed Sep 03 2025
           allocated_by: allocation.allocated_by,
           tutor_name: allocation.tutor.name,
           selected: false, // Initialize as unselected
@@ -361,7 +361,7 @@ export class AllocationlistComponent implements OnInit {
         allocationId: row.allocationId,
         studentId: row.id,
         studentName: row.name,
-        currentTutor: row.allocated_by
+        currentTutor: row.tutor_name // pass data to the dialog
       }
     });
 
