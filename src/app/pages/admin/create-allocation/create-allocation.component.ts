@@ -49,7 +49,7 @@ export class CreateAllocationComponent implements OnInit {
 
   // Pagination
   totalItems = 0;
-  pageSize = 5; // Number of students per page
+  pageSize = 10; // Number of students per page
   currentPage = 1;
   totalPages = 1;
 

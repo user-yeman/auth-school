@@ -24,6 +24,8 @@ export interface Student {
   allocated_by: string;
   allocationId: number; // Allocation ID
   selected?: boolean; // For checkbox selection
+  tutor_name: string;
+
 }
 
 export interface Allocation {
@@ -84,7 +86,7 @@ export interface Allocation {
   styleUrls: ['./allocationlist.component.css'],
 })
 export class AllocationlistComponent implements OnInit {
-  displayedColumns: string[] = ['StudentID', 'name', 'allocation_date', 'allocated_by', 'reallocation'];
+  displayedColumns: string[] = ['StudentID', 'name', 'allocation_date', 'allocated_by', 'tutor_name', 'reallocation'];
   dataSource = new MatTableDataSource<Student>();
   selectedStudents$ = new BehaviorSubject<Student[]>([]); // Table data
   allData: Student[] = []; // Store all fetched data
@@ -93,7 +95,7 @@ export class AllocationlistComponent implements OnInit {
 
   // Pagination
   totalItems = 0;
-  pageSize = 5; // Number of students per page
+  pageSize = 10; // Number of students per page
   currentPage = 1;
   totalPages = 1;
 
@@ -104,7 +106,7 @@ export class AllocationlistComponent implements OnInit {
   // Filtering
   filterValue = ''; // Search input value
 
-  constructor(private http: HttpClient, private dialog: MatDialog, private router: Router) {}
+  constructor(private http: HttpClient, private dialog: MatDialog, private router: Router) { }
 
   ngOnInit(): void {
     this.fetchAllocations();
@@ -127,6 +129,7 @@ export class AllocationlistComponent implements OnInit {
           email: allocation.student.email,
           allocation_date: allocation.allocation_date,
           allocated_by: allocation.allocated_by,
+          tutor_name: allocation.tutor.name,
           selected: false, // Initialize as unselected
         }));
 
@@ -178,6 +181,8 @@ export class AllocationlistComponent implements OnInit {
             return compare(a.allocation_date, b.allocation_date, isAsc);
           case 'allocated_by':
             return compare(a.allocated_by, b.allocated_by, isAsc);
+          case 'tutor_name':
+            return compare(a.tutor_name, b.tutor_name, isAsc);
           default:
             return 0;
         }
@@ -352,7 +357,7 @@ export class AllocationlistComponent implements OnInit {
   editAllocation(row: Student) {
     const dialogRef = this.dialog.open(ReallocationFormComponent, {
       width: '400px',
-      data: { 
+      data: {
         allocationId: row.allocationId,
         studentId: row.id,
         studentName: row.name,
