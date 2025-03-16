@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { Component, NgModule, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -32,39 +32,82 @@ interface NavItem {
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   logo = 'eTutoring';
+  navItems: NavItem[] = [];
+  userRole: string | null = null;
 
   constructor(private authService: AuthService, private router: Router) {}
-
-  navItems: NavItem[] = [
-    {
-      label: 'Dashboard',
-      icon: 'home',
-      route: '/admin/admin-dashboard',
-    },
-    {
-      label: 'Allocation',
-      icon: 'group_add',
-      children: [
-        {
-          label: 'Allocation',
-          icon: 'add',
-          route: '/admin/allocation/create-allocation',
-        },
-        {
-          label: 'Allocation List',
-          icon: 'description',
-          route: '/admin/allocation/allocationlist',
-        },
-      ],
-    },
-    {
-      label: 'Settings',
-      icon: 'settings',
-      route: '/admin/settings',
-    },
-  ];
+  ngOnInit(): void {
+    this.navItems = this.navItems;
+    this.userRole = this.authService.getUserRole();
+  }
+  private setNacItemsBasedOnRole(role: string): void {
+    switch (this.userRole) {
+      case 'admin':
+        this.navItems = [
+          {
+            label: 'Dashboard',
+            icon: 'home',
+            route: '/admin/admin-dashboard',
+          },
+          {
+            label: 'Allocation',
+            icon: 'group_add',
+            children: [
+              {
+                label: 'Allocation',
+                icon: 'add',
+                route: '/admin/allocation/create-allocation',
+              },
+              {
+                label: 'Allocation List',
+                icon: 'description',
+                route: '/admin/allocation/allocationlist',
+              },
+            ],
+          },
+          {
+            label: 'Settings',
+            icon: 'settings',
+            route: '/admin/settings',
+          },
+        ];
+        break;
+      case 'tutor':
+        this.navItems = [
+          {
+            label: 'Dashboard',
+            icon: 'home',
+            route: '/tutor/tutor-dashboard',
+          },
+          {
+            label: 'Blog',
+            icon: 'message',
+            route: '/tutor/Blog',
+          },
+          {
+            label: 'Documents',
+            icon: 'document',
+            route: '/tutor/Documents',
+          },
+          {
+            label: 'Meetings',
+            icon: 'calendar',
+            route: '/tutor/Meetings',
+          },
+          {
+            label: 'Settings',
+            icon: 'settings',
+            route: '/admin/settings',
+          },
+        ];
+        break;
+      default:
+        this.navItems = [];
+        break;
+    }
+  }
 
   logout(): void {
     this.authService.logout();

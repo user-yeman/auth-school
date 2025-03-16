@@ -8,40 +8,74 @@ import { LayoutComponent } from './pages/layout/layout.component';
 import { AllocationComponent } from './pages/admin/allocation/allocation.component';
 import { CreateAllocationComponent } from './pages/admin/create-allocation/create-allocation.component';
 import { AllocationlistComponent } from './pages/admin/allocationlist/allocationlist.component';
-import { ReallocationFormComponent } from './pages/admin/allocationlist/reallocation/reallocationform/reallocationform.component'; 
+import { ReallocationFormComponent } from './pages/admin/allocationlist/reallocation/reallocationform/reallocationform.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
-    path: 'admin',
+    path: '',
     component: LayoutComponent,
-    canActivate: [AuthGuard],
-    data: { expectedRole: 'admin' },
+
     children: [
-      { path: '', redirectTo: 'admin-dashboard', pathMatch: 'full' },
-      { path: 'admin-dashboard', component: AdminDashboardComponent },
+      // Admin Routes
       {
-        path: 'allocation',
-        component: AllocationComponent, // Parent component
+        path: 'admin',
         children: [
-          { path: 'create-allocation', component: CreateAllocationComponent },
-          { path: 'allocationlist', component: AllocationlistComponent },
-          { path: 'reallocationform', component: ReallocationFormComponent }, // Correct class name
+          { path: '', redirectTo: 'admin-dashboard', pathMatch: 'full' },
+          {
+            path: 'admin-dashboard',
+            component: AdminDashboardComponent,
+            canActivate: [AuthGuard],
+            data: { expectedRole: 'admin' },
+          },
+          {
+            path: 'allocation',
+            component: AllocationComponent,
+            canActivate: [AuthGuard],
+            data: { expectedRole: 'admin' },
+            children: [
+              {
+                path: 'create-allocation',
+                component: CreateAllocationComponent,
+              },
+              { path: 'allocationlist', component: AllocationlistComponent },
+              {
+                path: 'reallocationform',
+                component: ReallocationFormComponent,
+              },
+            ],
+          },
         ],
       },
+      // Tutor Routes
+      {
+        path: 'tutor',
+        canActivate: [AuthGuard],
+        data: { expectedRole: 'tutor' },
+        children: [
+          { path: '', redirectTo: 'tutor-dashboard', pathMatch: 'full' },
+          {
+            path: 'tutor-dashboard',
+            component: TutorDashboardComponent,
+          },
+          // more routes
+        ],
+      },
+      // Student Routes
+      {
+        path: 'student',
+        children: [
+          {
+            path: 'dashboard',
+            component: StudentDashboardComponent,
+            data: { expectedRole: 'student' },
+          },
+          // Add more student-specific routes here if needed
+        ],
+      },
+      // Default redirect (could be role-based in AuthGuard)
+      { path: '', redirectTo: '/login', pathMatch: 'full' },
     ],
   },
-  {
-    path: 'tutor-dashboard',
-    component: TutorDashboardComponent,
-    canActivate: [AuthGuard],
-    data: { expectedRole: 'tutor' },
-  },
-  {
-    path: 'student-dashboard',
-    component: StudentDashboardComponent,
-    canActivate: [AuthGuard],
-    data: { expectedRole: 'student' },
-  },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '**', redirectTo: '/login' },
 ];

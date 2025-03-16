@@ -15,7 +15,11 @@ export class LoginComponent {
   email = '';
   password = '';
 
-  constructor(private authService: AuthService, private router: Router, private snackBar: MatSnackBar) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {}
 
   onLogin() {
     this.authService.login(this.email, this.password).subscribe(
@@ -25,41 +29,53 @@ export class LoginComponent {
           this.snackBar.open(`Welcome to the first login!`, 'Close', {
             duration: 6000,
             panelClass: ['snackbar-success'],
-            verticalPosition: 'top'
+            verticalPosition: 'top',
           });
         } else {
+          debugger;
           this.snackBar.open(`Login successful! Role: ${res.role}`, 'Close', {
             duration: 6000,
             panelClass: ['snackbar-success'],
-            verticalPosition: 'top'
+            verticalPosition: 'top',
           });
         }
+
         console.log('Login successful', res);
         this.redirectToDashboard(res.role);
       },
       (error: any) => {
-        this.snackBar.open('Login failed. Please check your credentials and try again.', 'Close', {
-          duration: 6000,
-          panelClass: ['snackbar-error'],
-          verticalPosition: 'top'
-        });
+        this.snackBar.open(
+          'Login failed. Please check your credentials and try again.',
+          'Close',
+          {
+            duration: 6000,
+            panelClass: ['snackbar-error'],
+            verticalPosition: 'top',
+          }
+        );
         console.error('Login failed', error);
       }
     );
   }
 
   redirectToDashboard(role: string) {
-    switch (role) {
+    switch (
+      role.trim() // Trim any accidental whitespace
+    ) {
       case 'admin':
+        console.log('Navigating to admin dashboard');
         this.router.navigate(['/admin/admin-dashboard']);
         break;
       case 'tutor':
-        this.router.navigate(['/tutor-dashboard']);
+        console.log('Navigating to tutor dashboard');
+        this.router.navigate(['/tutor/tutor-dashboard']);
         break;
       case 'student':
+        console.log('Navigating to student dashboard');
         this.router.navigate(['/student-dashboard']);
         break;
       default:
+        console.log('Unknown role, redirecting to login');
         this.router.navigate(['/login']);
         break;
     }

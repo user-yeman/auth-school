@@ -83,10 +83,17 @@ export interface Allocation {
   ],
   templateUrl: './allocationlist.component.html',
   styleUrls: ['./allocationlist.component.css'],
-  providers: [DatePipe]
+  providers: [DatePipe],
 })
 export class AllocationlistComponent implements OnInit {
-  displayedColumns: string[] = ['StudentID', 'name', 'allocation_date', 'allocated_by', 'tutor_name', 'reallocation'];
+  displayedColumns: string[] = [
+    'StudentID',
+    'name',
+    'allocation_date',
+    'allocated_by',
+    'tutor_name',
+    'reallocation',
+  ];
   dataSource = new MatTableDataSource<Student>();
   selectedStudents$ = new BehaviorSubject<Student[]>([]); // Table data
   allData: Student[] = []; // Store all fetched data
@@ -106,7 +113,12 @@ export class AllocationlistComponent implements OnInit {
   // Filtering
   filterValue = ''; // Search input value
 
-  constructor(private http: HttpClient, private dialog: MatDialog, private router: Router, private datePipe: DatePipe) { }
+  constructor(
+    private http: HttpClient,
+    private dialog: MatDialog,
+    private router: Router,
+    private datePipe: DatePipe
+  ) {}
 
   ngOnInit(): void {
     this.fetchAllocations();
@@ -127,7 +139,10 @@ export class AllocationlistComponent implements OnInit {
           StudentID: allocation.student.StudentID,
           name: allocation.student.name,
           email: allocation.student.email,
-          allocation_date: this.datePipe.transform(new Date(allocation.allocation_date), 'EEE MMM dd yyyy'), // Format date to Wed Sep 03 2025
+          allocation_date: this.datePipe.transform(
+            new Date(allocation.allocation_date),
+            'EEE MMM dd yyyy'
+          ), // Format date to Wed Sep 03 2025
           allocated_by: allocation.allocated_by,
           tutor_name: allocation.tutor.name,
           selected: false, // Initialize as unselected
@@ -361,11 +376,11 @@ export class AllocationlistComponent implements OnInit {
         allocationId: row.allocationId,
         studentId: row.id,
         studentName: row.name,
-        currentTutor: row.tutor_name // pass data to the dialog
-      }
+        currentTutor: row.tutor_name, // pass data to the dialog
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result?.success) {
         this.fetchAllocations();
       }
