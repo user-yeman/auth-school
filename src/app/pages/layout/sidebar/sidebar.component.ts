@@ -41,8 +41,10 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     this.navItems = this.navItems;
     this.userRole = this.authService.getUserRole();
+    console.log('User Role:', this.userRole);
+    this.setNavItemsBasedOnRole(this.userRole);
   }
-  private setNacItemsBasedOnRole(role: string): void {
+  private setNavItemsBasedOnRole(role: string): void {
     switch (this.userRole) {
       case 'admin':
         this.navItems = [
@@ -88,12 +90,12 @@ export class SidebarComponent implements OnInit {
           },
           {
             label: 'Documents',
-            icon: 'document',
+            icon: 'folder',
             route: '/tutor/Documents',
           },
           {
             label: 'Meetings',
-            icon: 'calendar',
+            icon: 'event',
             route: '/tutor/Meetings',
           },
           {
