@@ -1,4 +1,103 @@
-<div class="student-dashboard">
-    <h1>Student Dashboard</h1>
-    <!-- Add your student dashboard content here -->
+<div class="dashboard-container">
+  <!-- Welcome Message -->
+  <div class="welcome-header">
+    <h2>Welcome, {{ user.name }}!</h2>
+    <span class="last-login">Last Login: {{ user.lastLogin }}</span>
   </div>
+
+  <!-- Cards Row -->
+  <div class="cards-container">
+    <mat-card class="stats-card">
+      <mat-card-header>
+        <mat-card-title>User</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h2>{{ user.name }}</h2>
+        <p>Email: {{ user.email }}</p>
+        <p>Last Login: {{ user.lastLogin }}</p>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card class="stats-card">
+      <mat-card-header>
+        <mat-card-title>Total Documents</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h2>45</h2>
+        <p>Completed: 20</p>
+        <p>Drafts: 10</p>
+        <p>Feedback Required: 15</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stats-card">
+      <mat-card-header>
+        <mat-card-title>Blogging Insights</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h2>{{ vlogs.totalBlog }}</h2>
+        <p>Posts by Tutor: {{ vlogs.tutor }}</p>
+        <p>Posts by You: {{ vlogs.student }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stats-card">
+      <mat-card-header>
+        <mat-card-title>Scheduled Meetings</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h2>{{ meetings.totalMeeting }}</h2>
+        <p>Online: {{ meetings.count_online }}</p>
+        <p>Campus: {{ meetings.count_campus }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- <mat-card class="stats-card">
+      <mat-card-header>
+        <mat-card-title>Pending Tasks</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h2>12</h2>
+        <p>Urgent: 4</p>
+        <p>Upcoming: 8</p>
+      </mat-card-content>
+    </mat-card> -->
+  </div>
+
+  <!-- Uploaded Documents Table -->
+  <div class="table-container">
+    <h3>Uploaded Documents List</h3>
+    <mat-table [dataSource]="documents" matSort (matSortChange)="applySorting($event)" class="mat-elevation-z2">
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+        <mat-cell *matCellDef="let doc">{{ doc.name }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+        <mat-cell *matCellDef="let doc">
+          <span [ngClass]="{
+            'status-completed': doc.status === 'Completed',
+            'status-draft': doc.status === 'Draft',
+            'status-feedback': doc.status === 'Feedback Required'
+          }">
+            {{ doc.status }}
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="uploadedDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Uploaded Date</mat-header-cell>
+        <mat-cell *matCellDef="let doc">{{ doc.uploadedDate }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="deadline">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Deadline</mat-header-cell>
+        <mat-cell *matCellDef="let doc">{{ doc.deadline }}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </div>
+</div>
