@@ -37,7 +37,7 @@ export class SidebarComponent implements OnInit {
   navItems: NavItem[] = [];
   userRole: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
   ngOnInit(): void {
     this.navItems = this.navItems;
     this.userRole = this.authService.getUserRole();
@@ -102,6 +102,35 @@ export class SidebarComponent implements OnInit {
             label: 'Settings',
             icon: 'settings',
             route: '/admin/settings',
+          },
+        ];
+        break;
+      case 'student':
+        this.navItems = [
+          {
+            label: 'Dashboard',
+            icon: 'home',
+            route: '/student/student-dashboard',
+          },
+          {
+            label: 'Blog',
+            icon: 'message',
+            route: '/student/Blog',
+          },
+          {
+            label: 'Documents',
+            icon: 'folder',
+            route: '/student/Documents',
+          },
+          {
+            label: 'Meetings',
+            icon: 'event',
+            route: '/student/Meetings',
+          },
+          {
+            label: 'Settings',
+            icon: 'settings',
+            route: '/student/settings',
           },
         ];
         break;

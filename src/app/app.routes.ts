@@ -64,13 +64,16 @@ export const routes: Routes = [
       // Student Routes
       {
         path: 'student',
+        canActivate: [AuthGuard],
+        data: { expectedRole: 'student' },
         children: [
+          { path: '', redirectTo: 'student-dashboard', pathMatch: 'full' },
           {
-            path: 'dashboard',
+            path: 'student-dashboard',
             component: StudentDashboardComponent,
-            data: { expectedRole: 'student' },
           },
-          // Add more student-specific routes here if needed
+          // more routes
+
         ],
       },
       // Default redirect (could be role-based in AuthGuard)
