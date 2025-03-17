@@ -1,0 +1,18 @@
+<!-- src/app/pages/tutor/dashboard/blogging-insights-card.component.html -->
+<mat-card class="blogging-insights-card groups-card">
+  <mat-card-header>
+    <mat-card-title>Blogging Insights</mat-card-title>
+    <span class="total">{{ insights.total_posts }}</span>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      <span class="first-letter">{{ insights.posts_by_students }}</span> Posts
+      by Students
+    </p>
+    <p>
+      <span class="first-letter">{{ insights.posts_by_students }}</span> Posts
+      by Students
+    </p>
+    <p>Last Blog: {{ insights.last_blog_date || "No blogs yet" }}</p>
+  </mat-card-content>
+</mat-card>

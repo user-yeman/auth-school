@@ -11,6 +11,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './services/auth.interceptor';
 import { AuthGuard } from './services/auth.guard';
 import { MatNativeDateModule } from '@angular/material/core';
+import { HttpCacheInterceptor } from './services/interceptor/http-cache/http-cache.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,6 +31,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(HttpClientModule, FormsModule),
     CookieService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpCacheInterceptor, multi: true },
     AuthGuard,
   ],
 };

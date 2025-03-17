@@ -1,0 +1,193 @@
+/* src/app/pages/tutor/student-table/student-table.component.css */
+.student-table-container {
+  padding: 20px;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.filter-container {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.filter-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  padding: 5px 15px;
+  border: 2px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.filter-btn:hover {
+  background-color: #e9ecef;
+  color: #0056b3;
+  border-color: #0056b3;
+}
+
+.funnel-icon img {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.filter-status {
+  margin-left: 8px;
+}
+
+.filter-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px 0;
+  margin-top: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  min-width: 120px;
+}
+
+.filter-panel a {
+  display: block;
+  padding: 5px 15px;
+  color: #000;
+  text-decoration: none;
+}
+
+.filter-panel a:hover {
+  background-color: #f8f9fa;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  cursor: pointer;
+  background-color: #343a40;
+  color: white;
+  padding: 10px;
+  text-align: left;
+  position: relative;
+}
+
+.table th:hover {
+  background-color: #495057;
+}
+
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.sort-icon {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.7;
+}
+
+.sort-icon::before,
+.sort-icon::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.sort-icon::before {
+  border-bottom: 5px solid white; /* Up arrow */
+  top: -2px;
+}
+
+.sort-icon::after {
+  border-top: 5px solid white; /* Down arrow */
+  bottom: -2px;
+}
+
+.sort-icon.asc::after {
+  display: none; /* Hide down arrow when ascending */
+}
+
+.sort-icon.desc::before {
+  display: none; /* Hide up arrow when descending */
+}
+
+.text-success {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.text-danger {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.pagination {
+  padding: 10px;
+  background-color: #f4f3f6;
+  border-radius: 10px;
+}
+
+.pagination .page-item {
+  margin: 0 2px;
+}
+
+.pagination .page-link {
+  padding: 6px 12px;
+  border: 1px solid #dee2e6;
+  color: #007bff;
+  background-color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #343a40;
+  color: #fff;
+  border-color: #343a40;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #6c757d;
+  cursor: not-allowed;
+  background-color: #fff;
+  border-color: #dee2e6;
+}
+
+.pagination .page-link:hover:not(.disabled) {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+.pagination .page-item span.page-link {
+  background-color: transparent;
+  border: none;
+  color: #000;
+  cursor: default;
+}

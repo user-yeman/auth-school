@@ -1,4 +1,76 @@
-.student-dashboard {
-    padding: 20px;
-    background-color: #f9f9f9;
-  }
+/* src/app/pages/tutor/tutor-dashboard/tutor-dashboard.component.css */
+.tutor-dashboard {
+  padding: 20px;
+}
+
+.user-profile-section {
+  padding: 10px 0;
+}
+
+.user-profile-section h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.user-profile-section .text-muted {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.user-menu .btn-light {
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  color: #333;
+}
+
+.user-menu .btn-light:hover {
+  background-color: #f8f9fa;
+}
+
+.user-avatar {
+  width: 30px;
+  height: 30px;
+}
+
+.dropdown-menu-right {
+  right: 0;
+  left: auto;
+}
+
+.tutor-dashboard h1:not(.user-profile-section h1) {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.dashboard-container {
+  padding: 0;
+  margin: 0;
+  position: relative;
+  min-height: 100vh;
+}
+
+.row {
+  margin: 0;
+}
+
+app-groups-card,
+app-total-students-card,
+app-blogging-insights-card,
+app-scheduled-meetings-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.mt-5 {
+  margin-top: 3rem;
+}
+.dashboard-container {
+  min-height: auto;
+}

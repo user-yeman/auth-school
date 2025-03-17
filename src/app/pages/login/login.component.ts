@@ -24,7 +24,17 @@ export class LoginComponent {
   onLogin() {
     this.authService.login(this.email, this.password).subscribe(
       (res: any) => {
-        this.authService.storeUserData(res.token, res.role);
+        // Assuming the API response includes user name and last login
+        const userName = res.name || res.username || 'User'; // Adjust based on your API response
+        const lastLogin = res.last_login || new Date().toISOString(); // Use current time if last_login isn't provided
+
+        this.authService.storeUserData(
+          res.token,
+          res.role,
+          userName,
+          lastLogin
+        );
+
         if (res.first_login) {
           this.snackBar.open(`Welcome to the first login!`, 'Close', {
             duration: 6000,
@@ -32,7 +42,6 @@ export class LoginComponent {
             verticalPosition: 'top',
           });
         } else {
-          debugger;
           this.snackBar.open(`Login successful! Role: ${res.role}`, 'Close', {
             duration: 6000,
             panelClass: ['snackbar-success'],

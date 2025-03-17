@@ -1,0 +1,22 @@
+<mat-card class="total-students-card groups-card">
+  <mat-card-header>
+    <mat-card-title>Total Students</mat-card-title>
+    <span class="total">{{ students.count }}</span>
+  </mat-card-header>
+  <mat-card-content>
+    <p class="data">
+      <span class="dot-active" style="color: #28a745">● </span
+      ><span class="active-count" style="color: #28a745">{{
+        students.active
+      }}</span>
+      Active
+    </p>
+    <p>
+      <span class="dot-inactive" style="color: #dc3545">● </span
+      ><span class="inactive-count" style="color: #dc3545">{{
+        students.inactive
+      }}</span>
+      UnActive
+    </p>
+  </mat-card-content>
+</mat-card>

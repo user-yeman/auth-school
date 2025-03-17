@@ -1,0 +1,43 @@
+.groups-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  background-color: #f5f5f5;
+  padding: 10px;
+  margin: 0;
+  width: 260px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+}
+.mat-mdc-card-header {
+  padding: 0;
+}
+mat-card-title {
+  font-size: 16px;
+  color: #333;
+}
+
+mat-card-subtitle {
+  font-size: 24px;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+mat-card-content {
+  flex-grow: 1;
+  padding: 0;
+}
+
+mat-card-content p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+mat-card-content p span {
+  color: #007bff;
+  font-weight: bold;
+}
+.count_number {
+  margin-left: 11rem;
+}
