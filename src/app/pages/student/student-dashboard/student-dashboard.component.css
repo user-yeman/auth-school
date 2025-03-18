@@ -13,8 +13,28 @@
   justify-content: space-between;
   align-items: center;
   font-size: 24px;
-  font-weight: bold;
+  line-height: 24px;
+  font-weight: 800;
   margin-bottom: 20px;
+  font: inter;
+  letter-spacing: 0.15px;
+}
+
+/* Last Login Text */
+.last-login {
+  color:#6B7280; 
+  font-weight: 400;
+  font:inter;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+.last-login-text {
+  color:#6B7280; 
+  font-weight: 400;
+  font:inter;
+  font-size: 16px;
+  letter-spacing: 0;
 }
 
 /* Grid Layout for Cards */
@@ -27,10 +47,34 @@
 
 .stats-card {
   padding: 20px;
-  background: #c7ccce;
   border-radius: 8px;
-  text-align: center;
+  text-align: left;
   box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific Card Colors */
+.user-card {
+  background: #F5F5F5;
+}
+
+.documents-card {
+  background: #F5F5F5;
+}
+
+.vlogs-card {
+  background: #F5F5F5;
+}
+
+.meetings-card {
+  background: #F5F5F5;
+}
+
+/* Highlight Class */
+.highlight {
+  color: #007BFF;
+  font-weight: 600;
+  font-size: 24px;
+  font: inter;
 }
 
 /* Table Container */
@@ -90,10 +134,20 @@ mat-cell {
   .cards-container {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .stats-card {
+    width: 100%;
+    height: auto;
+  }
 }
 
 @media (max-width: 768px) {
   .cards-container {
     grid-template-columns: 1fr;
+  }
+
+  .stats-card {
+    width: 100%;
+    height: auto;
   }
 }

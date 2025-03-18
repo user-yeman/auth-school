@@ -2,23 +2,23 @@
   <!-- Welcome Message -->
   <div class="welcome-header">
     <h2>Welcome, {{ user.name }}!</h2>
-    <span class="last-login">Last Login: {{ user.lastLogin }}</span>
+    <span class="last-login"> Last Login: <span class="last-login-text">{{ user.lastLogin }}</span></span>
   </div>
 
   <!-- Cards Row -->
   <div class="cards-container">
-    <mat-card class="stats-card">
+    <mat-card class="stats-card user-card">
       <mat-card-header>
         <mat-card-title>User</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <h2>{{ user.name }}</h2>
+        <h2 [ngClass]="{'highlight': user.name === 'Dr. Carmelo Anderson'}">{{ user.name }}</h2>
         <p>Email: {{ user.email }}</p>
-        <p>Last Login: {{ user.lastLogin }}</p>
+        <p>Last Login: <span class="last-login-text">{{ user.lastLogin }}</span></p>
       </mat-card-content>
     </mat-card>
     
-    <mat-card class="stats-card">
+    <mat-card class="stats-card documents-card">
       <mat-card-header>
         <mat-card-title>Total Documents</mat-card-title>
       </mat-card-header>
@@ -30,38 +30,27 @@
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="stats-card">
+    <mat-card class="stats-card vlogs-card">
       <mat-card-header>
         <mat-card-title>Blogging Insights</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <h2>{{ vlogs.totalBlog }}</h2>
+        <h2 [ngClass]="{'highlight': vlogs.totalBlog > 5}">{{ vlogs.totalBlog }}</h2>
         <p>Posts by Tutor: {{ vlogs.tutor }}</p>
         <p>Posts by You: {{ vlogs.student }}</p>
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="stats-card">
+    <mat-card class="stats-card meetings-card">
       <mat-card-header>
         <mat-card-title>Scheduled Meetings</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <h2>{{ meetings.totalMeeting }}</h2>
+        <h2 [ngClass]="{'highlight': meetings.totalMeeting > 1}">{{ meetings.totalMeeting }}</h2>
         <p>Online: {{ meetings.count_online }}</p>
         <p>Campus: {{ meetings.count_campus }}</p>
       </mat-card-content>
     </mat-card>
-
-    <!-- <mat-card class="stats-card">
-      <mat-card-header>
-        <mat-card-title>Pending Tasks</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <h2>12</h2>
-        <p>Urgent: 4</p>
-        <p>Upcoming: 8</p>
-      </mat-card-content>
-    </mat-card> -->
   </div>
 
   <!-- Uploaded Documents Table -->
