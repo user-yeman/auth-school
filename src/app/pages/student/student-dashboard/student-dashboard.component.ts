@@ -1,20 +1,20 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 interface Document {
-  name: string;
+  file_name: string;
   status: string;
-  uploadedDate: string;
-  deadline: string;
+  created_at: string;
 }
 
 interface ApiResponse {
@@ -35,6 +35,16 @@ interface ApiResponse {
       count_campus: number;
       totalMeeting: number;
     };
+    documentsTotal: {
+      total: number;
+      status: {
+        finished: number;
+        watched: number;
+        accepted: number;
+        canceled: number;
+      };
+    };
+    documents: Document[];
   };
 }
 
@@ -52,11 +62,14 @@ interface ApiResponse {
     MatDividerModule,
     MatTooltipModule,
     MatSortModule,
-    HttpClientModule
+    MatPaginatorModule,
+    HttpClientModule,
+    FormsModule
   ]
 })
-export class StudentDashboardComponent implements OnInit {
+export class StudentDashboardComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   user = { 
     name: '', 
@@ -73,10 +86,23 @@ export class StudentDashboardComponent implements OnInit {
     count_campus: 0,
     totalMeeting: 0
   };
-  displayedColumns: string[] = ['name', 'status', 'uploadedDate', 'deadline'];
-  documents = new MatTableDataSource<Document>([]);
+  documentsTotal = {
+    total: 0,
+    status: {
+      finished: 0,
+      watched: 0,
+      accepted: 0,
+      canceled: 0
+    }
+  };
+  displayedColumns: string[] = ['file_name', 'status', 'uploadedDate'];
+  documents: MatTableDataSource<Document> = new MatTableDataSource();
+  filterValue: string = '';
+  currentPage: number = 1;
+  totalPages: number = 1;
+  pages: number[] = [];
 
-  private apiUrl = 'http://127.0.0.1:8000/api/student/dashboard'; // Replace with your actual API URL
+  private apiUrl = 'http://127.0.0.1:8000/api/student/dashboard'; // API URL
 
   constructor(private http: HttpClient) {}
 
@@ -86,6 +112,10 @@ export class StudentDashboardComponent implements OnInit {
 
   ngAfterViewInit() {
     this.documents.sort = this.sort;
+    this.documents.paginator = this.paginator;
+    this.paginator.pageSize = 10; // Set the page size to 10
+    this.paginator.page.subscribe(() => this.updatePagination());
+    this.updatePagination();
   }
 
   fetchDashboardData() {
@@ -96,8 +126,16 @@ export class StudentDashboardComponent implements OnInit {
         this.user.lastLogin = response.data.user.last_login_at;
         this.vlogs = response.data.vlogs;
         this.meetings = response.data.meetings;
+        this.documentsTotal = response.data.documentsTotal;
+        this.documents.data = response.data.documents; // Update documents data
+        this.updatePagination();
       }
     });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.documents.filter = filterValue.trim().toLowerCase();
   }
 
   applySorting(sortState: Sort) {
@@ -111,12 +149,28 @@ export class StudentDashboardComponent implements OnInit {
       let valueA: any = a[key];
       let valueB: any = b[key];
   
-      if (key === 'uploadedDate' || key === 'deadline') {
+      if (key === 'created_at') {
         valueA = new Date(valueA).getTime();
         valueB = new Date(valueB).getTime();
       }
   
       return (valueA < valueB ? -1 : 1) * (sortState.direction === 'asc' ? 1 : -1);
     });
+  }
+
+  updatePagination() {
+    if (this.paginator) {
+      this.totalPages = Math.ceil(this.documents.data.length / this.paginator.pageSize);
+      this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+    }
+  }
+
+  onPageChange(page: number) {
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+    this.currentPage = page;
+    this.paginator.pageIndex = page - 1;
+    this.paginator._changePageSize(this.paginator.pageSize);
   }
 }
