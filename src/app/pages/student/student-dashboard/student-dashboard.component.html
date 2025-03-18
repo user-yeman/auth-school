@@ -162,26 +162,7 @@
         </mat-paginator>
       </div>
       
-      <!-- Custom pagination - FIXED -->
-      <div class="custom-pagination">
-        <button mat-button [disabled]="paginator.pageIndex === 0" (click)="paginator.firstPage()">
-          First
-        </button>
-        <button mat-button [disabled]="paginator.pageIndex === 0" (click)="paginator.previousPage()">
-          Previous
-        </button>
-        
-        <span class="page-info">
-          Page {{ paginator.pageIndex + 1 }} of {{ totalPages }}
-        </span>
-        
-        <button mat-button [disabled]="paginator.pageIndex === totalPages - 1" (click)="paginator.nextPage()">
-          Next
-        </button>
-        <button mat-button [disabled]="paginator.pageIndex === totalPages - 1" (click)="paginator.lastPage()">
-          Last
-        </button>
-      </div>
+      <!-- Pagination -->
     </mat-card>
   </div>
 </div>
