@@ -7,6 +7,7 @@
 
   <!-- Cards Row -->
   <div class="cards-container">
+    <!-- User Card - now shows tutor info -->
     <mat-card class="stats-card user-card">
       <mat-card-header>
         <mat-card-title></mat-card-title>
@@ -15,20 +16,20 @@
         <p class="card-title">
           <img src="assets/user_icon.png" alt="User Icon" class="user-icon">
           <span class="status-value"></span>
-          <span class="highlight-value">{{ user.name }}</span>
+          <span class="highlight-value">{{ tutor.name }}</span>
         </p>
         
         <div class="card-detail">
           <img src="assets/tutor_email_icon.png" alt="User Icon" class="detail-icon">
           <span class="status-value"></span>
-          <span class="status-text">{{ user.email }}</span>
+          <span class="status-text">{{ tutor.email }}</span>
         </div>
         
-        <div class="card-detail">
+        <!-- <div class="card-detail">
           <img src="assets/office_hours_icon.png" alt="Clock Icon" class="detail-icon">
-          <span class="status-value"></span>
-          <span class="status-text">{{ user.lastLogin }}</span>
-        </div>
+          <span class="status-value">Your Email:</span>
+          <span class="status-text">{{ user.email }}</span>
+        </div> -->
       </mat-card-content>
     </mat-card>
 
@@ -114,10 +115,10 @@
   <div class="student_display_container container mt-3">
     <h2 class="table_title">Uploaded Documents List</h2>
     <mat-card>
-      <!-- <div class="search-bar mb-3">
+<!--       <div class="search-bar mb-3">
         <input type="text" placeholder="Search by Document Name or Status" (input)="applyFilter($event)"
                [(ngModel)]="filterValue" class="form-control" />
-      </div> -->
+      </div>
       <!-- Table -->
       <table mat-table [dataSource]="documents" matSort (matSortChange)="applySorting($event)" class="mat-elevation-z8">
         <!-- Document Name Column -->
@@ -151,16 +152,34 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
-      <!-- Pagination -->
-      <div class="pagination mt-3">
-        <button mat-button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+      
+      <!-- Pagination - Centered -->
+      <div class="pagination-wrapper">
+        <mat-paginator 
+            [pageSizeOptions]="[10]" 
+            [pageSize]="10" 
+            showFirstLastButtons>
+        </mat-paginator>
+      </div>
+      
+      <!-- Custom pagination - FIXED -->
+      <div class="custom-pagination">
+        <button mat-button [disabled]="paginator.pageIndex === 0" (click)="paginator.firstPage()">
+          First
+        </button>
+        <button mat-button [disabled]="paginator.pageIndex === 0" (click)="paginator.previousPage()">
           Previous
         </button>
-        <span *ngFor="let page of pages" (click)="onPageChange(page)" [class.active]="page === currentPage">
-          {{ page }}
+        
+        <span class="page-info">
+          Page {{ paginator.pageIndex + 1 }} of {{ totalPages }}
         </span>
-        <button mat-button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
+        
+        <button mat-button [disabled]="paginator.pageIndex === totalPages - 1" (click)="paginator.nextPage()">
           Next
+        </button>
+        <button mat-button [disabled]="paginator.pageIndex === totalPages - 1" (click)="paginator.lastPage()">
+          Last
         </button>
       </div>
     </mat-card>

@@ -25,6 +25,10 @@ interface ApiResponse {
       email: string;
       last_login_at: string;
     };
+    tutor: {  // Add tutor interface
+      name: string;
+      email: string;
+    };
     vlogs: {
       student: number;
       tutor: number;
@@ -76,6 +80,12 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
     email: '', 
     lastLogin: '' 
   };
+  
+  tutor = { // Add tutor property
+    name: '',
+    email: ''
+  };
+  
   vlogs = {
     student: 0,
     tutor: 0,
@@ -111,11 +121,13 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.documents.sort = this.sort;
-    this.documents.paginator = this.paginator;
-    this.paginator.pageSize = 10; // Set the page size to 10
-    this.paginator.page.subscribe(() => this.updatePagination());
-    this.updatePagination();
+    if (this.sort && this.paginator) {
+      this.documents.sort = this.sort;
+      this.documents.paginator = this.paginator;
+      this.paginator.pageSize = 10; // Set the page size to 10
+      this.paginator.page.subscribe(() => this.updatePagination());
+      this.updatePagination();
+    }
   }
 
   fetchDashboardData() {
@@ -124,11 +136,24 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
         this.user.name = response.data.user.name;
         this.user.email = response.data.user.email;
         this.user.lastLogin = response.data.user.last_login_at;
+        
+        // Add tutor data
+        if (response.data.tutor) {
+          this.tutor.name = response.data.tutor.name;
+          this.tutor.email = response.data.tutor.email;
+        }
+        
         this.vlogs = response.data.vlogs;
         this.meetings = response.data.meetings;
         this.documentsTotal = response.data.documentsTotal;
         this.documents.data = response.data.documents; // Update documents data
         this.updatePagination();
+        
+        // If Mat-Paginator has already been initialized
+        if (this.paginator) {
+          this.paginator.pageSize = 10;
+          this.paginator.pageIndex = 0;
+        }
       }
     });
   }
@@ -136,6 +161,11 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.documents.filter = filterValue.trim().toLowerCase();
+    
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+    this.updatePagination();
   }
 
   applySorting(sortState: Sort) {
@@ -170,7 +200,9 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
       return;
     }
     this.currentPage = page;
-    this.paginator.pageIndex = page - 1;
-    this.paginator._changePageSize(this.paginator.pageSize);
+    if (this.paginator) {
+      this.paginator.pageIndex = page - 1;
+      this.paginator._changePageSize(this.paginator.pageSize);
+    }
   }
 }

@@ -347,6 +347,63 @@ mat-cell {
   text-decoration: underline;
 }
 
+/* Pagination styling */
+.mat-paginator {
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+/* If you want to customize the paginator colors */
+::ng-deep .mat-paginator-container {
+  justify-content: center !important;
+  padding: 8px 24px !important;
+}
+
+::ng-deep .mat-paginator-page-size {
+  display: none !important;
+}
+
+::ng-deep .mat-paginator-range-label {
+  margin: 0 24px !important;
+}
+
+/* Optional: Style the active page indicator */
+::ng-deep .mat-paginator-range-actions button.mat-focus-indicator.mat-button-disabled {
+  color: #007BFF !important;
+  font-weight: bold;
+}
+
+/* Optional: Status styling for document status in the table */
+.status-completed {
+  color: #22C55E;
+  font-weight: 600;
+}
+
+.status-draft {
+  color: #F59E0B;
+  font-weight: 600;
+}
+
+.status-feedback {
+  color: #EF4444;
+  font-weight: 600;
+}
+
+.status-canceled {
+  color: #6B7280;
+  font-weight: 600;
+}
+
+/* Add custom wrapper for pagination to control spacing */
+.pagination-wrapper {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 1024px) {
   .dashboard-container {
@@ -378,4 +435,18 @@ mat-cell {
 /* Alternatively, add space to the container */
 .student_display_container {
   margin-top: 23px; /* Additional spacing */
+}
+
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 8px;
+}
+
+.page-info {
+  margin: 0 16px;
+  color: #333;
+  font-weight: 500;
 }
