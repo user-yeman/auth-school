@@ -20,7 +20,6 @@ import { AuthService } from '../../../services/auth.service';
     MatCardModule,
     CommonModule,
     MatGridListModule,
-    GroupsCardComponent,
     BloggingInsightsCardComponent,
     ScheduledMeetingsCardComponent,
     TotalStudentsCardComponent,
@@ -66,6 +65,7 @@ export class TutorDashboardComponent implements OnInit {
   }
 
   fetchUserInfo(): void {
+    console.log('Fetching user info...' + this.authService.getUserName());
     this.userName = this.authService.getUserName();
     this.lastLogin = this.authService.getLastLogin();
   }

@@ -1,4 +1,4 @@
-// Interface for a single student
+// card-model.ts
 export interface Student {
   id: number;
   StudentID: string;
@@ -8,11 +8,15 @@ export interface Student {
 }
 
 export interface ApiDashboardResponse {
-  groups: GroupsCardData;
-  total_students: TotalStudentsCardData;
-  blogging_insights: BloggingInsightsCardData;
-  scheduled_meetings: ScheduledMeetingsCardData;
-  students: Student[]; // Added students array
+  status: string;
+  message: string;
+  data: {
+    groups?: GroupsCardData; // Optional since missing in API response
+    total_students: TotalStudentsCardData;
+    blogging_insights: BloggingInsightsCardData;
+    scheduled_meetings: ScheduledMeetingsCardData;
+    students: Student[];
+  };
 }
 
 export interface GroupsCardData {

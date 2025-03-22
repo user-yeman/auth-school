@@ -34,6 +34,7 @@ export class AuthService {
     );
     this.cookieService.set('userRole', role);
     this.cookieService.set('userName', userName);
+    console.log('username', userName);
     this.cookieService.set('lastLogin', lastLogin);
   }
   getUserName(): string {
