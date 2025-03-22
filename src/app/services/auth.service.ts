@@ -17,7 +17,12 @@ export class AuthService {
     return this.http.post<any>(this.apiUrl, { email, password });
   }
 
-  storeUserData(token: string, role: string) {
+  storeUserData(
+    token: string,
+    role: string,
+    userName: string,
+    lastLogin: string = new Date().toISOString()
+  ): void {
     this.cookieService.set(
       'authToken',
       token,
@@ -28,8 +33,17 @@ export class AuthService {
       'Lax'
     );
     this.cookieService.set('userRole', role);
+    this.cookieService.set('userName', userName);
+    console.log('username', userName);
+    this.cookieService.set('lastLogin', lastLogin);
+  }
+  getUserName(): string {
+    return this.cookieService.get('userName') || '';
   }
 
+  getLastLogin(): string {
+    return this.cookieService.get('lastLogin') || '';
+  }
   getUserRole(): string {
     return this.cookieService.get('userRole') || '';
   }
@@ -38,9 +52,11 @@ export class AuthService {
     return !!this.cookieService.get('authToken');
   }
 
-  logout() {
+  logout(): void {
     this.cookieService.delete('authToken');
     this.cookieService.delete('userRole');
+    this.cookieService.delete('userName');
+    this.cookieService.delete('lastLogin');
     this.router.navigate(['/login']);
   }
 }

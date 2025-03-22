@@ -1,0 +1,14 @@
+<mat-card class="scheduled-meetings-card groups-card">
+  <mat-card-header>
+    <mat-card-title>Total Scheduled Meetings</mat-card-title>
+    <span class="total">{{ meetings.total }}</span>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      <span class="first-letter">{{ meetings.online_count }}</span> Online
+    </p>
+    <p>
+      <span class="first-letter">{{ meetings.offline_count }}</span> Campus
+    </p>
+  </mat-card-content>
+</mat-card>

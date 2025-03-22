@@ -1,4 +1,77 @@
 <div class="tutor-dashboard">
-    <h1>Tutor Dashboard</h1>
-    <!-- Add your Tutor dashboard content here -->
+  <!-- User Profile Section -->
+  <div
+    class="user-profile-section d-flex justify-content-between align-items-center mb-4"
+  >
+    <div>
+      <h1 *ngIf="userName">Welcome Back, {{ userName }}!</h1>
+    </div>
+    <div class="user-menu dropdown">
+      <button
+        class="btn btn-light dropdown-toggle d-flex align-items-center"
+        type="button"
+        id="userMenu"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <img
+          src="/assets/user-avatar.png"
+          alt="User Avatar"
+          class="user-avatar rounded-circle mr-2"
+        />
+        <span *ngIf="userName">{{ userName }}</span>
+      </button>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
+        <a class="dropdown-item" href="#">Profile</a>
+        <!-- <a class="dropdown-item" (click)="authService.logout()">Logout</a> -->
+      </div>
+    </div>
   </div>
+  <p *ngIf="lastLogin" class="text-muted text-end">
+    [Last Login: {{ formatLastLogin(lastLogin) }}]
+  </p>
+  <div class="container-fluid dashboard-container">
+    <ngx-spinner
+      bdColor="rgba(0, 0, 0, 0.8)"
+      size="medium"
+      color="#fff"
+      type="ball-scale-multiple"
+    >
+      <p style="color: white">Loading dashboard data...</p>
+    </ngx-spinner>
+
+    <!-- Error Message -->
+    <div *ngIf="apiError" class="text-center py-4 text-danger">
+      {{ apiError }}
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="row g-0" *ngIf="dashboardData && !loading">
+      <!-- <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+        <app-groups-card [groups]="dashboardData.groups"></app-groups-card>
+      </div> -->
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+        <app-total-students-card
+          [students]="dashboardData.data.total_students"
+        ></app-total-students-card>
+      </div>
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+        <app-blogging-insights-card
+          [insights]="dashboardData.data.blogging_insights"
+        ></app-blogging-insights-card>
+      </div>
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+        <app-scheduled-meetings-card
+          [meetings]="dashboardData.data.scheduled_meetings"
+        ></app-scheduled-meetings-card>
+      </div>
+    </div>
+  </div>
+  <!-- table start-->
+  <div *ngIf="dashboardData && !loading" class="mt-5">
+    <app-student-table
+      [students]="dashboardData.data.students"
+    ></app-student-table>
+  </div>
+</div>

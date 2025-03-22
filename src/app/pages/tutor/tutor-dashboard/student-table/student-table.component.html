@@ -1,0 +1,123 @@
+<!-- src/app/pages/tutor/student-table/student-table.component.html -->
+<div class="student-table-container">
+  <div class="header_wrapper d-flex justify-content-between align-items-center">
+    <h2>Student Lists</h2>
+    <div class="filter-container">
+      <div class="filter-wrapper">
+        <button class="filter-btn" (click)="toggleFilterPanel()">
+          <span class="funnel-icon">
+            <img
+              src="../../../../../assets/f2ab96dfa74130e8cb86642e6a398b6c.png"
+              alt="Filter Icon"
+            />
+          </span>
+          Filter by
+          <span class="filter-status">{{ filterStatus }}</span>
+        </button>
+        <div class="filter-panel" *ngIf="showFilterPanel">
+          <a (click)="onFilterChange('All'); toggleFilterPanel()">All</a>
+          <a (click)="onFilterChange('Active'); toggleFilterPanel()">Active</a>
+          <a (click)="onFilterChange('Inactive'); toggleFilterPanel()"
+            >Inactive</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <table class="table table-bordered table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th (click)="sort('StudentID')">
+          Student ID
+          <span
+            class="sort-icon"
+            [ngClass]="{
+              asc: sortColumn === 'StudentID' && sortDirection === 'asc',
+              desc: sortColumn === 'StudentID' && sortDirection === 'desc'
+            }"
+          ></span>
+        </th>
+        <th (click)="sort('name')">
+          Name
+          <span
+            class="sort-icon"
+            [ngClass]="{
+              asc: sortColumn === 'name' && sortDirection === 'asc',
+              desc: sortColumn === 'name' && sortDirection === 'desc'
+            }"
+          ></span>
+        </th>
+        <th (click)="sort('email')">
+          Email
+          <span
+            class="sort-icon"
+            [ngClass]="{
+              asc: sortColumn === 'email' && sortDirection === 'asc',
+              desc: sortColumn === 'email' && sortDirection === 'desc'
+            }"
+          ></span>
+        </th>
+        <th (click)="sort('status')">
+          Status
+          <span
+            class="sort-icon"
+            [ngClass]="{
+              asc: sortColumn === 'status' && sortDirection === 'asc',
+              desc: sortColumn === 'status' && sortDirection === 'desc'
+            }"
+          ></span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let student of paginatedStudents">
+        <td>{{ student.StudentID }}</td>
+        <td>{{ student.name }}</td>
+        <td>{{ student.email }}</td>
+        <td
+          [ngClass]="{
+            'text-success': student.status === 'Active',
+            'text-danger': student.status === 'Inactive'
+          }"
+        >
+          {{ student.status }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [ngClass]="{ disabled: currentPage === 1 }">
+        <a class="page-link" (click)="goToPage(currentPage - 1)">Previous</a>
+      </li>
+      <li class="page-item" *ngIf="currentPage > 3">
+        <a class="page-link" (click)="goToPage(1)">1</a>
+      </li>
+      <li class="page-item" *ngIf="currentPage > 4">
+        <span class="page-link">...</span>
+      </li>
+      <li
+        class="page-item"
+        *ngFor="let page of visiblePageNumbers"
+        [ngClass]="{ active: currentPage === page }"
+      >
+        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+      </li>
+      <li class="page-item" *ngIf="currentPage < totalPages - 3">
+        <span class="page-link">...</span>
+      </li>
+      <li class="page-item" *ngIf="currentPage < totalPages - 2">
+        <a class="page-link" (click)="goToPage(totalPages)">{{ totalPages }}</a>
+      </li>
+      <li
+        class="page-item"
+        [ngClass]="{ disabled: currentPage === totalPages }"
+      >
+        <a class="page-link" (click)="goToPage(currentPage + 1)">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>
