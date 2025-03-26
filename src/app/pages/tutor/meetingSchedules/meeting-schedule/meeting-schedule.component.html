@@ -1,0 +1,122 @@
+<div class="container">
+  <div class="top-bar">
+    <button mat-button class="back-btn" (click)="goBack()">← Back</button>
+  </div>
+  <div class="search_container col-12">
+    <div class="search-bar mb-3">
+      <input
+        type="text"
+        placeholder="Search... "
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+        class="form-control"
+      />
+    </div>
+
+    <div class="header">
+      <h1>{{ data?.name }}'s Dashboard</h1>
+      <button
+        mat-raised-button
+        class="new-meeting-btn"
+        (click)="openAddDialog()"
+      >
+        + New Meetings
+      </button>
+    </div>
+
+    <mat-tab-group
+      class="tab-group"
+      mat-stretch-tabs="false"
+      mat-align-tabs="start"
+    >
+      <mat-tab label="Meetings">
+        <div class="filter-section">
+          <mat-form-field appearance="fill" class="filter-form-field">
+            <mat-label>Filter by</mat-label>
+            <mat-select
+              [(value)]="selectedFilter"
+              (selectionChange)="onFilterChange($event.value)"
+              aria-label="Filter meetings by type"
+            >
+              <mat-option *ngFor="let option of filterOptions" [value]="option">
+                {{ option }}
+                <span class="badge">({{ getFilterCount(option) }})</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div *ngIf="isLoading">Loading Appointments...</div>
+        <div class="card-container" *ngIf="!isLoading">
+          <div *ngFor="let meeting of filteredMeetings" class="meeting-card">
+            <h3 class="card_title">{{ meeting.title }}</h3>
+            <div class="row mt-4">
+              <p class="col-md-4">
+                <strong>Date:</strong> {{ meeting.date | date : "medium" }}
+              </p>
+              <p class="col-md-4">
+                <strong>Time:</strong> {{ meeting.time | date : "shortTime" }}
+              </p>
+              <p class="col-md-4">
+                <strong>Meeting Type:</strong> {{ meeting.meeting_type }}
+              </p>
+            </div>
+
+            <p><strong>Description:</strong> {{ meeting.description }}</p>
+            <p *ngIf="meeting.meeting_link">
+              <strong>Meeting Link:</strong>
+              <a
+                [href]="meeting.meeting_link"
+                target="_blank"
+                class="meeting_link"
+                >{{ meeting.meeting_link }}</a
+              >
+            </p>
+            <p *ngIf="meeting.location">
+              <strong>Location:</strong> {{ meeting.location }}
+            </p>
+            <p><strong>Status:</strong> {{ meeting.status | titlecase }}</p>
+            <div
+              class="action-buttons"
+              *ngIf="selectedFilter === 'Upcoming' && isFutureMeeting(meeting)"
+            >
+              <button
+                mat-raised-button
+                class="finish-btn"
+                (click)="finishMeeting(meeting.id)"
+              >
+                Finish
+              </button>
+              <div class="secondary-buttons">
+                <button
+                  mat-raised-button
+                  class="secondary-btn"
+                  (click)="rescheduleMeeting(meeting.id)"
+                >
+                  Reschedule
+                </button>
+                <button
+                  mat-raised-button
+                  class="secondary-btn"
+                  (click)="cancelMeeting(meeting.id)"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p *ngIf="filteredMeetings.length === 0">
+          No meetings found for this filter.
+        </p>
+      </mat-tab>
+
+      <mat-tab label="Documents">
+        <p>No documents available.</p>
+      </mat-tab>
+
+      <mat-tab label="Blogs">
+        <p>No blogs available.</p>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

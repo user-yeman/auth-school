@@ -26,6 +26,7 @@
   padding: 10px;
   color: var(--white);
   text-decoration: none;
+  text-wrap: wrap;
 }
 
 .mat-nav-list a:hover {
@@ -47,6 +48,7 @@
   font-size: 16px;
   margin-left: 10px;
   color: var(--white);
+  text-wrap: wrap;
 }
 
 .mat-expansion-panel-header {

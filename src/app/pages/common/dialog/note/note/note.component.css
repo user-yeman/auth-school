@@ -1,0 +1,74 @@
+.note_container {
+  padding: 10px;
+  overflow: hidden;
+}
+
+.dialog-header {
+  background-color: #000000;
+  padding: 16px 24px;
+  margin: -24px -24px 0 -24px; /* Adjust for dialog padding */
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: white !important;
+}
+
+.dialog-content {
+  padding: 24px 0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.notes-textarea {
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none; /* Prevent resizing */
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 0;
+  gap: 12px;
+}
+
+.cancel-btn {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 8px 24px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.save-btn {
+  background-color: #007bff; /* Blue for the Save button */
+  color: white;
+  border-radius: 20px;
+  padding: 8px 24px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.save-btn:hover {
+  background-color: #0056b3;
+}
+
+:host {
+  display: block;
+  border-radius: 8px;
+}

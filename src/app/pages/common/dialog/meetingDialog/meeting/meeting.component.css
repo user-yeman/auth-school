@@ -1,0 +1,35 @@
+:host ::ng-deep .mat-mdc-dialog-title {
+  background: black !important;
+  color: white !important;
+  margin: 0 !important; /* Remove default margin if needed */
+  padding: 16px 24px !important; /* Match Material's default padding */
+}
+
+/* Ensure the h2 inside the title inherits the styles */
+:host ::ng-deep .mat-mdc-dialog-title h2 {
+  color: white !important;
+  margin: 0 !important; /* Remove default margin on h2 */
+}
+.schedule-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.date-time-row {
+  display: flex;
+  gap: 16px;
+}
+
+.half-width {
+  width: 50%;
+}
+
+mat-form-field {
+  margin-bottom: 1px;
+}

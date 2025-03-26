@@ -83,20 +83,16 @@ export class SidebarComponent implements OnInit {
             icon: 'home',
             route: '/tutor/tutor-dashboard',
           },
+
           {
-            label: 'Blog',
-            icon: 'message',
-            route: '/tutor/Blog',
+            label: 'Student Management',
+            icon: 'group',
+            route: '/tutor/student-management',
           },
           {
-            label: 'Documents',
-            icon: 'folder',
-            route: '/tutor/Documents',
-          },
-          {
-            label: 'Meetings',
-            icon: 'event',
-            route: '/tutor/meetings',
+            label: 'Reschedule Requests',
+            icon: 'chat',
+            route: '/tutor/reschedule',
           },
           {
             label: 'Settings',
@@ -105,6 +101,7 @@ export class SidebarComponent implements OnInit {
           },
         ];
         break;
+
       default:
         this.navItems = [];
         break;

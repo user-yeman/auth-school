@@ -1,0 +1,23 @@
+<div class="note_container">
+  <div class="dialog-header">
+    <h2 mat-dialog-title>MEETING RECORD</h2>
+  </div>
+  <mat-dialog-content class="dialog-content">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Notes</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="notes"
+        placeholder="Enter meeting record"
+        rows="5"
+        class="notes-textarea"
+      ></textarea>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions class="dialog-actions">
+    <button mat-button class="cancel-btn" (click)="onCancel()">Cancel</button>
+    <button mat-raised-button class="save-btn" (click)="onConfirm()">
+      Save
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -9,6 +9,8 @@ import { AllocationComponent } from './pages/admin/allocation/allocation.compone
 import { CreateAllocationComponent } from './pages/admin/create-allocation/create-allocation.component';
 import { AllocationlistComponent } from './pages/admin/allocationlist/allocationlist.component';
 import { ReallocationFormComponent } from './pages/admin/allocationlist/reallocation/reallocationform/reallocationform.component';
+import { StudentManagementComponent } from './pages/tutor/studentManagement/student-management/student-management.component';
+import { MeetingScheduleComponent } from './pages/tutor/meetingSchedules/meeting-schedule/meeting-schedule.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -58,6 +60,11 @@ export const routes: Routes = [
             path: 'tutor-dashboard',
             component: TutorDashboardComponent,
           },
+          {
+            path: 'student-management',
+            component: StudentManagementComponent,
+          },
+          { path: 'meetings/:id', component: MeetingScheduleComponent },
           // more routes
         ],
       },
