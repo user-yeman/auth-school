@@ -1,3 +1,4 @@
+// admin-dashboard.component.ts
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
@@ -16,8 +17,9 @@ import Chart from 'chart.js/auto';
 import { FormsModule } from '@angular/forms';
 import { TutorListTableComponent } from '../admin-dashbaord/tutor-list-table/tutor-list-table.component';
 import { ModelListComponent } from '../../common/dashboardModelList/model-list/model-list.component';
+import { HttpClient } from '@angular/common/http';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
-// Define the Tutor interface
 export interface Tutor {
   tutorId: string | number;
   name: string;
@@ -40,140 +42,147 @@ export interface Tutor {
     MatButtonModule,
     FormsModule,
     TutorListTableComponent,
+    MatFormFieldModule,
   ],
 })
 export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
   @ViewChild('pieChartCanvas') pieChartCanvas!: ElementRef<HTMLCanvasElement>;
 
   private chartInstance: Chart | null = null;
+  chartError: string | null = null;
 
-  // Card Data
-  totalTutors = 50;
-  totalStudents = 500;
-  unassignedStudents = 150;
+  totalTutors: number = 0;
+  totalStudents: number = 0;
+  unassignedStudents: number = 0;
 
-  // Bar Chart Data (Most Active Users)
-  activeUsers = [
-    { name: 'Jame', activity: 96 },
-    { name: 'William', activity: 93 },
-    { name: 'Jordan', activity: 90 },
-    { name: 'Amma', activity: 87 },
-    { name: 'John', activity: 86 },
-  ];
-
-  // Pie Chart Data (Most Used Browsers)
-  pieChartLabels: string[] = ['Safari', 'Firefox', 'Chrome', 'Others'];
-  pieChartData: number[] = [20, 25, 40, 15];
+  activeUsers: { name: string; activity: number }[] = [];
+  pieChartLabels: string[] = [];
+  pieChartData: number[] = [];
   pieChartColors: string[] = ['#42A5F5', '#FF7043', '#FFCA28', '#B0BEC5'];
 
-  // Table Data
-  tutors: Tutor[] = [
-    {
-      tutorId: 'TU001',
-      name: 'John',
-      email: 'john1@email.com',
-      assignments: '7/20',
-    },
-    {
-      tutorId: 'TU031',
-      name: 'Wood',
-      email: 'wood2@email.com',
-      assignments: '13/20',
-    },
-    {
-      tutorId: 'TU008',
-      name: 'Ray',
-      email: 'ray2@email.com',
-      assignments: '18/20',
-    },
-    {
-      tutorId: 'TU022',
-      name: 'Jame',
-      email: 'jame3@email.com',
-      assignments: '10/20',
-    },
-    {
-      tutorId: 'TU015',
-      name: 'William',
-      email: 'william3@email.com',
-      assignments: '3/20',
-    },
-    {
-      tutorId: 'TU005',
-      name: 'Jordan',
-      email: 'jordan1@email.com',
-      assignments: '5/20',
-    },
-    {
-      tutorId: 'TU003',
-      name: 'Amma',
-      email: 'amma1@email.com',
-      assignments: '11/20',
-    },
-  ];
+  tutors: Tutor[] = [];
+  students: { name: string; email: string }[] = [];
 
-  // Dashboard Data
   dashboardData = { tutors: this.tutors };
   loading = false;
-
   selectedDashboard: string = 'own';
 
-  tutorList = [
-    { name: 'John', email: 'john#@email.com' },
-    { name: 'Jack', email: 'jack3@email.com' },
-    { name: 'William', email: 'william3@email.com' },
-    { name: 'Wood', email: 'wood1@email.com' },
-    { name: 'Amma', email: 'amma@email.com' },
-  ];
+  constructor(
+    private dialog: MatDialog,
+    private router: Router,
+    private http: HttpClient
+  ) {}
 
-  studentList = [
-    { name: 'Jane', email: 'jane1@email.com' },
-    { name: 'Bob', email: 'bob2@email.com' },
-    { name: 'Terry', email: 'terry2@email.com' },
-    { name: 'Alex', email: 'alex2@email.com' },
-    { name: 'Jordan', email: 'jordan3@email.com' },
-  ];
-
-  constructor(private dialog: MatDialog, private router: Router) {}
+  ngOnInit() {
+    this.fetchDashboardData();
+    this.fetchTutors();
+    this.fetchStudents();
+  }
 
   ngAfterViewInit(): void {
-    this.initializeChartWithRetry();
+    // Chart will be created after data is fetched
   }
 
   ngOnDestroy(): void {
-    if (this.chartInstance) {
-      this.chartInstance.destroy();
-      this.chartInstance = null;
-    }
+    this.destroyChart();
   }
 
-  initializeChartWithRetry(retryCount = 0, maxRetries = 5): void {
-    if (!this.pieChartCanvas) {
-      if (retryCount < maxRetries) {
-        setTimeout(() => {
-          this.initializeChartWithRetry(retryCount + 1, maxRetries);
-        }, 100);
-      } else {
-        console.error('Failed to initialize chart: Canvas not available');
-      }
+  fetchDashboardData() {
+    this.loading = true;
+    this.http.get('http://127.0.0.1:8000/api/admin/dashboard').subscribe({
+      next: (response: any) => {
+        const data = response.data || {};
+        this.totalTutors = data.total_tutors || 0;
+        this.totalStudents = data.total_students || 0;
+        this.unassignedStudents = data.total_unassigned_students || 0;
+
+        this.activeUsers = (data.active_users || [])
+          .slice(0, 5)
+          .map((user: any) => ({
+            name: user.name || 'Unknown',
+            activity: Math.min(100, Math.max(0, user.count || 0)),
+          }));
+
+        this.pieChartLabels = (data.browsers || []).map(
+          (b: any) => b.browser || 'Unknown'
+        );
+        this.pieChartData = (data.browsers || []).map((b: any) => b.count || 0);
+
+        this.tutors = (data.avaliable_teacher || []).map((tutor: any) => ({
+          tutorId: tutor.id || '',
+          name: tutor.name || 'Unknown',
+          email: tutor.email || '',
+          assignments: tutor.allocations_count || 0,
+        }));
+
+        this.dashboardData.tutors = this.tutors;
+        this.loading = false;
+
+        if (this.pieChartCanvas) {
+          this.createPieChart();
+        } else {
+          console.warn('Canvas not available yet, retrying...');
+          setTimeout(() => this.createPieChart(), 100);
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching dashboard data:', error);
+        this.loading = false;
+        this.chartError = 'Failed to load dashboard data';
+      },
+    });
+  }
+
+  fetchTutors() {
+    this.http.get('http://127.0.0.1:8000/api/tutors').subscribe({
+      next: (response: any) => {
+        this.tutors = (response.tutors || []).map((tutor: any) => ({
+          tutorId: tutor.id || '',
+          name: tutor.name || 'Unknown',
+          email: tutor.email || '',
+          assignments: 0,
+        }));
+        this.dashboardData.tutors = this.tutors;
+      },
+      error: (error) => console.error('Error fetching tutors:', error),
+    });
+  }
+
+  fetchStudents() {
+    this.http.get('http://127.0.0.1:8000/api/students').subscribe({
+      next: (response: any) => {
+        this.students = (response.data || []).map((student: any) => ({
+          name: student.name || 'Unknown',
+          email: student.email || '',
+        }));
+      },
+      error: (error) => console.error('Error fetching students:', error),
+    });
+  }
+
+  private createPieChart(): void {
+    if (!this.pieChartCanvas || !this.pieChartCanvas.nativeElement) {
+      this.chartError = 'Chart container not found';
+      console.error('Canvas element not available');
       return;
     }
 
-    if (this.chartInstance) {
-      this.chartInstance.destroy();
-      this.chartInstance = null;
+    const ctx = this.pieChartCanvas.nativeElement.getContext('2d');
+    if (!ctx) {
+      this.chartError = 'Unable to initialize chart context';
+      console.error('Failed to get 2D context for canvas');
+      return;
     }
 
-    this.createPieChart();
-  }
+    if (!this.pieChartLabels.length || !this.pieChartData.length) {
+      this.chartError = 'No browser data available';
+      console.warn('No data available for pie chart');
+      return;
+    }
 
-  createPieChart(): void {
+    this.destroyChart();
+
     try {
-      const ctx = this.pieChartCanvas.nativeElement.getContext('2d');
-      if (!ctx) {
-        throw new Error('Failed to get 2D context for canvas');
-      }
-
       this.chartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -195,17 +204,35 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
               labels: {
                 boxWidth: 15,
                 padding: 15,
-                font: {
-                  size: 14,
-                },
+                font: { size: 14 },
               },
             },
           },
           cutout: '60%',
         },
       });
+      this.chartError = null;
     } catch (error) {
+      this.chartError = 'Error creating chart';
       console.error('Error creating pie chart:', error);
+    }
+  }
+
+  private updateChart(): void {
+    if (this.chartInstance) {
+      this.chartInstance.data.labels = this.pieChartLabels;
+      this.chartInstance.data.datasets[0].data = this.pieChartData;
+      this.chartInstance.update();
+      this.chartError = null;
+    } else {
+      this.createPieChart();
+    }
+  }
+
+  private destroyChart(): void {
+    if (this.chartInstance) {
+      this.chartInstance.destroy();
+      this.chartInstance = null;
     }
   }
 
@@ -214,13 +241,13 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
       this.openModal(
         'SWITCH TUTOR DASHBOARD',
         'Search Tutor by NAME or Email',
-        this.tutorList
+        this.tutors
       );
     } else if (this.selectedDashboard === 'student') {
       this.openModal(
         'SWITCH STUDENT DASHBOARD',
         'Search Student by NAME or Email',
-        this.studentList
+        this.students
       );
     }
   }

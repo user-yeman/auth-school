@@ -1,3 +1,4 @@
+<!-- admin-dashboard.component.html -->
 <div class="dashboard-container">
   <!-- Dropdown Menu -->
   <mat-form-field appearance="fill" class="full-width custom-select">
@@ -16,18 +17,28 @@
   <div *ngIf="selectedDashboard === 'own'" class="dashboard-section">
     <!-- Top Cards -->
     <div class="cards-container">
-      <mat-card class="card">
-        <mat-card-title>Total Tutors</mat-card-title>
-        <mat-card-content>{{ totalTutors }}</mat-card-content>
-      </mat-card>
-      <mat-card class="card">
-        <mat-card-title>Total Students</mat-card-title>
-        <mat-card-content>{{ totalStudents }}</mat-card-content>
-      </mat-card>
-      <mat-card class="card">
-        <mat-card-title>Unassigned Students</mat-card-title>
-        <mat-card-content>{{ unassignedStudents }}</mat-card-content>
-      </mat-card>
+      <ng-container *ngIf="loading; else cardsContent">
+        <mat-card class="card skeleton-card" *ngFor="let _ of [1, 2, 3]">
+          <mat-card-title class="skeleton-text"></mat-card-title>
+          <mat-card-content
+            class="skeleton-text skeleton-number"
+          ></mat-card-content>
+        </mat-card>
+      </ng-container>
+      <ng-template #cardsContent>
+        <mat-card class="card">
+          <mat-card-title>Total Tutors</mat-card-title>
+          <mat-card-content>{{ totalTutors }}</mat-card-content>
+        </mat-card>
+        <mat-card class="card">
+          <mat-card-title>Total Students</mat-card-title>
+          <mat-card-content>{{ totalStudents }}</mat-card-content>
+        </mat-card>
+        <mat-card class="card">
+          <mat-card-title>Unassigned Students</mat-card-title>
+          <mat-card-content>{{ unassignedStudents }}</mat-card-content>
+        </mat-card>
+      </ng-template>
     </div>
 
     <!-- Charts Section -->
@@ -36,18 +47,32 @@
       <mat-card class="chart-card">
         <mat-card-title>Most Active Users</mat-card-title>
         <mat-card-content>
-          <div class="bar-chart">
-            <div
-              *ngFor="let user of activeUsers; let i = index"
-              class="bar-item"
-            >
-              <span>{{ i + 1 }}. {{ user.name }}</span>
-              <div class="bar">
-                <div class="fill" [style.width]="user.activity + '%'"></div>
+          <ng-container *ngIf="loading; else activeUsersContent">
+            <div class="bar-chart">
+              <div
+                class="bar-item skeleton-bar-item"
+                *ngFor="let _ of [1, 2, 3, 4, 5]"
+              >
+                <span class="skeleton-text skeleton-name"></span>
+                <div class="bar skeleton-bar"></div>
+                <span class="skeleton-text skeleton-percentage"></span>
               </div>
-              <span>{{ user.activity }}%</span>
             </div>
-          </div>
+          </ng-container>
+          <ng-template #activeUsersContent>
+            <div class="bar-chart">
+              <div
+                *ngFor="let user of activeUsers; let i = index"
+                class="bar-item"
+              >
+                <span>{{ i + 1 }}. {{ user.name }}</span>
+                <div class="bar">
+                  <div class="fill" [style.width]="user.activity + '%'"></div>
+                </div>
+                <span>{{ user.activity }}%</span>
+              </div>
+            </div>
+          </ng-template>
         </mat-card-content>
       </mat-card>
 
@@ -56,15 +81,20 @@
         <mat-card-title>Number of Most Used Browsers</mat-card-title>
         <mat-card-content>
           <div class="chart-container">
-            <canvas
-              #pieChartCanvas
-              id="pieChartCanvas"
-              width="400"
-              height="250"
-            ></canvas>
-            <div *ngIf="!pieChartCanvas" class="chart-error">
-              Unable to load chart. Please try refreshing the page.
-            </div>
+            <ng-container *ngIf="loading; else pieChartContent">
+              <div class="skeleton-chart"></div>
+            </ng-container>
+            <ng-template #pieChartContent>
+              <canvas
+                #pieChartCanvas
+                id="pieChartCanvas"
+                width="400"
+                height="250"
+              ></canvas>
+              <div *ngIf="chartError" class="chart-error">
+                Unable to load chart: {{ chartError }}
+              </div>
+            </ng-template>
           </div>
         </mat-card-content>
       </mat-card>
@@ -72,9 +102,40 @@
 
     <!-- Tutor Table -->
     <div class="mt-5">
-      <app-tutor-list-table
-        [tutors]="dashboardData.tutors"
-      ></app-tutor-list-table>
+      <ng-container *ngIf="loading; else tableContent">
+        <div class="card table-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0 skeleton-text skeleton-title"></h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col" class="skeleton-text"></th>
+                    <th scope="col" class="skeleton-text"></th>
+                    <th scope="col" class="skeleton-text"></th>
+                    <th scope="col" class="skeleton-text"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let _ of [1, 2, 3, 4, 5]">
+                    <td class="skeleton-text"></td>
+                    <td class="skeleton-text"></td>
+                    <td class="skeleton-text"></td>
+                    <td class="skeleton-text"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #tableContent>
+        <app-tutor-list-table
+          [tutors]="dashboardData.tutors"
+        ></app-tutor-list-table>
+      </ng-template>
     </div>
   </div>
 </div>

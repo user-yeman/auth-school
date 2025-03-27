@@ -103,25 +103,34 @@ export class MeetingScheduleComponent implements OnInit {
 
     switch (this.selectedFilter.toLowerCase()) {
       case 'upcoming':
+        // Filter meetings with status "upcomming" and date greater than now
         meetings = (this.data?.meetings.upcoming || []).filter(
-          (meeting: { date: string }) => {
+          (meeting: { date: string; status: string }) => {
             const meetingDate = new Date(meeting.date);
-            return meetingDate > now;
+            return meeting.status === 'upcomming' && meetingDate > now;
           }
         );
         break;
+
       case 'pastdue':
-        meetings = (this.data?.meetings.pastdue || []).filter(
-          (meeting: { date: string }) => {
+        // Filter meetings with status "pastdue" or "completed" and date less than or equal to now
+        meetings = [...(this.data?.meetings.pastdue || [])].filter(
+          (meeting: { date: string; status: string }) => {
             const meetingDate = new Date(meeting.date);
-            return meetingDate <= now;
+            return (
+              (meeting.status === 'pastdue' ||
+                meeting.status === 'completed') &&
+              meetingDate <= now
+            );
           }
         );
         break;
+
       default:
         meetings = [];
     }
 
+    // Apply search term filtering if a search term is provided
     if (this.searchTerm) {
       meetings = meetings.filter(
         (meeting: any) =>
@@ -133,12 +142,14 @@ export class MeetingScheduleComponent implements OnInit {
       );
     }
 
+    // Sort upcoming meetings by date in ascending order
     if (this.selectedFilter.toLowerCase() === 'upcoming') {
       meetings.sort(
         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
       );
     }
 
+    // Update the filtered results
     this.filteredMeetings = meetings;
     this.filteredDocuments = [];
     this.filteredBlogs = [];
@@ -149,11 +160,17 @@ export class MeetingScheduleComponent implements OnInit {
     switch (option.toLowerCase()) {
       case 'upcoming':
         return (this.data?.meetings.upcoming || []).filter(
-          (m: { date: string }) => new Date(m.date) > now
+          (m: { date: string; status: string }) =>
+            m.status === 'upcomming' && new Date(m.date) > now
         ).length;
       case 'pastdue':
-        return (this.data?.meetings.pastdue || []).filter(
-          (m: { date: string }) => new Date(m.date) <= now
+        return [
+          ...(this.data?.meetings.pastdue || []),
+          ...(this.data?.meetings.completed || []),
+        ].filter(
+          (m: { date: string; status: string }) =>
+            (m.status === 'pastdue' || m.status === 'completed') &&
+            new Date(m.date) <= now
         ).length;
       default:
         return 0;
@@ -169,7 +186,7 @@ export class MeetingScheduleComponent implements OnInit {
     return new Date(meeting.date) > new Date();
   }
 
-  finishMeeting(meetingId: string): void {
+  finishMeeting(meetingId: number): void {
     const dialogRef = this.dialog.open(NoteComponent, {
       width: '400px',
       data: {
@@ -182,7 +199,7 @@ export class MeetingScheduleComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result !== undefined) {
         const { notes, uploadedDocument } = result; // Assuming the dialog returns notes and an optional file
-        const arrangeId = parseInt(meetingId, 10); // Convert meeting ID to integer
+        const arrangeId = meetingId; // Convert meeting ID to integer
 
         // Record the meeting note
         this.recordMeetingNote(arrangeId, notes, uploadedDocument);
@@ -198,7 +215,7 @@ export class MeetingScheduleComponent implements OnInit {
   ): void {
     // Create FormData to handle file upload and other form data
     const formData = new FormData();
-    formData.append('arrange_id', arrangeId.toString());
+    formData.append('meeting_detail_id', arrangeId.toString());
     formData.append('meeting_note', meetingNote);
     if (uploadedDocument) {
       formData.append('uploaded_document', uploadedDocument);
