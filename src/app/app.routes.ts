@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
-import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { TutorDashboardComponent } from './pages/tutor/tutor-dashboard/tutor-dashboard.component';
 import { StudentDashboardComponent } from './pages/student/student-dashboard/student-dashboard.component';
 import { AuthGuard } from './services/auth.guard';
@@ -11,6 +10,8 @@ import { AllocationlistComponent } from './pages/admin/allocationlist/allocation
 import { ReallocationFormComponent } from './pages/admin/allocationlist/reallocation/reallocationform/reallocationform.component';
 import { StudentManagementComponent } from './pages/tutor/studentManagement/student-management/student-management.component';
 import { MeetingScheduleComponent } from './pages/tutor/meetingSchedules/meeting-schedule/meeting-schedule.component';
+import { RescheduleComponent } from './pages/tutor/rescheduleMeeting/reschedule/reschedule.component';
+import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -65,6 +66,7 @@ export const routes: Routes = [
             component: StudentManagementComponent,
           },
           { path: 'meetings/:id', component: MeetingScheduleComponent },
+          { path: 'request', component: RescheduleComponent },
           // more routes
         ],
       },

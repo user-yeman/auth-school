@@ -3,7 +3,7 @@
     <h2 class="modal-title">Confirm Cancellation</h2>
   </div>
   <div class="modal-body">
-    <p>Are you sure you want to cancel this Meeting?</p>
+    <p>{{ data?.message }}</p>
   </div>
   <div class="modal-footer">
     <button mat-raised-button class="cancel-btn" (click)="onCancel()">

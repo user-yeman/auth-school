@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<div class="top-bar">
+  <div class="search_container col-12">
+    <div class="search-bar mb-3">
+      <input
+        type="text"
+        placeholder="Search... "
+        [(ngModel)]="searchQuery"
+        (input)="filterList()"
+        class="form-control"
+      />
+    </div>
+  </div>
+</div>
+<mat-dialog-content>
+  <mat-list>
+    <mat-list-item *ngFor="let item of filteredList" (click)="selectItem(item)">
+      <span matListItemTitle>{{ item.name }}</span>
+      <span matListItemLine>{{ item.email }}</span>
+    </mat-list-item>
+  </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button mat-raised-button color="primary" (click)="closeModal()">
+    Close
+  </button>
+</mat-dialog-actions>

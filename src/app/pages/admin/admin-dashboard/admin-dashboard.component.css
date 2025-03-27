@@ -1,0 +1,111 @@
+.dashboard-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.full-width {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 20px;
+}
+
+.cards-container {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.card {
+  flex: 1;
+  text-align: center;
+  padding: 20px;
+}
+
+.charts-container {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.chart-card {
+  flex: 1;
+  padding: 20px;
+}
+
+.bar-chart .bar-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.bar-chart .bar-item span:first-child {
+  width: 150px;
+}
+
+.bar-chart .bar {
+  flex: 1;
+  height: 20px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bar-chart .fill {
+  height: 100%;
+  background-color: #3f51b5;
+  transition: width 0.3s ease-in-out;
+}
+
+.bar-chart .bar-item span:last-child {
+  width: 50px;
+  text-align: right;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 250px;
+}
+
+.mt-5 {
+  margin-top: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cards-container {
+    flex-direction: column;
+  }
+
+  .charts-container {
+    flex-direction: column;
+  }
+
+  .chart-card {
+    width: 100%;
+  }
+
+  .full-width {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 10px;
+  }
+
+  .card,
+  .chart-card {
+    padding: 10px;
+  }
+
+  .bar-chart .bar-item span:first-child {
+    width: 100px;
+  }
+
+  .chart-container {
+    height: 200px;
+  }
+}

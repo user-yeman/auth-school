@@ -121,7 +121,12 @@ h1 {
   font-size: 18px;
   font-weight: 600;
 }
-
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 20px;
+}
 /* Action buttons container */
 .action-buttons {
   gap: 8px;

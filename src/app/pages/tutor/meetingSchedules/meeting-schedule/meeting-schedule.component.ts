@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { NgModule } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,8 +15,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NoteComponent } from '../../../common/dialog/note/note/note.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { of } from 'rxjs'; // For mocking API response
-import { delay } from 'rxjs/operators'; // For simulating API delay
+import { of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import {
   MeetingComponent,
   ScheduleDialogData,
@@ -52,7 +51,7 @@ export class MeetingScheduleComponent implements OnInit {
   selectedFilter: string = 'Upcoming';
   searchTerm: string = '';
   errorMessage: string = '';
-  userId!: number; // Non-null assertion operator used to indicate it will be assigned later
+  userId!: number;
 
   constructor(
     private router: Router,
@@ -71,25 +70,29 @@ export class MeetingScheduleComponent implements OnInit {
 
   ngOnInit(): void {
     const userIdParam = this.route.snapshot.paramMap.get('id');
-    this.userId = userIdParam ? +userIdParam : 0; // Get userId from route or default to 0
+    this.userId = userIdParam ? +userIdParam : 0;
     if (this.userId) {
       this.loadMeetings();
     } else {
       this.errorMessage = 'No user ID provided';
     }
   }
+
   loadMeetings(): void {
-    this.isLoading = false;
+    this.isLoading = true;
     this.meetingService.getData(this.userId).subscribe({
       next: (response) => {
         this.data = response.data;
         this.applyFilters();
+        this.isLoading = false;
       },
       error: (error) => {
         this.errorMessage = 'Failed to load meetings: ' + error.message;
+        this.isLoading = false;
       },
     });
   }
+
   onSearchChange(): void {
     this.applyFilters();
   }
@@ -100,7 +103,7 @@ export class MeetingScheduleComponent implements OnInit {
 
     switch (this.selectedFilter.toLowerCase()) {
       case 'upcoming':
-        meetings = (this.data.meetings.upcoming || []).filter(
+        meetings = (this.data?.meetings.upcoming || []).filter(
           (meeting: { date: string }) => {
             const meetingDate = new Date(meeting.date);
             return meetingDate > now;
@@ -108,7 +111,7 @@ export class MeetingScheduleComponent implements OnInit {
         );
         break;
       case 'pastdue':
-        meetings = (this.data.meetings.pastdue || []).filter(
+        meetings = (this.data?.meetings.pastdue || []).filter(
           (meeting: { date: string }) => {
             const meetingDate = new Date(meeting.date);
             return meetingDate <= now;
@@ -123,7 +126,7 @@ export class MeetingScheduleComponent implements OnInit {
       meetings = meetings.filter(
         (meeting: any) =>
           meeting.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-          (this.data.email &&
+          (this.data?.email &&
             this.data.email
               .toLowerCase()
               .includes(this.searchTerm.toLowerCase()))
@@ -156,6 +159,7 @@ export class MeetingScheduleComponent implements OnInit {
         return 0;
     }
   }
+
   onFilterChange(value: string): void {
     this.selectedFilter = value;
     this.applyFilters();
@@ -177,48 +181,88 @@ export class MeetingScheduleComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result !== undefined) {
-        // undefined means dialog was cancelled
-        console.log(`Finish meeting with ID: ${meetingId}, Notes: ${result}`);
+        const { notes, uploadedDocument } = result; // Assuming the dialog returns notes and an optional file
+        const arrangeId = parseInt(meetingId, 10); // Convert meeting ID to integer
 
-        // Mock API response for development testing
-        of({ success: true, message: 'Meeting finished successfully' }) // Simulate successful response
-          .pipe(delay(1000)) // Simulate network delay of 1 second
-          .subscribe({
-            next: (response) => {
-              this.toastService.success(response.message, 'Success');
-              this.applyFilters(); // Refresh the meeting list
-            },
-            error: (error) => {
-              this.toastService.error('Failed to finish meeting', 'Error');
-              console.error('Mock API error:', error);
-            },
-          });
+        // Record the meeting note
+        this.recordMeetingNote(arrangeId, notes, uploadedDocument);
       } else {
         this.toastService.info('Meeting finish cancelled', 'Info');
       }
     });
   }
+  recordMeetingNote(
+    arrangeId: number,
+    meetingNote: string,
+    uploadedDocument: File
+  ): void {
+    // Create FormData to handle file upload and other form data
+    const formData = new FormData();
+    formData.append('arrange_id', arrangeId.toString());
+    formData.append('meeting_note', meetingNote);
+    if (uploadedDocument) {
+      formData.append('uploaded_document', uploadedDocument);
+    }
 
+    // Call the API to record the meeting note
+    this.meetingService.recordNote(formData).subscribe({
+      next: (response) => {
+        console.log('Meeting note recorded successfully:', response);
+        this.toastService.success('Meeting note recorded successfully!');
+      },
+      error: (error) => {
+        console.error('Error recording meeting note:', error);
+        this.toastService.error(
+          'Failed to record meeting note: ' +
+            (error.error?.message || error.message),
+          'Error'
+        );
+      },
+    });
+  }
   openAddDialog(): void {
     const dialogRef = this.dialog.open(MeetingComponent, {
       width: '500px',
-      data: { mode: 'add' } as ScheduleDialogData,
+      data: { mode: 'add', studentId: this.userId } as ScheduleDialogData,
       panelClass: 'custom-meeting-dialog',
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Call the API to schedule the meeting
+        console.log('Data being sent to backend:', result);
+        this.isLoading = true;
         this.meetingService.scheduleMeeting(result).subscribe({
           next: (response) => {
             console.log('Meeting scheduled successfully:', response);
             this.toastService.success('Meeting scheduled successfully!');
+            const newMeeting = {
+              id: response?.id || Date.now(),
+              title: result.topic,
+              date: result.arrange_date,
+              time: result.arrange_date,
+              meeting_type: result.meeting_type,
+              description: result.description,
+              meeting_link: result.meeting_link,
+              location: result.location,
+              status: 'Upcomming',
+              filter_status: result.filter_status,
+            };
+            if (!this.data)
+              this.data = { meetings: { upcoming: [], pastdue: [] } };
+            this.data.meetings.upcoming.push(newMeeting);
+            this.applyFilters();
+            this.isLoading = false;
+            this.loadMeetings();
           },
           error: (error) => {
             console.error('Error scheduling meeting:', error);
             this.toastService.error(
-              'Failed to schedule meeting. Please try again.'
+              'Failed to schedule meeting: ' +
+                (error.error?.message || error.message),
+              'Error'
             );
+            this.isLoading = false;
+            this.loadMeetings();
           },
         });
       }
@@ -226,28 +270,67 @@ export class MeetingScheduleComponent implements OnInit {
   }
 
   rescheduleMeeting(meetingId: string): void {
-    const existingMeeting = {
-      meetingName: 'Team Sync',
-      date: new Date(),
-      time: '10:00 AM',
-      student: 'student@example.com',
-      meetingType: 'Physical',
-      location: 'Room 101',
-      meetingApp: '',
-      meetingLink: '',
-      description: 'Weekly team sync meeting',
-    };
+    // Find the meeting to reschedule
+    const meetingToUpdate = this.filteredMeetings.find(
+      (m) => m.id === parseInt(meetingId)
+    );
+    if (!meetingToUpdate) {
+      console.error('Meeting not found for ID:', meetingId);
+      return;
+    }
 
     const dialogRef = this.dialog.open(MeetingComponent, {
-      width: '1000px',
-      height: '98%',
-      data: { mode: 'update', meeting: existingMeeting } as ScheduleDialogData,
+      width: '500px',
+      data: {
+        mode: 'update',
+        meeting: meetingToUpdate,
+        studentId: this.userId,
+      } as ScheduleDialogData,
+      panelClass: 'custom-meeting-dialog',
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Meeting updated:', result);
-        // Handle the updated meeting data (e.g., update backend)
+        console.log('Data being sent to backend for reschedule:', result);
+        this.isLoading = true;
+        this.meetingService.rescheduleMeeting(result.id, result).subscribe({
+          next: (response) => {
+            console.log('Meeting rescheduled successfully:', response);
+            this.toastService.success('Meeting rescheduled successfully!');
+
+            // Update the meeting in the local data
+            const index = this.data.meetings.upcoming.findIndex(
+              (m: { id: number }) => m.id === result.id
+            );
+            if (index !== -1) {
+              this.data.meetings.upcoming[index] = {
+                ...this.data.meetings.upcoming[index],
+                title: result.topic,
+                date: result.arrange_date,
+                time: result.arrange_date,
+                meeting_type: result.meeting_type,
+                description: result.description,
+                meeting_link: result.meeting_link,
+                location: result.location,
+                status: result.status,
+                filter_status: result.filter_status,
+              };
+              this.applyFilters();
+            }
+            this.isLoading = false;
+            this.loadMeetings(); // Refresh from server
+          },
+          error: (error) => {
+            console.error('Error rescheduling meeting:', error);
+            this.toastService.error(
+              'Failed to reschedule meeting: ' +
+                (error.error?.message || error.message),
+              'Error'
+            );
+            this.isLoading = false;
+            this.loadMeetings();
+          },
+        });
       }
     });
   }
@@ -255,27 +338,50 @@ export class MeetingScheduleComponent implements OnInit {
   cancelMeeting(meetingId: string): void {
     const dialogRef = this.dialog.open(ConfirmComponent, {
       width: '1000px',
-      disableClose: true, // Prevents closing by clicking outside
+      disableClose: true,
+      data: { message: 'Are you sure you want to cancel this meeting?' },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.handleCancellation();
+        this.handleCancellation(parseInt(meetingId));
       }
     });
   }
-  handleCancellation(): void {
-    console.log('Cancel');
-    // const itemId = 'your-item-id'; // Replace with actual item ID
-    // this.cancellationService.cancelItem(itemId).subscribe({
-    //   next: () => {
-    //     this.toastService.show('Item cancelled successfully!');
-    //   },
-    //   error: (error) => {
-    //     this.toastService.error(error.message);
-    //   },
-    // });
+
+  handleCancellation(meetingId: number): void {
+    this.isLoading = true;
+    console.log('Cancelling meeting with ID:', meetingId);
+
+    // Optimistic update: Remove the meeting from the local data
+    const index = this.data.meetings.upcoming.findIndex(
+      (m: { id: number }) => m.id === meetingId
+    );
+    if (index !== -1) {
+      this.data.meetings.upcoming.splice(index, 1);
+      this.applyFilters();
+    }
+
+    this.meetingService.deleteMeeting(meetingId).subscribe({
+      next: (response) => {
+        console.log('Meeting deleted successfully:', response);
+        this.toastService.success('Meeting cancelled successfully!');
+        this.isLoading = false;
+        this.loadMeetings(); // Refresh from server
+      },
+      error: (error) => {
+        console.error('Error deleting meeting:', error);
+        this.toastService.error(
+          'Failed to cancel meeting: ' +
+            (error.error?.message || error.message),
+          'Error'
+        );
+        this.isLoading = false;
+        this.loadMeetings(); // Refresh to rollback on error
+      },
+    });
   }
+
   goBack(): void {
     this.router.navigate(['/tutor/student-management']);
   }

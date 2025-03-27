@@ -55,30 +55,6 @@
         </mat-form-field>
       </div>
 
-      <!-- Add Student -->
-      <!-- <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Enter student email or name</mat-label>
-        <input
-          matInput
-          formControlName="student"
-          placeholder="Enter student email or name"
-          required
-        />
-        <mat-error *ngIf="scheduleForm.get('student')?.hasError('required')">
-          Student email or name is required
-        </mat-error>
-      </mat-form-field> -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Select a student</mat-label>
-        <mat-select formControlName="student" required>
-          <mat-option *ngFor="let student of students" [value]="student.id">
-            {{ student.name }} ({{ student.email }})
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="scheduleForm.get('student')?.hasError('required')">
-          Student is required
-        </mat-error>
-      </mat-form-field>
       <!-- Meeting Type -->
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Meeting Type</mat-label>
@@ -98,7 +74,7 @@
       <mat-form-field
         appearance="outline"
         class="full-width"
-        *ngIf="scheduleForm.get('meetingType')?.value === 'Physical'"
+        *ngIf="scheduleForm.get('meetingType')?.value === 'Offline'"
       >
         <mat-label>Enter a location</mat-label>
         <input
@@ -115,7 +91,7 @@
       <mat-form-field
         appearance="outline"
         class="full-width"
-        *ngIf="scheduleForm.get('meetingType')?.value === 'Virtual'"
+        *ngIf="scheduleForm.get('meetingType')?.value === 'Online'"
       >
         <mat-label>Meeting App</mat-label>
         <mat-select formControlName="meetingApp">
@@ -132,7 +108,7 @@
       <mat-form-field
         appearance="outline"
         class="full-width"
-        *ngIf="scheduleForm.get('meetingType')?.value === 'Virtual'"
+        *ngIf="scheduleForm.get('meetingType')?.value === 'Online'"
       >
         <mat-label>Enter Link</mat-label>
         <input

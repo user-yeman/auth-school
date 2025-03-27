@@ -92,7 +92,7 @@ export class SidebarComponent implements OnInit {
           {
             label: 'Reschedule Requests',
             icon: 'chat',
-            route: '/tutor/reschedule',
+            route: '/tutor/request',
           },
           {
             label: 'Settings',

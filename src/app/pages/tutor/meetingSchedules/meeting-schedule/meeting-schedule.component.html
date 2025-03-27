@@ -45,7 +45,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div *ngIf="isLoading">Loading Appointments...</div>
+        <div *ngIf="isLoading" class="loading">Loading Meetings...</div>
         <div class="card-container" *ngIf="!isLoading">
           <div *ngFor="let meeting of filteredMeetings" class="meeting-card">
             <h3 class="card_title">{{ meeting.title }}</h3>
@@ -60,7 +60,6 @@
                 <strong>Meeting Type:</strong> {{ meeting.meeting_type }}
               </p>
             </div>
-
             <p><strong>Description:</strong> {{ meeting.description }}</p>
             <p *ngIf="meeting.meeting_link">
               <strong>Meeting Link:</strong>
@@ -104,10 +103,10 @@
               </div>
             </div>
           </div>
+          <p *ngIf="!isLoading && filteredMeetings.length === 0">
+            No meetings found for this filter.
+          </p>
         </div>
-        <p *ngIf="filteredMeetings.length === 0">
-          No meetings found for this filter.
-        </p>
       </mat-tab>
 
       <mat-tab label="Documents">

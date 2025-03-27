@@ -23,6 +23,7 @@ export interface Meeting {
   meeting_type: string;
   description: string;
   meeting_link: string | null;
+  meeting_app: string | null;
   location: string | null;
   status: string;
   filter_status: string;
@@ -45,7 +46,6 @@ export interface ApiResponse {
   id: string;
   message: string;
 }
-
 export interface reschedule {
   id: number;
   title: string;
@@ -54,22 +54,36 @@ export interface reschedule {
   org_date: string;
   org_time: string;
   org_meeting_type: string;
-  org_meeting_app: string;
-  org_meeting_link: string;
-  org_location: string;
+  location: string;
   new_date: string;
   new_time: string;
   new_meeting_type: string;
-  new_meeting_app: string;
-  new_meeting_link: string;
-  new_location: string;
   reason: string;
-  status: string;
-  filter_status: string;
 }
+
+export interface PaginationMeta {
+  current_page: number;
+  total_pages: number;
+  total_items: number;
+}
+
+export interface PaginationData {
+  current_page: number;
+  data: reschedule[]; // The actual meetings array
+  first_page_url: string;
+  from: number;
+  last_page: number;
+  last_page_url: string;
+  links: { url: string | null; label: string; active: boolean }[];
+  next_page_url: string | null;
+  path: string;
+  per_page: number;
+  prev_page_url: string | null;
+  to: number;
+  total: number;
+}
+
 export interface RescheduleResponse {
-  status: string;
-  data: reschedule;
-  id: string;
-  message: string;
+  data: PaginationData;
+  meta: PaginationMeta;
 }

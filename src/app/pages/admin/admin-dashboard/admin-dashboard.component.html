@@ -1,6 +1,80 @@
-<div class="dashboard_container">
-  <h2>Admin Dashboard</h2>
-  <p>Welcome to the admin dashboard</p>
-  <p>Here you can manage all the data and users of the application</p>
-  <p>Use the sidebar to navigate to different sections</p>
+<div class="dashboard-container">
+  <!-- Dropdown Menu -->
+  <mat-form-field appearance="fill" class="full-width custom-select">
+    <mat-label>Switch Dashboard</mat-label>
+    <mat-select
+      [(ngModel)]="selectedDashboard"
+      (selectionChange)="onDashboardChange()"
+    >
+      <mat-option value="own">Own Dashboard</mat-option>
+      <mat-option value="tutor">Tutor Dashboard</mat-option>
+      <mat-option value="student">Student Dashboard</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Own Dashboard -->
+  <div *ngIf="selectedDashboard === 'own'" class="dashboard-section">
+    <!-- Top Cards -->
+    <div class="cards-container">
+      <mat-card class="card">
+        <mat-card-title>Total Tutors</mat-card-title>
+        <mat-card-content>{{ totalTutors }}</mat-card-content>
+      </mat-card>
+      <mat-card class="card">
+        <mat-card-title>Total Students</mat-card-title>
+        <mat-card-content>{{ totalStudents }}</mat-card-content>
+      </mat-card>
+      <mat-card class="card">
+        <mat-card-title>Unassigned Students</mat-card-title>
+        <mat-card-content>{{ unassignedStudents }}</mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-container">
+      <!-- Most Active Users (Bar Chart) -->
+      <mat-card class="chart-card">
+        <mat-card-title>Most Active Users</mat-card-title>
+        <mat-card-content>
+          <div class="bar-chart">
+            <div
+              *ngFor="let user of activeUsers; let i = index"
+              class="bar-item"
+            >
+              <span>{{ i + 1 }}. {{ user.name }}</span>
+              <div class="bar">
+                <div class="fill" [style.width]="user.activity + '%'"></div>
+              </div>
+              <span>{{ user.activity }}%</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Most Used Browsers (Pie Chart) -->
+      <mat-card class="chart-card">
+        <mat-card-title>Number of Most Used Browsers</mat-card-title>
+        <mat-card-content>
+          <div class="chart-container">
+            <canvas
+              #pieChartCanvas
+              id="pieChartCanvas"
+              width="400"
+              height="250"
+            ></canvas>
+            <div *ngIf="!pieChartCanvas" class="chart-error">
+              Unable to load chart. Please try refreshing the page.
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Tutor Table -->
+    <div class="mt-5">
+      <app-tutor-list-table
+        [tutors]="dashboardData.tutors"
+      ></app-tutor-list-table>
+    </div>
+  </div>
 </div>
