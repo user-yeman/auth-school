@@ -1283,3 +1283,46 @@ button[mat-raised-button], button[mat-stroked-button] {
   outline: none;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
+
+/* Snackbar styles with top positioning */
+::ng-deep .success-snackbar {
+  background: #43a047; /* Green background for success */
+  color: white;
+  margin-top: 20px !important; /* Add some space from the top of the screen */
+}
+
+::ng-deep .error-snackbar {
+  background: #d32f2f; /* Red background for errors */
+  color: white;
+  margin-top: 20px !important; /* Add some space from the top of the screen */
+}
+
+::ng-deep .mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: transparent;
+  --mat-mdc-snack-bar-button-color: #fff;
+}
+
+::ng-deep .mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  padding: 10px 16px;
+  border-radius: 4px;
+}
+
+::ng-deep .mat-mdc-snack-bar-action {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Animation for top snackbar */
+::ng-deep .mat-mdc-snack-bar-container.mat-mdc-snack-bar-container-top {
+  animation: slide-down 0.3s ease-out;
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

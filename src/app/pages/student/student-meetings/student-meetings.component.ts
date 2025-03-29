@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 
 // Define interfaces for the API response
 interface Meeting {
@@ -61,7 +62,8 @@ type FilterType = 'all' | 'upcoming' | 'pastdue';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatSnackBarModule // Add this
   ],
   templateUrl: './student-meetings.component.html',
   styleUrl: './student-meetings.component.css'
@@ -202,7 +204,11 @@ export class StudentMeetingsComponent implements OnInit {
     'Library Study Room'
   ];
 
-  constructor(private http: HttpClient, private fb: FormBuilder) {
+  constructor(
+    private http: HttpClient, 
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar // Add this
+  ) {
     this.rescheduleForm = this.fb.group({
       topic: ['', Validators.required],
       originalDateTime: [''],
@@ -465,17 +471,14 @@ export class StudentMeetingsComponent implements OnInit {
           this.isLoading = false;
           
           if (response.status === 'success') {
-            // Show success message
-            alert('Meeting rescheduled successfully!');
+            // Replace alert with snackbar
+            this.showSnackBar('Meeting rescheduled successfully!');
             
-            // Close the form
             this.closeRescheduleForm();
-            
-            // Refresh the meetings list to show the updated data
             this.fetchMeetingsData();
           } else {
-            // Show error message from API
-            alert('Failed to reschedule meeting: ' + (response.message || 'Unknown error'));
+            // Replace alert with snackbar
+            this.showSnackBar('Failed to reschedule meeting: ' + (response.message || 'Unknown error'), true);
           }
         },
         error: (error) => {
@@ -484,28 +487,32 @@ export class StudentMeetingsComponent implements OnInit {
           
           if (error.error?.exception === 'ErrorException' && 
               error.error?.message?.includes('Undefined variable')) {
-            // Show a more user-friendly message for this specific error
-            alert('The meeting request could not be processed due to a system error. ' + 
-                  'Our technical team has been notified. Please try again later or ' +
-                  'contact support if the issue persists.');
+            // Replace alert with snackbar
+            this.showSnackBar('The meeting request could not be processed due to a system error. Our technical team has been notified.', true);
           } else {
-            // Normal error handling
+            // Replace alert with snackbar
             const errorMessage = error.error?.message || 'Unknown error';
-            const validationErrors = error.error?.errors ? Object.values(error.error.errors).flat().join('\n') : '';
-            alert(`Error rescheduling meeting: ${errorMessage}\n${validationErrors}`);
+            const validationErrors = error.error?.errors ? Object.values(error.error.errors).flat().join(', ') : '';
+            this.showSnackBar(`Error: ${errorMessage} ${validationErrors}`, true);
           }
         }
       });
       
-      // Mock data handling remains the same...
+      // For mock data
       if (this.useMockData) {
-        // Your existing mock code...
+        setTimeout(() => {
+          this.isLoading = false;
+          // Replace alert with snackbar
+          this.showSnackBar('Meeting rescheduled successfully! (Mock Mode)');
+          this.closeRescheduleForm();
+          // Update mock data...
+        }, 1000);
       }
     } else {
-      // Form validation failed
-      alert('Please fill in all required fields');
+      // Replace alert with snackbar
+      this.showSnackBar('Please fill in all required fields', true);
       
-      // Mark all form controls as touched to display validation errors
+      // Mark all form controls as touched...
       Object.keys(this.rescheduleForm.controls).forEach(key => {
         const control = this.rescheduleForm.get(key);
         control?.markAsTouched();
@@ -597,5 +604,15 @@ export class StudentMeetingsComponent implements OnInit {
       });
     }
     console.groupEnd();
+  }
+
+  // Add this method to your component class
+  private showSnackBar(message: string, isError: boolean = false): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: isError ? ['error-snackbar'] : ['success-snackbar'],
+      horizontalPosition: 'center', // Keep centered horizontally 
+      verticalPosition: 'top',      // Change from 'bottom' to 'top'
+    });
   }
 }
