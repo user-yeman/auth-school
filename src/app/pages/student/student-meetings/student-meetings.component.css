@@ -1,0 +1,181 @@
+.dashboard-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.welcome-header {
+  margin-bottom: 24px;
+}
+
+.welcome-header h2 {
+  font-size: 24px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
+.welcome-header p {
+  margin-top: 4px;
+  color: #666;
+}
+
+.section-header {
+  margin: 20px 0;
+}
+
+.section-header h3 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
+.meetings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.meeting-card {
+  width: 1038px;
+  height: 218px;
+  background: #F5F5F5;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.meeting-card.past-due {
+  background: #FAFAFA;
+  opacity: 0.9;
+}
+
+mat-card-content {
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.meeting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.meeting-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
+.meeting-badge {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.meeting-badge.online {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+}
+
+.meeting-badge.offline {
+  background-color: #E3F2FD;
+  color: #1565C0;
+}
+
+.meeting-details {
+  display: flex;
+  gap: 60px;
+  margin-bottom: 20px;
+}
+
+.details-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detail-item mat-icon {
+  color: #666;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.meeting-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: auto;
+}
+
+.meeting-status {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+}
+
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #F5F5F5;
+  color: #666;
+}
+
+.status-badge.rescheduled {
+  background-color: #FFF3E0;
+  color: #E65100;
+}
+
+.status-badge.completed {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+}
+
+.status-badge.upcomming {
+  background-color: #E3F2FD;
+  color: #1565C0;
+}
+
+.loading-container, .error-container, .no-meetings {
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+}
+
+/* Button styling */
+button[mat-raised-button] {
+  min-width: 130px;
+}
+
+button[mat-stroked-button] {
+  min-width: 130px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1100px) {
+  .meeting-card {
+    width: 100%;
+    height: auto;
+    min-height: 250px;
+  }
+  
+  .meeting-details {
+    flex-direction: column;
+    gap: 20px;
+  }
+}

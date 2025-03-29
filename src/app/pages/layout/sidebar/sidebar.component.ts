@@ -125,7 +125,7 @@ export class SidebarComponent implements OnInit {
           {
             label: 'Meetings',
             icon: 'event',
-            route: '/student/Meetings',
+            route: '/student/student-meetings',
           },
           {
             label: 'Settings',
