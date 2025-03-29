@@ -181,16 +181,12 @@
         <input type="date" formControlName="newDate" />
       </div>
 
-      <!-- New Time row -->
+      <!-- New Time row with time picker -->
       <div class="form-group horizontal">
         <label>Request Time</label>
-        <select formControlName="newTime">
-          <option value="09:00">9:00 AM</option>
-          <option value="10:00">10:00 AM</option>
-          <option value="11:00">11:00 AM</option>
-          <option value="14:00">2:00 PM</option>
-          <option value="15:00">3:00 PM</option>
-        </select>
+        <div class="time-picker-container">
+          <input type="time" formControlName="newTime" class="time-picker" />
+        </div>
       </div>
 
       <!-- Reason row -->

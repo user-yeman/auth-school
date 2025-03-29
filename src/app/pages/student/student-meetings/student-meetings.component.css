@@ -1262,3 +1262,24 @@ button[mat-raised-button], button[mat-stroked-button] {
   flex: 1;
   min-width: 120px;
 }
+
+/* Time picker styling */
+.time-picker-container {
+  flex: 1;
+}
+
+.time-picker {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Time picker on focus */
+.time-picker:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}

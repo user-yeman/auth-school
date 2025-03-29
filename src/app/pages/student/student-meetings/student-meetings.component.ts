@@ -6,6 +6,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 // Define interfaces for the API response
 interface Meeting {
@@ -19,6 +23,7 @@ interface Meeting {
   location: string | null;
   status: 'rescheduled' | 'upcomming' | 'completed';
   filter_status: 'pastdue' | 'upcoming';
+  tutor_id?: number; // Add this optional property
 }
 
 interface StudentData {
@@ -52,7 +57,11 @@ type FilterType = 'all' | 'upcoming' | 'pastdue';
     MatButtonModule,
     HttpClientModule,
     MatProgressSpinnerModule,
-    ReactiveFormsModule  // Add this
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   templateUrl: './student-meetings.component.html',
   styleUrl: './student-meetings.component.css'
@@ -87,7 +96,8 @@ export class StudentMeetingsComponent implements OnInit {
             "meeting_link": null,
             "location": "Zoom",
             "status": "rescheduled",
-            "filter_status": "pastdue"
+            "filter_status": "pastdue",
+            "tutor_id": 101
           },
           {
             "id": 3,
@@ -99,7 +109,8 @@ export class StudentMeetingsComponent implements OnInit {
             "meeting_link": null,
             "location": "Zoom",
             "status": "upcomming",
-            "filter_status": "pastdue"
+            "filter_status": "pastdue",
+            "tutor_id": 101
           },
           {
             "id": 5,
@@ -111,7 +122,8 @@ export class StudentMeetingsComponent implements OnInit {
             "meeting_link": null,
             "location": "Zoom",
             "status": "upcomming",
-            "filter_status": "pastdue"
+            "filter_status": "pastdue",
+            "tutor_id": 101
           },
           {
             "id": 4,
@@ -123,7 +135,8 @@ export class StudentMeetingsComponent implements OnInit {
             "meeting_link": null,
             "location": "Zoom",
             "status": "upcomming",
-            "filter_status": "pastdue"
+            "filter_status": "pastdue",
+            "tutor_id": 101
           },
           {
             "id": 2,
@@ -135,7 +148,8 @@ export class StudentMeetingsComponent implements OnInit {
             "meeting_link": null,
             "location": "Zoom",
             "status": "upcomming",
-            "filter_status": "pastdue"
+            "filter_status": "pastdue",
+            "tutor_id": 101
           }
         ],
         "upcoming": [
@@ -149,7 +163,8 @@ export class StudentMeetingsComponent implements OnInit {
             "meeting_link": "https://zoom.us/j/123456789",
             "location": null,
             "status": "upcomming",
-            "filter_status": "upcoming"
+            "filter_status": "upcoming",
+            "tutor_id": 102
           },
           {
             "id": 7,
@@ -161,7 +176,8 @@ export class StudentMeetingsComponent implements OnInit {
             "meeting_link": null,
             "location": "Room 305, Building B",
             "status": "upcomming",
-            "filter_status": "upcoming"
+            "filter_status": "upcoming",
+            "tutor_id": 102
           }
         ]
       }
@@ -188,13 +204,12 @@ export class StudentMeetingsComponent implements OnInit {
 
   constructor(private http: HttpClient, private fb: FormBuilder) {
     this.rescheduleForm = this.fb.group({
-      topic: [''],
+      topic: ['', Validators.required],
       originalDateTime: [''],
-      meetingType: ['', Validators.required],
-      onlinePlatform: ['Zoom'],
+      meetingType: ['Online', Validators.required],
       location: ['', Validators.required],
       newDate: ['', Validators.required],
-      newTime: ['10:00', Validators.required],
+      newTime: ['10:00', Validators.required], // Format: HH:MM (24-hour format)
       reason: ['', Validators.required]
     });
   }
@@ -339,11 +354,12 @@ export class StudentMeetingsComponent implements OnInit {
     const originalDate = this.formatDate(meeting.date);
     const originalTime = this.formatTime(meeting.time);
     
-    // Determine meeting type
-    const meetingType = meeting.meeting_type === 'online' ? 'Online' : 'Campus';
+    // Map API meeting type to UI labels
+    // API uses 'online'/'offline' but UI shows 'Online'/'Campus'
+    const uiMeetingType = meeting.meeting_type === 'online' ? 'Online' : 'Campus';
     
     // Set location options based on meeting type
-    if (meetingType === 'Online') {
+    if (uiMeetingType === 'Online') {
       this.availableLocations = ['Zoom', 'Teams', 'Google Meeting'];
     } else {
       this.availableLocations = [...this.onCampusLocations];
@@ -351,7 +367,7 @@ export class StudentMeetingsComponent implements OnInit {
     
     // Determine the current location/platform
     let currentLocation = '';
-    if (meetingType === 'Online') {
+    if (uiMeetingType === 'Online') {
       if (meeting.meeting_link?.includes('teams')) {
         currentLocation = 'Teams';
       } else if (meeting.meeting_link?.includes('google') || meeting.meeting_link?.includes('meet.google')) {
@@ -363,15 +379,20 @@ export class StudentMeetingsComponent implements OnInit {
       currentLocation = meeting.location || this.availableLocations[0];
     }
     
+    // Format the time for the time input
+    const timeDate = new Date(meeting.time);
+    const hours = timeDate.getHours().toString().padStart(2, '0');
+    const minutes = timeDate.getMinutes().toString().padStart(2, '0');
+    const formattedTime = `${hours}:${minutes}`;
+    
     // Set form values
     this.rescheduleForm.patchValue({
       topic: meeting.title || 'Meeting',
       originalDateTime: `${originalDate}, ${originalTime}`,
-      meetingType: meetingType,
-      onlinePlatform: currentLocation, // This is used in a different dropdown
-      location: currentLocation, // This sets the primary location field
+      meetingType: uiMeetingType, // Use the mapped UI value
+      location: currentLocation,
       newDate: new Date(meeting.date).toISOString().split('T')[0],
-      newTime: meeting.time ? new Date(meeting.time).getHours() + ':00' : '10:00',
+      newTime: formattedTime, // Format: HH:MM (24-hour format)
       reason: ''
     });
     
@@ -388,7 +409,7 @@ export class StudentMeetingsComponent implements OnInit {
       // For online meetings, set available locations to the online platforms
       this.availableLocations = ['Zoom', 'Teams', 'Google Meeting'];
       this.rescheduleForm.get('location')?.setValue('Zoom'); // Default to Zoom
-    } else {
+    } else if (meetingType === 'Campus') { // Be explicit about the condition
       // For campus meetings, use the campus locations
       this.availableLocations = [...this.onCampusLocations];
       this.rescheduleForm.get('location')?.setValue(this.availableLocations[0]);
@@ -408,24 +429,87 @@ export class StudentMeetingsComponent implements OnInit {
     if (this.rescheduleForm.valid && this.selectedMeeting) {
       console.log('Reschedule form submitted:', this.rescheduleForm.value);
       
-      // In a real app, you would send this to your API
+      // Get form values
+      const formValues = this.rescheduleForm.value;
+      
+      // Get the tutor_id safely
+      const tutor_id = this.selectedMeeting.tutor_id || 1;
+      
+      // Map the UI meeting type to API values
+      // UI shows 'Online'/'Campus' but API expects 'online'/'offline'
+      const apiMeetingType = formValues.meetingType === 'Online' ? 'online' : 'offline';
+      
       const requestData = {
-        meeting_id: this.selectedMeeting.id,
-        new_date: this.rescheduleForm.value.newDate,
-        new_time: this.rescheduleForm.value.newTime,
-        reason: this.rescheduleForm.value.reason
+        tutor_id: tutor_id,
+        arrange_date: formValues.newDate,
+        meeting_time: formValues.newTime,
+        meeting_type: apiMeetingType, // Use mapped value for API
+        reason: formValues.reason,
+        // Always include both fields, but set appropriate values based on meeting type
+        meeting_place: formValues.meetingType === 'Online' ? 'N/A' : formValues.location,
+        meeting_app: formValues.meetingType === 'Online' ? formValues.location : 'N/A'
       };
       
-      // For demo, just show a success message
-      setTimeout(() => {
-        alert('Meeting rescheduled successfully!');
-        this.closeRescheduleForm();
-        
-        // In a real app, you might refresh the meetings list here
-        // this.fetchMeetingsData();
-      }, 500);
+      console.log('Sending reschedule request with data:', requestData);
+      
+      // Endpoint for the reschedule API
+      const apiUrl = `http://127.0.0.1:8000/api/meetingrequest/${this.selectedMeeting.id}`;
+      
+      // Display loading state
+      this.isLoading = true;
+      
+      // Send the POST request to the API
+      this.http.post(apiUrl, requestData).subscribe({
+        next: (response: any) => {
+          console.log('Reschedule response:', response);
+          this.isLoading = false;
+          
+          if (response.status === 'success') {
+            // Show success message
+            alert('Meeting rescheduled successfully!');
+            
+            // Close the form
+            this.closeRescheduleForm();
+            
+            // Refresh the meetings list to show the updated data
+            this.fetchMeetingsData();
+          } else {
+            // Show error message from API
+            alert('Failed to reschedule meeting: ' + (response.message || 'Unknown error'));
+          }
+        },
+        error: (error) => {
+          console.error('Error rescheduling meeting:', error);
+          this.isLoading = false;
+          
+          if (error.error?.exception === 'ErrorException' && 
+              error.error?.message?.includes('Undefined variable')) {
+            // Show a more user-friendly message for this specific error
+            alert('The meeting request could not be processed due to a system error. ' + 
+                  'Our technical team has been notified. Please try again later or ' +
+                  'contact support if the issue persists.');
+          } else {
+            // Normal error handling
+            const errorMessage = error.error?.message || 'Unknown error';
+            const validationErrors = error.error?.errors ? Object.values(error.error.errors).flat().join('\n') : '';
+            alert(`Error rescheduling meeting: ${errorMessage}\n${validationErrors}`);
+          }
+        }
+      });
+      
+      // Mock data handling remains the same...
+      if (this.useMockData) {
+        // Your existing mock code...
+      }
     } else {
+      // Form validation failed
       alert('Please fill in all required fields');
+      
+      // Mark all form controls as touched to display validation errors
+      Object.keys(this.rescheduleForm.controls).forEach(key => {
+        const control = this.rescheduleForm.get(key);
+        control?.markAsTouched();
+      });
     }
   }
 
@@ -497,5 +581,21 @@ export class StudentMeetingsComponent implements OnInit {
       minute: '2-digit',
       hour12: true
     });
+  }
+
+  // Add this at the bottom of your component
+  debugResponse(error: any): void {
+    console.group('API Error Details');
+    console.log('Status:', error.status);
+    console.log('Status Text:', error.statusText);
+    console.log('Error body:', error.error);
+    
+    if (error.error && error.error.errors) {
+      console.log('Validation Errors:');
+      Object.entries(error.error.errors).forEach(([field, messages]) => {
+        console.log(`- ${field}:`, messages);
+      });
+    }
+    console.groupEnd();
   }
 }
