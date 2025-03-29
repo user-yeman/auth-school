@@ -2,26 +2,40 @@
 <div class="dashboard-container">
   <!-- User info header that works with sidebar layout -->
   <div class="user-info-header">
-    <div class="user-details">
-      <div class="user-name">{{ studentData?.name || 'Student' }}</div>
-      <div class="last-login-info">[Last Login: {{ formatLastLogin(studentData?.last_login_at || '2025-03-25T14:30:00') }}]</div>
-    </div>
-    <div class="user-icon">
-      <mat-icon>account_circle</mat-icon>
+    <!-- Left side placeholder (for layout balance) -->
+    <div class="left-icon"></div>
+    
+    <!-- Right side user info with correct positioning -->
+    <div class="user-info">
+      <div class="user-details">
+        <div class="user-name">{{ studentData?.name || 'Student' }}</div>
+        <div class="last-login-info">[Last Login: {{ formatLastLogin(studentData?.last_login_at || '2025-03-25T14:30:00') }}]</div>
+      </div>
+      <div class="user-icon-group">
+        <div class="user-icon">
+          <img src="assets/student_icon.png" alt="Student Profile" class="profile-image">
+        </div>
+        <!-- SVG icon positioned 5px from profile icon -->
+        <div class="menu-icon">
+          <mat-icon>menu</mat-icon>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Page title with filter -->
   <div class="meetings-header">
-    <h3 class="section-title">My Meetings</h3>
-    
-    <!-- Filter Dropdown -->
-    <div class="filter-wrapper">
-      <select class="meeting-filter" (change)="filterMeetings($event)">
-        <option value="all">All Meetings</option>
-        <option value="upcoming" selected>Upcoming</option>
-        <option value="pastdue">Past Due</option>
-      </select>
+    <div class="title-filter-group">
+      <h3 class="section-title">{{ (activeFilter === 'upcoming' ? 'Upcoming' : activeFilter === 'pastdue' ? 'Past Due' : 'All') }} Meetings</h3>
+      
+      <!-- Filter Dropdown with 5px spacing -->
+      <div class="filter-wrapper">
+        <select class="meeting-filter" (change)="filterMeetings($event)">
+          <option value="all">All Meetings</option>
+          <option value="upcoming" selected>Upcoming</option>
+          <option value="pastdue">Past Due</option>
+        </select>
+      </div>
     </div>
   </div>
 

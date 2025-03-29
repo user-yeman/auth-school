@@ -5,7 +5,7 @@
   position: relative;
 }
 
-/* User info header that integrates with sidebar */
+/* User info header layout */
 .user-info-header {
   display: flex;
   justify-content: space-between;
@@ -13,13 +13,76 @@
   margin-bottom: 24px;
   padding-bottom: 16px;
   border-bottom: 1px solid #eaeaea;
+  position: relative;
+}
+
+/* Left side empty space for layout balance */
+.left-icon {
+  visibility: hidden;
+  width: 24px;
+}
+
+/* Group for user icon and menu icon - repositioned to left */
+.user-icon-group {
+  display: flex;
+  align-items: center;
+  position: relative;
+  order: -1; /* Move this element to the start of the flex container */
+  margin-right: 16px; /* Add space between icons and text */
+}
+
+/* User icon styling - profile picture */
+.user-icon {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid #292D32;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 2px; /* 2px spacing to the menu icon */
+}
+
+/* Profile image inside user icon */
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Menu icon styling - positioned 30px down from top */
+.menu-icon {
+  margin-left: 5px; /* 5px spacing from profile icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: 30px; /* Positioned 30px down as requested */
+}
+
+.menu-icon mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  color: #292D32;
+}
+
+/* Right side user info with proper positioning - updated for new order */
+.user-info {
+  display: flex;
+  align-items: flex-start; /* Changed to allow vertical alignment with menu icon offset */
+  gap: 16px;
+  position: relative;
+  margin-left: auto; /* Push to right side of container */
 }
 
 /* User details container */
 .user-details {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-start; /* Align text to left since icon is now on left */
+  margin-left: 16px; /* Space after the icons */
 }
 
 /* User name styling */
@@ -43,23 +106,6 @@
   color: #6B7280;
 }
 
-/* User icon styling */
-.user-icon {
-  width: 44px;
-  height: 44px;
-  border: 1.5px solid #292D32;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.user-icon mat-icon {
-  font-size: 36px;
-  width: 36px;
-  height: 36px;
-}
-
 /* Meetings header with filter */
 .meetings-header {
   display: flex;
@@ -69,14 +115,23 @@
   position: relative;
 }
 
+/* Title and filter group container */
+.title-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Exact 5px spacing between title and filter */
+}
+
+/* Ensure the title doesn't grow too large */
 .section-title {
   font-size: 20px;
   font-weight: 500;
   color: #333;
   margin: 0;
+  white-space: nowrap;
 }
 
-/* Filter styling with exact specifications */
+/* Filter wrapper modifications */
 .filter-wrapper {
   position: relative;
   flex-shrink: 0; /* Prevent filter from shrinking */
@@ -287,11 +342,20 @@
   .user-info-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
   }
   
-  .user-icon {
-    align-self: flex-end;
+  .user-info {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 16px;
+  }
+  
+  .user-details {
+    align-items: flex-start;
+  }
+  
+  .left-icon {
+    margin-bottom: 16px;
   }
   
   .meetings-header {
@@ -311,6 +375,12 @@
   
   .meetings-container {
     grid-template-columns: 1fr;
+  }
+
+  .title-filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px; /* A bit more space on mobile */
   }
 }
 
@@ -363,6 +433,7 @@
   top: 24px;
   border: 1.5px solid #292D32;
   border-radius: 50%;
+  overflow: hidden; /* Ensure the image respects the circular border */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -372,6 +443,12 @@
   font-size: 40px;
   width: 40px;
   height: 40px;
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the image covers the container nicely */
 }
 
 .last-login-info {

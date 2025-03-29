@@ -62,7 +62,7 @@ export class StudentMeetingsComponent implements OnInit {
   filteredMeetings: Meeting[] = [];
   isLoading = true;
   errorMessage: string | null = null;
-  activeFilter: FilterType = 'upcoming'; // Default to upcoming
+  activeFilter: 'all' | 'upcoming' | 'pastdue' = 'upcoming'; // Default to upcoming
   
   private useMockData = false; // Set to false when backend is stable
   private mockApiResponse: ApiResponse = {
@@ -231,8 +231,8 @@ export class StudentMeetingsComponent implements OnInit {
   
   filterMeetings(event: Event): void {
     const select = event.target as HTMLSelectElement;
-    const filterValue = select.value as FilterType;
-    this.applyFilter(filterValue);
+    this.activeFilter = select.value as 'all' | 'upcoming' | 'pastdue';
+    this.applyFilter(this.activeFilter);
   }
   
   applyFilter(filterType: FilterType): void {
