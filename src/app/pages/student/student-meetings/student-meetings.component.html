@@ -1,28 +1,47 @@
+<!-- Main content container without fixed header (since sidebar layout handles that) -->
 <div class="dashboard-container">
-  <!-- Welcome Message -->
-  <div class="welcome-header">
-    <h2>My Meetings</h2>
-    <p *ngIf="studentData">Welcome, {{ studentData.name }}</p>
+  <!-- User info header that works with sidebar layout -->
+  <div class="user-info-header">
+    <div class="user-details">
+      <div class="user-name">{{ studentData?.name || 'Student' }}</div>
+      <div class="last-login-info">[Last Login: {{ formatLastLogin(studentData?.last_login_at || '2025-03-25T14:30:00') }}]</div>
+    </div>
+    <div class="user-icon">
+      <mat-icon>account_circle</mat-icon>
+    </div>
   </div>
 
-  <!-- Loading and Error States -->
+  <!-- Page title with filter -->
+  <div class="meetings-header">
+    <h3 class="section-title">My Meetings</h3>
+    
+    <!-- Filter Dropdown -->
+    <div class="filter-wrapper">
+      <select class="meeting-filter" (change)="filterMeetings($event)">
+        <option value="all">All Meetings</option>
+        <option value="upcoming" selected>Upcoming</option>
+        <option value="pastdue">Past Due</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
     <p>Loading meetings...</p>
   </div>
 
-  <div *ngIf="errorMessage" class="error-container">
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error-container">
+    <mat-icon>error_outline</mat-icon>
     <p>{{ errorMessage }}</p>
+    <button mat-raised-button color="primary" (click)="fetchMeetingsData()">Retry</button>
   </div>
 
-  <!-- Meetings Lists -->
+  <!-- Meetings Content -->
   <ng-container *ngIf="!isLoading && !errorMessage">
-    <!-- Upcoming Meetings Section -->
-    <div class="section-header" *ngIf="upcomingMeetings.length > 0">
-      <h3>Upcoming Meetings</h3>
-    </div>
-    
     <div class="meetings-container">
-      <mat-card class="meeting-card" *ngFor="let meeting of upcomingMeetings">
+      <mat-card class="meeting-card" *ngFor="let meeting of filteredMeetings">
         <mat-card-content>
           <div class="meeting-header">
             <h3 class="meeting-title">{{ meeting.title }}</h3>
@@ -39,12 +58,12 @@
               </div>
               <div class="detail-item">
                 <mat-icon>schedule</mat-icon>
-                <span>{{ meeting.time }}</span>
+                <span>{{ formatTime(meeting.time) }}</span>
               </div>
             </div>
             
             <div class="details-column">
-              <div class="detail-item">
+              <div class="detail-item" *ngIf="meeting.description">
                 <mat-icon>info</mat-icon>
                 <span>{{ meeting.description }}</span>
               </div>
@@ -55,14 +74,14 @@
             </div>
           </div>
           
-          <div class="meeting-actions">
+          <div class="meeting-actions" *ngIf="meeting.filter_status === 'upcoming'">
             <ng-container *ngIf="meeting.meeting_type === 'online' && meeting.meeting_link">
               <button mat-raised-button color="primary" (click)="joinMeeting(meeting)">
                 <mat-icon>link</mat-icon>
                 Join Meeting
               </button>
             </ng-container>
-            <ng-container *ngIf="meeting.meeting_type === 'offline' && meeting.location">
+            <ng-container *ngIf="meeting.location">
               <button mat-raised-button color="primary" (click)="viewLocation(meeting.location!)">
                 <mat-icon>map</mat-icon>
                 View Location
@@ -73,59 +92,20 @@
               Cancel Meeting
             </button>
           </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <!-- Post Due Meetings Section -->
-    <div class="section-header" *ngIf="postdueMeetings.length > 0">
-      <h3>Past Due Meetings</h3>
-    </div>
-    
-    <div class="meetings-container">
-      <mat-card class="meeting-card past-due" *ngFor="let meeting of postdueMeetings">
-        <mat-card-content>
-          <div class="meeting-header">
-            <h3 class="meeting-title">{{ meeting.title }}</h3>
-            <span class="meeting-badge" [ngClass]="meeting.meeting_type">
-              {{ meeting.meeting_type === 'online' ? 'Online' : 'Campus' }}
-            </span>
-          </div>
-
-          <div class="meeting-details">
-            <div class="details-column">
-              <div class="detail-item">
-                <mat-icon>calendar_today</mat-icon>
-                <span>{{ formatDate(meeting.date) }}</span>
-              </div>
-              <div class="detail-item">
-                <mat-icon>schedule</mat-icon>
-                <span>{{ meeting.time }}</span>
-              </div>
-            </div>
-            
-            <div class="details-column">
-              <div class="detail-item">
-                <mat-icon>info</mat-icon>
-                <span>{{ meeting.description }}</span>
-              </div>
-              <div class="detail-item">
-                <mat-icon>{{ getMeetingTypeIcon(meeting.meeting_type) }}</mat-icon>
-                <span>{{ getMeetingTypeText(meeting) }}</span>
-              </div>
-            </div>
-          </div>
           
-          <div class="meeting-status">
-            <span class="status-badge">{{ meeting.status }}</span>
+          <div class="meeting-status" *ngIf="meeting.filter_status === 'pastdue'">
+            <span class="status-badge" [ngClass]="getStatusClass(meeting.status)">
+              {{ meeting.status === 'upcomming' ? 'Upcoming' : meeting.status }}
+            </span>
           </div>
         </mat-card-content>
       </mat-card>
     </div>
     
     <!-- No meetings message -->
-    <div class="no-meetings" *ngIf="upcomingMeetings.length === 0 && postdueMeetings.length === 0">
-      <p>You don't have any meetings scheduled.</p>
+    <div class="no-meetings" *ngIf="filteredMeetings.length === 0">
+      <mat-icon>event_busy</mat-icon>
+      <p>You don't have any {{ activeFilter !== 'all' ? activeFilter : '' }} meetings.</p>
     </div>
   </ng-container>
 </div>
