@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 // Define interfaces for the API response
 interface Meeting {
@@ -50,7 +51,8 @@ type FilterType = 'all' | 'upcoming' | 'pastdue';
     MatIconModule,
     MatButtonModule,
     HttpClientModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    ReactiveFormsModule  // Add this
   ],
   templateUrl: './student-meetings.component.html',
   styleUrl: './student-meetings.component.css'
@@ -168,7 +170,34 @@ export class StudentMeetingsComponent implements OnInit {
     "message": "Meeting Fetched Successfully"
   };
   
-  constructor(private http: HttpClient) {}
+  showRescheduleForm = false;
+  selectedMeeting: Meeting | null = null;
+  rescheduleForm: FormGroup;
+
+  availableLocations: string[] = [];
+  onCampusLocations: string[] = [
+    'Room 101', 
+    'Room 102', 
+    'Room 103', 
+    'Room 201', 
+    'Room 202',
+    'Room 305, Building B',
+    'Conference Room A',
+    'Library Study Room'
+  ];
+
+  constructor(private http: HttpClient, private fb: FormBuilder) {
+    this.rescheduleForm = this.fb.group({
+      topic: [''],
+      originalDateTime: [''],
+      meetingType: ['', Validators.required],
+      onlinePlatform: ['Zoom'],
+      location: ['', Validators.required],
+      newDate: ['', Validators.required],
+      newTime: ['10:00', Validators.required],
+      reason: ['', Validators.required]
+    });
+  }
   
   ngOnInit(): void {
     this.fetchMeetingsData();
@@ -300,6 +329,116 @@ export class StudentMeetingsComponent implements OnInit {
         }
       });
     }
+  }
+  
+  rescheduleMeeting(meeting: Meeting): void {
+    console.log('Rescheduling meeting called with:', meeting);
+    this.selectedMeeting = meeting;
+    
+    // Prepare original date time string
+    const originalDate = this.formatDate(meeting.date);
+    const originalTime = this.formatTime(meeting.time);
+    
+    // Determine meeting type
+    const meetingType = meeting.meeting_type === 'online' ? 'Online' : 'Campus';
+    
+    // Set location options based on meeting type
+    if (meetingType === 'Online') {
+      this.availableLocations = ['Zoom', 'Teams', 'Google Meeting'];
+    } else {
+      this.availableLocations = [...this.onCampusLocations];
+    }
+    
+    // Determine the current location/platform
+    let currentLocation = '';
+    if (meetingType === 'Online') {
+      if (meeting.meeting_link?.includes('teams')) {
+        currentLocation = 'Teams';
+      } else if (meeting.meeting_link?.includes('google') || meeting.meeting_link?.includes('meet.google')) {
+        currentLocation = 'Google Meeting';
+      } else {
+        currentLocation = 'Zoom'; // Default for online
+      }
+    } else {
+      currentLocation = meeting.location || this.availableLocations[0];
+    }
+    
+    // Set form values
+    this.rescheduleForm.patchValue({
+      topic: meeting.title || 'Meeting',
+      originalDateTime: `${originalDate}, ${originalTime}`,
+      meetingType: meetingType,
+      onlinePlatform: currentLocation, // This is used in a different dropdown
+      location: currentLocation, // This sets the primary location field
+      newDate: new Date(meeting.date).toISOString().split('T')[0],
+      newTime: meeting.time ? new Date(meeting.time).getHours() + ':00' : '10:00',
+      reason: ''
+    });
+    
+    // Show the form
+    this.showRescheduleForm = true;
+    console.log('Form should be visible now. showRescheduleForm =', this.showRescheduleForm);
+  }
+
+  onMeetingTypeChange(): void {
+    console.log('Meeting type changed');
+    const meetingType = this.rescheduleForm.get('meetingType')?.value;
+    
+    if (meetingType === 'Online') {
+      // For online meetings, set available locations to the online platforms
+      this.availableLocations = ['Zoom', 'Teams', 'Google Meeting'];
+      this.rescheduleForm.get('location')?.setValue('Zoom'); // Default to Zoom
+    } else {
+      // For campus meetings, use the campus locations
+      this.availableLocations = [...this.onCampusLocations];
+      this.rescheduleForm.get('location')?.setValue(this.availableLocations[0]);
+    }
+  }
+
+  calculateEndTime(timeString: string): string {
+    const time = new Date(timeString);
+    time.setMinutes(time.getMinutes() + 45); // 45-min meetings
+    return time.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  onConfirmReschedule(): void {
+    if (this.rescheduleForm.valid && this.selectedMeeting) {
+      console.log('Reschedule form submitted:', this.rescheduleForm.value);
+      
+      // In a real app, you would send this to your API
+      const requestData = {
+        meeting_id: this.selectedMeeting.id,
+        new_date: this.rescheduleForm.value.newDate,
+        new_time: this.rescheduleForm.value.newTime,
+        reason: this.rescheduleForm.value.reason
+      };
+      
+      // For demo, just show a success message
+      setTimeout(() => {
+        alert('Meeting rescheduled successfully!');
+        this.closeRescheduleForm();
+        
+        // In a real app, you might refresh the meetings list here
+        // this.fetchMeetingsData();
+      }, 500);
+    } else {
+      alert('Please fill in all required fields');
+    }
+  }
+
+  onCancel(): void {
+    this.closeRescheduleForm();
+  }
+  
+  closeRescheduleForm(): void {
+    this.showRescheduleForm = false;
+    this.selectedMeeting = null;
+    this.rescheduleForm.reset({
+      newTime: '10:00'
+    });
   }
   
   // Your existing helper methods remain the same

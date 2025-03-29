@@ -17,11 +17,14 @@
         </div>
         <!-- SVG icon positioned 5px from profile icon -->
         <div class="menu-icon">
-          <mat-icon>menu</mat-icon>
+          <mat-icon>arrow_drop_down</mat-icon>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Main page title -->
+  <div class="main-title">Meeting Schedules</div>
 
   <!-- Page title with filter -->
   <div class="meetings-header">
@@ -64,53 +67,65 @@
             </span>
           </div>
 
-          <div class="meeting-details">
-            <div class="details-column">
-              <div class="detail-item">
-                <mat-icon>calendar_today</mat-icon>
-                <span>{{ formatDate(meeting.date) }}</span>
+          <!-- New structured meeting details layout -->
+          <div class="meeting-details-container">
+            <!-- Date, Time, and Meeting Type in one row with specific alignment -->
+            <div class="date-time-type-row">
+              <div class="date-section">
+                <span class="info-label">Date:</span>
+                <span class="info-value">{{ formatDate(meeting.date) }}</span>
               </div>
-              <div class="detail-item">
-                <mat-icon>schedule</mat-icon>
-                <span>{{ formatTime(meeting.time) }}</span>
+              
+              <div class="time-section">
+                <span class="info-label">Time:</span>
+                <span class="info-value">{{ formatTime(meeting.time) }}</span>
+              </div>
+              
+              <div class="type-section">
+                <span class="info-label">Meeting Type:</span>
+                <span class="info-value">{{ meeting.meeting_type === 'online' ? 'Online' : 'Campus' }}</span>
               </div>
             </div>
-            
-            <div class="details-column">
-              <div class="detail-item" *ngIf="meeting.description">
-                <mat-icon>info</mat-icon>
-                <span>{{ meeting.description }}</span>
-              </div>
-              <div class="detail-item">
-                <mat-icon>{{ getMeetingTypeIcon(meeting.meeting_type) }}</mat-icon>
-                <span>{{ getMeetingTypeText(meeting) }}</span>
-              </div>
+
+            <!-- Description -->
+            <div class="meeting-info-row" *ngIf="meeting.description">
+              <span class="info-label">Description:</span>
+              <span class="info-value">{{ meeting.description }}</span>
+            </div>
+
+            <!-- Meeting Record -->
+            <div class="meeting-info-row">
+              <span class="info-label">Meeting Record:</span>
+              <span class="info-value">{{ meeting.meeting_link || 'No record available' }}</span>
+            </div>
+
+            <!-- Status -->
+            <div class="meeting-info-row">
+              <span class="info-label">Status:</span>
+              <span class="info-value status-text" [ngClass]="getStatusClass(meeting.status)">
+                {{ meeting.status === 'upcomming' ? 'Upcoming' : meeting.status | titlecase }}
+              </span>
             </div>
           </div>
           
+          <!-- Reschedule button at right-bottom side now -->
+          <button mat-raised-button color="accent" class="reschedule-button" 
+                  *ngIf="meeting.status === 'upcomming'" 
+                  (click)="rescheduleMeeting(meeting); $event.stopPropagation()">
+            <mat-icon>event</mat-icon>
+            Reschedule
+          </button>
+
+          <!-- Action buttons for upcoming meetings -->
           <div class="meeting-actions" *ngIf="meeting.filter_status === 'upcoming'">
-            <ng-container *ngIf="meeting.meeting_type === 'online' && meeting.meeting_link">
-              <button mat-raised-button color="primary" (click)="joinMeeting(meeting)">
-                <mat-icon>link</mat-icon>
-                Join Meeting
-              </button>
-            </ng-container>
-            <ng-container *ngIf="meeting.location">
-              <button mat-raised-button color="primary" (click)="viewLocation(meeting.location!)">
-                <mat-icon>map</mat-icon>
-                View Location
-              </button>
-            </ng-container>
-            <button mat-stroked-button color="warn" (click)="cancelMeeting(meeting.id)">
-              <mat-icon>cancel</mat-icon>
-              Cancel Meeting
-            </button>
-          </div>
-          
-          <div class="meeting-status" *ngIf="meeting.filter_status === 'pastdue'">
-            <span class="status-badge" [ngClass]="getStatusClass(meeting.status)">
-              {{ meeting.status === 'upcomming' ? 'Upcoming' : meeting.status }}
-            </span>
+            <div class="action-buttons-container">
+              <ng-container *ngIf="meeting.meeting_type === 'online' && meeting.meeting_link">
+                <button mat-raised-button color="primary" (click)="joinMeeting(meeting)">
+                  <mat-icon>link</mat-icon>
+                  Join Meeting
+                </button>
+              </ng-container>
+            </div>
           </div>
         </mat-card-content>
       </mat-card>
@@ -122,4 +137,73 @@
       <p>You don't have any {{ activeFilter !== 'all' ? activeFilter : '' }} meetings.</p>
     </div>
   </ng-container>
+</div>
+
+<!-- Reschedule Form Modal with improved layout -->
+<div class="overlay" *ngIf="showRescheduleForm" (click)="onCancel()"></div>
+<div class="reschedule-form-container" *ngIf="showRescheduleForm">
+  <div class="reschedule-form" (click)="$event.stopPropagation()">
+    <h2>RESCHEDULE REQUEST FORM</h2>
+
+    <form [formGroup]="rescheduleForm" (ngSubmit)="onConfirmReschedule()">
+      <!-- Topic row -->
+      <div class="form-group horizontal">
+        <label>Topic</label>
+        <input type="text" formControlName="topic" placeholder="e.g., EWSD Coursework Discussion" readonly />
+      </div>
+
+      <!-- Original Date & Time row -->
+      <div class="form-group horizontal">
+        <label> Date & Time</label>
+        <input type="text" formControlName="originalDateTime" readonly />
+      </div>
+      
+      <!-- Meeting Type row - simplified -->
+      <div class="form-group horizontal">
+        <label>Meeting Type</label>
+        <select formControlName="meetingType" (change)="onMeetingTypeChange()">
+          <option value="Online">Online</option>
+          <option value="Campus">Campus</option>
+        </select>
+      </div>
+
+      <!-- Where/Location row with dynamic options based on meeting type -->
+      <div class="form-group horizontal">
+        <label>Where</label>
+        <select formControlName="location">
+          <option *ngFor="let location of availableLocations" [value]="location">{{ location }}</option>
+        </select>
+      </div>
+
+      <!-- New Date row -->
+      <div class="form-group horizontal">
+        <label>Request Date</label>
+        <input type="date" formControlName="newDate" />
+      </div>
+
+      <!-- New Time row -->
+      <div class="form-group horizontal">
+        <label>Request Time</label>
+        <select formControlName="newTime">
+          <option value="09:00">9:00 AM</option>
+          <option value="10:00">10:00 AM</option>
+          <option value="11:00">11:00 AM</option>
+          <option value="14:00">2:00 PM</option>
+          <option value="15:00">3:00 PM</option>
+        </select>
+      </div>
+
+      <!-- Reason row -->
+      <div class="form-group horizontal reason-group">
+        <label>Reason</label>
+        <textarea formControlName="reason" rows="3" placeholder="Enter your reason..."></textarea>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="form-actions">
+        <button type="submit" class="btn btn-confirm">Confirm</button>
+        <button type="button" class="btn btn-cancel" (click)="onCancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
 </div>
