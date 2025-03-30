@@ -101,7 +101,35 @@ export class SidebarComponent implements OnInit {
           },
         ];
         break;
-
+      case 'student':
+        this.navItems = [
+          {
+            label: 'Dashboard',
+            icon: 'home',
+            route: '/student/student-dashboard',
+          },
+          {
+            label: 'Blog',
+            icon: 'message',
+            route: '/student/Blog',
+          },
+          {
+            label: 'Documents',
+            icon: 'folder',
+            route: '/student/Documents',
+          },
+          {
+            label: 'Meetings',
+            icon: 'event',
+            route: '/student/Meetings',
+          },
+          {
+            label: 'Settings',
+            icon: 'settings',
+            route: '/student/settings',
+          },
+        ];
+        break;
       default:
         this.navItems = [];
         break;

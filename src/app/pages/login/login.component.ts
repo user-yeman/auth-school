@@ -81,7 +81,7 @@ export class LoginComponent {
         break;
       case 'student':
         console.log('Navigating to student dashboard');
-        this.router.navigate(['/student-dashboard']);
+        this.router.navigate(['/student/student-dashboard']);
         break;
       default:
         console.log('Unknown role, redirecting to login');
