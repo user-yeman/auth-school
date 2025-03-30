@@ -48,9 +48,6 @@
 
     <!-- Dashboard Content -->
     <div class="row g-0" *ngIf="dashboardData && !loading">
-      <!-- <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-        <app-groups-card [groups]="dashboardData.groups"></app-groups-card>
-      </div> -->
       <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
         <app-total-students-card
           [students]="dashboardData.data.total_students"
