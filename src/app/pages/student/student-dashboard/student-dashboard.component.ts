@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ViewChild, AfterViewInit, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +10,7 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { StudentHeaderComponent } from '../student-header/student-header/student-header.component'; // Adjust the import path as needed
 
 interface Document {
   file_name: string;
@@ -70,7 +71,8 @@ interface ApiResponse {
     MatSortModule,
     MatPaginatorModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    StudentHeaderComponent // Add this import
   ]
 })
 export class StudentDashboardComponent implements OnInit, AfterViewInit {
@@ -117,9 +119,13 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
 
   private apiUrl = 'http://127.0.0.1:8000/api/student/dashboard'; // API URL
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit(): void {
+    // Fetch dashboard data
     this.fetchDashboardData();
     
     // Format the last login date consistently
@@ -146,11 +152,38 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
         console.log('API response received:', response);
         
         if (response.status === 200) {
-          // Process user and tutor data
+          // Process user data
           this.user.name = response.data.user.name;
           this.user.email = response.data.user.email;
-          this.user.lastLogin = response.data.user.last_login_at;
           
+          // Save last login to user object and sessionStorage
+          if (isPlatformBrowser(this.platformId) && 
+              response.data.user && response.data.user.last_login_at) {
+            
+            // Save the raw value for the component
+            this.user.lastLogin = response.data.user.last_login_at;
+            
+            // Update sessionStorage safely
+            try {
+              const currentStored = sessionStorage.getItem('lastLoginTime');
+              if (currentStored) {
+                const newDate = new Date(response.data.user.last_login_at);
+                const storedDate = new Date(currentStored);
+                
+                if (newDate > storedDate) {
+                  sessionStorage.setItem('lastLoginTime', response.data.user.last_login_at);
+                  console.log('Updated sessionStorage with newer login time from dashboard');
+                }
+              } else {
+                sessionStorage.setItem('lastLoginTime', response.data.user.last_login_at);
+                console.log('Saved login time to sessionStorage from dashboard:', response.data.user.last_login_at);
+              }
+            } catch (error) {
+              console.error('Error updating sessionStorage:', error);
+            }
+          }
+          
+          // Process user and tutor data
           if (response.data.tutor) {
             this.tutor.name = response.data.tutor.name;
             this.tutor.email = response.data.tutor.email;
@@ -308,15 +341,23 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
   formatLastLogin(dateString: string): string {
     if (!dateString) return '';
     
-    const date = new Date(dateString);
-    
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return dateString;
+      }
+      
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch (e) {
+      console.error('Error formatting date:', e);
+      return dateString;
+    }
   }
 }

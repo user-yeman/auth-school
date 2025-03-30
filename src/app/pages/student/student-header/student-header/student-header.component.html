@@ -1,0 +1,31 @@
+<div class="user-header-container" [ngClass]="{
+  'meetings-layout': isMeetingsMode,
+  'fixed-position-header': fixedPosition
+}">
+  <!-- Row 1: Welcome message and user info -->
+  <div class="header-top-row">
+    <!-- Left side - Welcome message -->
+    <div class="welcome-section" *ngIf="showWelcome">
+      <h3 class="welcome-text">Welcome {{userName}}!</h3>
+    </div>
+    
+    <!-- Right side - User info always on the right -->
+    <div class="user-profile-section" [ngStyle]="customStyles">
+      <div class="user-name">{{ userName || 'Student' }}</div>
+      
+      <div class="user-icon-group">
+        <div class="user-icon">
+          <img src="assets/student_icon.png" alt="Student Profile" class="profile-image">
+        </div>
+        <div class="menu-icon">
+          <mat-icon>arrow_drop_down</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Row 2: Last login info -->
+  <div class="header-bottom-row">
+    <div class="last-login-info">[Last Login: {{ displayLastLogin }}]</div>
+  </div>
+</div>

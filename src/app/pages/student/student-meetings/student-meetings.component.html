@@ -1,27 +1,14 @@
 <!-- Main content container without fixed header (since sidebar layout handles that) -->
 <div class="dashboard-container">
-  <!-- User info header that works with sidebar layout -->
-  <div class="user-info-header">
-    <!-- Left side placeholder (for layout balance) -->
-    <div class="left-icon"></div>
-    
-    <!-- Right side user info with correct positioning -->
-    <div class="user-info">
-      <div class="user-details">
-        <div class="user-name">{{ studentData?.name || 'Student' }}</div>
-        <div class="last-login-info">[Last Login: {{ formatLastLogin(studentData?.last_login_at || '2025-03-25T14:30:00') }}]</div>
-      </div>
-      <div class="user-icon-group">
-        <div class="user-icon">
-          <img src="assets/student_icon.png" alt="Student Profile" class="profile-image">
-        </div>
-        <!-- SVG icon positioned 5px from profile icon -->
-        <div class="menu-icon">
-          <mat-icon>arrow_drop_down</mat-icon>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Use the component with consistent settings -->
+  <app-student-header 
+    [userName]="studentData?.name || ''" 
+    [lastLoginRaw]="lastLoginFromSession || studentData?.last_login_at || ''"
+    [showWelcome]="false"
+    [isMeetingsMode]="true"
+    [fixedPosition]="true"
+    [topPosition]="'0'">
+  </app-student-header>
 
   <!-- Main page title -->
   <div class="main-title">Meeting Schedules</div>
@@ -62,9 +49,9 @@
         <mat-card-content>
           <div class="meeting-header">
             <h3 class="meeting-title">{{ meeting.title }}</h3>
-            <span class="meeting-badge" [ngClass]="meeting.meeting_type">
+            <!-- <span class="meeting-badge" [ngClass]="meeting.meeting_type">
               {{ meeting.meeting_type === 'online' ? 'Online' : 'Campus' }}
-            </span>
+            </span> -->
           </div>
 
           <!-- New structured meeting details layout -->
@@ -83,7 +70,9 @@
               
               <div class="type-section">
                 <span class="info-label">Meeting Type:</span>
-                <span class="info-value">{{ meeting.meeting_type === 'online' ? 'Online' : 'Campus' }}</span>
+                <span class="info-value meeting-type-text" [ngClass]="meeting.meeting_type">
+                  {{ meeting.meeting_type === 'online' ? 'Online' : 'Campus' }}
+                </span>
               </div>
             </div>
 

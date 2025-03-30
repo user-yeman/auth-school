@@ -1,33 +1,13 @@
 <!-- Main content container without fixed header (since sidebar layout handles that) -->
 <div class="dashboard-container">
-  <div class="user-info-header">
-    <!-- Left side - Welcome message -->
-    <div class="welcome-message">
-      <h3>Welcome {{user.name}}!</h3>
-    </div>
-    
-    <!-- Right side user info with improved layout -->
-    <div class="user-info">
-      <!-- First row: name, icon and menu aligned horizontally -->
-      <div class="user-top-row">
-        <div class="user-name">{{ user.name || 'Student' }}</div>
-        
-        <div class="user-icon-group">
-          <div class="user-icon">
-            <img src="assets/student_icon.png" alt="Student Profile" class="profile-image">
-          </div>
-          <div class="menu-icon">
-            <mat-icon>arrow_drop_down</mat-icon>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Second row: Last login info -->
-      <div class="user-bottom-row">
-        <div class="last-login-info">[Last Login: {{ user.lastLogin }}]</div>
-      </div>
-    </div>
-  </div>
+  <!-- Replace the manual header with the StudentHeaderComponent -->
+  <app-student-header
+    [userName]="user.name || ''"
+    [lastLoginRaw]="user.lastLogin || ''"
+    [showWelcome]="true"
+    [isMeetingsMode]="false"
+    [fixedPosition]="false">
+  </app-student-header>
 
   <!-- Main page title -->
   <div class="main-title"></div>

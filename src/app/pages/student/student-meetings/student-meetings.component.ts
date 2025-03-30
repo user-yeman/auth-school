@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { StudentHeaderComponent } from '../student-header/student-header/student-header.component';
 
 // Define interfaces for the API response
 interface Meeting {
@@ -63,10 +64,11 @@ type FilterType = 'all' | 'upcoming' | 'pastdue';
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatSnackBarModule // Add this
+    MatSnackBarModule,
+    StudentHeaderComponent // Add this line!
   ],
   templateUrl: './student-meetings.component.html',
-  styleUrl: './student-meetings.component.css'
+  styleUrls: ['./student-meetings.component.css']
 })
 export class StudentMeetingsComponent implements OnInit {
   studentData: StudentData | null = null;
@@ -76,6 +78,7 @@ export class StudentMeetingsComponent implements OnInit {
   isLoading = true;
   errorMessage: string | null = null;
   activeFilter: 'all' | 'upcoming' | 'pastdue' = 'upcoming'; // Default to upcoming
+  lastLoginFromSession: string = '';
   
   private useMockData = false; // Set to false when backend is stable
   private mockApiResponse: ApiResponse = {
@@ -207,7 +210,8 @@ export class StudentMeetingsComponent implements OnInit {
   constructor(
     private http: HttpClient, 
     private fb: FormBuilder,
-    private snackBar: MatSnackBar // Add this
+    private snackBar: MatSnackBar, // Add this
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.rescheduleForm = this.fb.group({
       topic: ['', Validators.required],
@@ -221,6 +225,14 @@ export class StudentMeetingsComponent implements OnInit {
   }
   
   ngOnInit(): void {
+    // Only access browser APIs in browser context
+    if (isPlatformBrowser(this.platformId)) {
+      // Get login time from sessionStorage
+      this.lastLoginFromSession = sessionStorage.getItem('lastLoginTime') || '';
+      console.log('Last login from sessionStorage:', this.lastLoginFromSession);
+    }
+    
+    // Fetch meetings data (works in both server and browser)
     this.fetchMeetingsData();
   }
   
@@ -259,7 +271,7 @@ export class StudentMeetingsComponent implements OnInit {
     }
   }
   
-  // New helper method to process responses (both mock and real)
+  // Update processMeetingsResponse to compare dates and use the most recent one
   private processMeetingsResponse(response: ApiResponse): void {
     if (response.status !== 'success') {
       this.errorMessage = response.message || 'Failed to load meetings';
@@ -269,13 +281,44 @@ export class StudentMeetingsComponent implements OnInit {
     
     this.studentData = response.data;
     
-    // Note: The API uses "upcoming" and "pastdue"
+    // Only update session storage in browser context
+    if (isPlatformBrowser(this.platformId) && this.studentData?.last_login_at) {
+      const apiLoginTime = this.studentData.last_login_at;
+      const sessionLoginTime = sessionStorage.getItem('lastLoginTime') || '';
+      
+      // Compare dates to use the most recent one
+      let useApiTime = false;
+      
+      try {
+        const apiDate = new Date(apiLoginTime);
+        const sessionDate = new Date(sessionLoginTime);
+        
+        // Only use API time if it's newer than session time
+        if (isNaN(sessionDate.getTime()) || apiDate > sessionDate) {
+          useApiTime = true;
+          console.log('API login time is more recent than session storage time');
+        } else {
+          console.log('Session storage login time is more recent than API time');
+        }
+      } catch (e) {
+        console.error('Error comparing dates:', e);
+        useApiTime = true; // Default to API time on error
+      }
+      
+      // Update sessionStorage if API time is newer
+      if (useApiTime) {
+        sessionStorage.setItem('lastLoginTime', apiLoginTime);
+        console.log('Updated sessionStorage with API login time:', apiLoginTime);
+        this.lastLoginFromSession = apiLoginTime;
+      } else {
+        this.lastLoginFromSession = sessionLoginTime;
+      }
+    }
+    
+    // Rest of your existing code...
     this.upcomingMeetings = response.data.meetings.upcoming || [];
     this.pastMeetings = response.data.meetings.pastdue || [];
-    
-    // Apply default filter (upcoming)
     this.applyFilter(this.activeFilter);
-    
     this.isLoading = false;
   }
   

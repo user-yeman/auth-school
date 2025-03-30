@@ -1,11 +1,10 @@
 /* Dashboard Container */
 .dashboard-container {
-  display: flex;
-  flex-direction: column;
-  margin-left: 5%;
-  /* Adjust for sidebar */
-  padding: 0px;
+  width: 100%;
+  padding: 24px;
+  position: relative;
   max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* Welcome Header */
@@ -109,10 +108,15 @@
 
 /* Main title */
 .main-title {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  color: #333;
+  color: #000;
+  text-align: left;
+  font-family: Inter, sans-serif;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-top: 0;
+  margin-bottom: 40px;
 }
 
 /* Section styling */
@@ -146,41 +150,39 @@
   border: 1px solid #ddd;
 }
 
-/* Grid Layout for Cards */
+/* Grid Layout for Cards - Exact 4 cards in a row */
 .cards-container {
   position: relative;
-  top: 20px;
-  /* Position from the top */
   width: 100%;
-  max-width: 1200px;
-  /* Match your container width */
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr); /* Exactly 4 columns */
+  gap: 20px; /* Slightly reduced gap for better fit */
   margin-bottom: 30px;
+  margin-top: 20px;
 }
 
+/* Card styling optimized for 4-card layout */
 .stats-card {
-  padding: 15px 20px; /* Reduce top padding */
+  padding: 16px; /* Slightly reduced padding for better fit */
   border-radius: 8px;
-  width: 299px;
-  height: 140px;
   background: #F5F5F5;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
+  height: auto;
+  width: auto;
 }
 
-/* Fix duplicate mat-card-content styles - ensure content starts from the top */
+/* Fix card content styles for more compact display */
 .stats-card mat-card-content {
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 0; /* Remove extra padding */
-  margin-top: 0; /* Remove top margin */
+  padding: 0;
+  margin: 0;
 }
 
-/* Remove the header margin if you're using mat-card-header */
+/* Remove the header margin */
 .stats-card mat-card-header {
   margin: 0;
   padding: 0;
@@ -188,60 +190,46 @@
   min-height: 0;
 }
 
-/* Card Content Styling */
-.stats-card mat-card-content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-/* Card Title */
+/* Card Title - slightly more compact */
 .card-title {
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 16px; /* Reduced from 18px */
+  font-weight: 600;
   color: #333;
-  margin-top: 0; /* Remove top margin */
-  margin-bottom: 12px; /* Reduce bottom margin */
+  margin-top: 0;
+  margin-bottom: 12px; /* Reduced from 16px */
   display: flex;
-  justify-content: space-between;
-  align-items: baseline; /* Better vertical alignment */
+  align-items: center;
+  gap: 8px; /* Reduced from 12px */
 }
 
-/* Card Detail */
+/* Card Detail - slightly more compact */
 .card-detail {
   display: flex;
   align-items: center;
-  margin-bottom: 5px; /* Reduce bottom margin */
-  gap: 8px; /* Consistent spacing */
+  margin-bottom: 8px; /* Reduced from 12px */
+  gap: 8px; /* Reduced from 10px */
 }
 
-/* Remove the bottom margin from the last card detail */
-.card-detail:last-child {
-  margin-bottom: 0;
-}
-
-/* Style for the icon */
+/* Style for the icon - smaller */
 .detail-icon {
-  width: 12px;
-  /* Adjust size as needed */
-  height: 12px;
+  width: 14px; /* Reduced from 16px */
+  height: 14px; /* Reduced from 16px */
   flex-shrink: 0;
-  margin: 0; /* Remove any margins */
 }
 
-/* Status text - the text that follows the icon */
+/* Status text */
 .status-text {
   font-size: 14px;
   color: #6B7280;
-  margin: 0; /* Remove default margins */
+  margin: 0;
 }
 
-/* Value - the number */
+/* Value styling */
 .status-value {
   font-weight: 500;
   color: #333;
-  margin: 0; /* Remove default margins */
-  margin-right: 4px; /* Small space before text */
+  margin: 0;
+  margin-right: 4px;
 }
 
 /* Specific Card Colors */
@@ -252,96 +240,82 @@
 .documents-card {
   background: #F5F5F5;
   line-height: 1;
-  /* Adjust line height for better spacing */
 }
 
 .documents-card .card-detail:nth-child(2) .status-value {
-  color: #22C55E; /* Green for Finished */
+  color: #22C55E;
   font-weight: 600;
 }
 
 .documents-card .card-detail:nth-child(3) .status-value {
-  color: #F59E0B; /* Yellow/amber for Watched */
+  color: #F59E0B;
   font-weight: 600;
 }
 
 .documents-card .card-detail:nth-child(4) .status-value {
-  color: #EF4444; /* Red for Accepted */
+  color: #EF4444;
   font-weight: 600;
 }
 
-/* Alternatively, you could add classes to each value */
 .status-value-finished {
-  color: #22C55E; /* Green */
+  color: #22C55E;
   font-weight: 600;
 }
 
 .status-value-watched {
-  color: #F59E0B; /* Yellow/amber */
+  color: #F59E0B;
   font-weight: 600;
 }
 
 .status-value-accepted {
-  color: #EF4444; /* Red */
+  color: #EF4444;
   font-weight: 600;
 }
 
 .vlogs-card {
   background: #F5F5F5;
-
-  /* Adjust line height for better spacing */
 }
 
 .meetings-card {
   background: #F5F5F5;
-
-  /* Adjust line height for better spacing */
 }
 
-/* Styling for vlogs card data values */
 .vlogs-card .card-detail .status-value {
-  color: #007BFF; /* Blue */
+  color: #007BFF;
   font-weight: 600;
 }
 
-/* Styling for meetings card data values */
 .meetings-card .card-detail .status-value {
-  color: #007BFF; /* Blue */
+  color: #007BFF;
   font-weight: 600;
 }
 
-/* Specific adjustments for the user card */
 .user-card .card-title {
   display: flex;
   align-items: center;
-  gap: 8px; /* Reduce space between icon and name */
-  justify-content: flex-start; /* Align to the left */
+  gap: 8px;
+  justify-content: flex-start;
 }
 
-/* User icon specific styling */
 .user-icon {
-  width: 24px; /* Adjust size as needed */
+  width: 24px;
   height: 24px;
-  margin-right: 0; /* Remove right margin */
+  margin-right: 0;
 }
 
-/* Position the name properly */
 .user-card .highlight-value {
-  margin-left: 0; /* Remove left margin */
+  margin-left: 0;
 }
 
-/* Adjust card detail alignment in user card */
 .user-card .card-detail {
-  padding-left: 4px; /* Slight indent for details */
-  margin-top: 6px; /* Add space between title and first detail */
+  padding-left: 4px;
+  margin-top: 6px;
 }
 
-/* Adjust spacing of the detail icon */
 .user-card .detail-icon {
   margin-right: 8px;
 }
 
-/* Make sure there's no extra space in card content */
 .user-card mat-card-content {
   padding: 0;
 }
@@ -354,135 +328,56 @@
   font: inter;
 }
 
-/* Highlight Value - for specific numeric values */
-.highlight-value {
-  color: #007BFF;
-  font-family: Inter, sans-serif;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  display: inline;
-  margin-left: 8px;
-}
-
 /* Highlight Value */
 .highlight-value {
   color: #007BFF;
   font-family: Inter, sans-serif;
-  font-size: 24px;
-  font-style: normal;
+  font-size: 20px;
   font-weight: 600;
   line-height: normal;
-  margin-left: 8px;
   display: inline;
-
 }
 
 /* Table Container */
 .table-container {
   background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+  margin-top: 30px;
+  overflow: hidden;
 }
 
 .table_title {
   color: #000;
-  text-align: left;
-  font-family: Inter;
-  font-size: 18px;
-  font-style: normal;
+  font-family: Inter, sans-serif;
+  font-size: 20px;
   font-weight: 600;
-  line-height: normal;
-  margin-top: 20px; /* Added top margin */
+  margin-bottom: 20px;
 }
 
 /* Table Styles */
 mat-table {
   width: 100%;
+  background: transparent;
+}
+
+mat-header-row {
+  background-color: #f9fafb;
 }
 
 mat-header-cell {
-  font-weight: bold;
+  color: #4b5563;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 mat-cell {
-  padding: 10px;
+  font-size: 14px;
+  color: #1f2937;
 }
 
 /* Status Colors */
-.status-completed {
-  color: green;
-  font-weight: bold;
-}
-
-.status-draft {
-  color: orange;
-  font-weight: bold;
-}
-
-.status-feedback {
-  color: red;
-  font-weight: bold;
-}
-
-/* Sidebar Layout Fix */
-.sidebar {
-  position: fixed;
-  width: 240px;
-  height: 100%;
-  background: #222;
-  color: white;
-  padding: 20px;
-}
-
-/* Pagination Styles */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.pagination span {
-  margin: 0 5px;
-  cursor: pointer;
-}
-
-.pagination span.active {
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-/* Pagination styling */
-.mat-paginator {
-  background: transparent;
-  display: flex;
-  justify-content: center;
-  margin-top: 15px;
-}
-
-/* If you want to customize the paginator colors */
-::ng-deep .mat-paginator-container {
-  justify-content: center !important;
-  padding: 8px 24px !important;
-}
-
-::ng-deep .mat-paginator-page-size {
-  display: none !important;
-}
-
-::ng-deep .mat-paginator-range-label {
-  margin: 0 24px !important;
-}
-
-/* Optional: Style the active page indicator */
-::ng-deep .mat-paginator-range-actions button.mat-focus-indicator.mat-button-disabled {
-  color: #007BFF !important;
-  font-weight: bold;
-}
-
-/* Optional: Status styling for document status in the table */
 .status-completed {
   color: #22C55E;
   font-weight: 600;
@@ -503,39 +398,108 @@ mat-cell {
   font-weight: 600;
 }
 
-/* Add custom wrapper for pagination to control spacing */
+/* Sidebar Layout Fix */
+.sidebar {
+  position: fixed;
+  width: 240px;
+  height: 100%;
+  background: #222;
+  color: white;
+  padding: 20px;
+}
+
+/* Pagination Styles */
 .pagination-wrapper {
   display: flex;
   justify-content: center;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 24px;
 }
 
-/* Responsive Adjustments */
+mat-paginator {
+  background: transparent;
+}
+
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.page-info {
+  margin: 0 16px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+/* added class for deadline */
+.approaching-deadline {
+  color: #d32f2f;
+  font-weight: 600;
+}
+
+/* Responsive Adjustments for 4-card layout */
+@media (max-width: 1200px) {
+  .cards-container {
+    grid-template-columns: repeat(4, 1fr); /* Still 4 columns */
+    gap: 16px; /* Further reduce gap */
+  }
+  
+  /* Further reduce padding */
+  .stats-card {
+    padding: 14px;
+  }
+}
+
 @media (max-width: 1024px) {
   .dashboard-container {
-    margin-left: 0;
-    padding: 10px;
+    padding: 20px;
   }
 
   .cards-container {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* Switch to 2 columns */
+    gap: 16px;
   }
-
+  
   .stats-card {
-    width: 100%;
-    height: auto;
+    padding: 16px; /* Restore padding for better readability */
+  }
+  
+  .card-title {
+    font-size: 17px; /* Restore font size for better readability */
+    margin-bottom: 14px;
+  }
+  
+  .card-detail {
+    margin-bottom: 10px;
   }
 }
 
 @media (max-width: 768px) {
-  .cards-container {
-    grid-template-columns: 1fr;
+  .dashboard-container {
+    padding: 16px;
   }
 
+  .main-title {
+    font-size: 28px;
+    margin-top: 60px;
+    margin-bottom: 30px;
+  }
+
+  .cards-container {
+    grid-template-columns: repeat(2, 1fr); /* Maintain 2 columns on tablets */
+    gap: 12px;
+  }
+  
   .stats-card {
     width: 100%;
     height: auto;
+    padding: 16px;
+  }
+
+  .table-container {
+    padding: 16px;
   }
 
   .user-info-header {
@@ -557,7 +521,46 @@ mat-cell {
   }
 }
 
+@media (max-width: 600px) {
+  .cards-container {
+    grid-template-columns: 1fr; /* Single column on smaller screens */
+  }
+  
+  .stats-card {
+    padding: 16px;
+  }
+  
+  .main-title {
+    font-size: 26px;
+  }
+}
+
 @media (max-width: 480px) {
+  .dashboard-container {
+    padding: 12px;
+  }
+
+  .main-title {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+
+  .cards-container {
+    grid-template-columns: 1fr;
+  }
+
+  .card-title {
+    font-size: 16px;
+  }
+
+  .highlight-value {
+    font-size: 18px;
+  }
+
+  .table_title {
+    font-size: 18px;
+  }
+
   .user-top-row {
     flex-direction: column;
     align-items: center;
@@ -571,25 +574,5 @@ mat-cell {
 
 /* Alternatively, add space to the container */
 .student_display_container {
-  margin-top: 23px; /* Additional spacing */
-}
-
-.custom-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  gap: 8px;
-}
-
-.page-info {
-  margin: 0 16px;
-  color: #333;
-  font-weight: 500;
-}
-
-/* added class for deadline */
-.approaching-deadline {
-  color: #d32f2f;
-  font-weight: bold;
+  margin-top: 23px;
 }
