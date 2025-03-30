@@ -1286,13 +1286,13 @@ button[mat-raised-button], button[mat-stroked-button] {
 
 /* Snackbar styles with top positioning */
 ::ng-deep .success-snackbar {
-  background: #43a047; /* Green background for success */
+  background: #666; /* Green background for success */
   color: white;
   margin-top: 20px !important; /* Add some space from the top of the screen */
 }
 
 ::ng-deep .error-snackbar {
-  background: #d32f2f; /* Red background for errors */
+  background: #666; /* Red background for errors */
   color: white;
   margin-top: 20px !important; /* Add some space from the top of the screen */
 }

@@ -1,11 +1,38 @@
+<!-- Main content container without fixed header (since sidebar layout handles that) -->
 <div class="dashboard-container">
-  <!-- Welcome Message -->
-  <div class="welcome-header">
-    <h2>Welcome, {{ user.name }}!</h2>
-    <span class="last-login"> Last Login: <span class="last-login-text">{{ user.lastLogin }}</span></span>
+  <div class="user-info-header">
+    <!-- Left side - Welcome message -->
+    <div class="welcome-message">
+      <h3>Welcome {{user.name}}!</h3>
+    </div>
+    
+    <!-- Right side user info with improved layout -->
+    <div class="user-info">
+      <!-- First row: name, icon and menu aligned horizontally -->
+      <div class="user-top-row">
+        <div class="user-name">{{ user.name || 'Student' }}</div>
+        
+        <div class="user-icon-group">
+          <div class="user-icon">
+            <img src="assets/student_icon.png" alt="Student Profile" class="profile-image">
+          </div>
+          <div class="menu-icon">
+            <mat-icon>arrow_drop_down</mat-icon>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Second row: Last login info -->
+      <div class="user-bottom-row">
+        <div class="last-login-info">[Last Login: {{ user.lastLogin }}]</div>
+      </div>
+    </div>
   </div>
 
-  <!-- Cards Row -->
+  <!-- Main page title -->
+  <div class="main-title"></div>
+
+  <!-- Cards Row (keeping your existing cards) -->
   <div class="cards-container">
     <!-- User Card - now shows tutor info -->
     <mat-card class="stats-card user-card">
@@ -24,12 +51,6 @@
           <span class="status-value"></span>
           <span class="status-text">{{ tutor.email }}</span>
         </div>
-        
-        <!-- <div class="card-detail">
-          <img src="assets/office_hours_icon.png" alt="Clock Icon" class="detail-icon">
-          <span class="status-value">Your Email:</span>
-          <span class="status-text">{{ user.email }}</span>
-        </div> -->
       </mat-card-content>
     </mat-card>
 
@@ -112,13 +133,17 @@
   </div>
 
   <!-- Uploaded Documents Table -->
-  <div class="student_display_container container mt-3">
-    <h2 class="table_title">Uploaded Documents List</h2>
+  <div class="section-container">
+    <div class="section-header">
+      <h2 class="section-title">Uploaded Documents List</h2>
+    </div>
+    
     <mat-card>
-      <div class="search-bar mb-3">
+      <div class="search-bar">
         <input type="text" placeholder="Search by Document Name or Status" (input)="applyFilter($event)"
                [(ngModel)]="filterValue" class="form-control" />
       </div>
+      
       <!-- Table -->
       <table mat-table [dataSource]="documents" matSort (matSortChange)="applySorting($event)" class="mat-elevation-z8 w-100">
         <!-- Document Name Column -->
@@ -174,8 +199,6 @@
             showFirstLastButtons>
         </mat-paginator>
       </div>
-      
-      <!-- Pagination -->
     </mat-card>
   </div>
 </div>

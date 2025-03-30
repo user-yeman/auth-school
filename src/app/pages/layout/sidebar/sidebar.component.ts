@@ -117,11 +117,11 @@ export class SidebarComponent implements OnInit {
             icon: 'message',
             route: '/student/Blog',
           },
-          {
-            label: 'Documents',
-            icon: 'folder',
-            route: '/student/Documents',
-          },
+          // {
+          //   label: 'Documents',
+          //   icon: 'folder',
+          //   route: '/student/Documents',
+          // },
           {
             label: 'Meetings',
             icon: 'event',

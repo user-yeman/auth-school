@@ -119,8 +119,13 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
 
   constructor(private http: HttpClient) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.fetchDashboardData();
+    
+    // Format the last login date consistently
+    if (this.user && this.user.lastLogin) {
+      this.user.lastLogin = this.formatLastLogin(this.user.lastLogin);
+    }
   }
 
   ngAfterViewInit() {
@@ -295,5 +300,23 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
     
     // Consider deadline approaching if less than 3 days away
     return diffDays < 3 && diffDays >= 0;
+  }
+
+  /**
+   * Formats the last login date string into a readable format.
+   */
+  formatLastLogin(dateString: string): string {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
   }
 }
