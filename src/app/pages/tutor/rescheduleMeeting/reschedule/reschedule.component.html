@@ -1,0 +1,88 @@
+<div class="container">
+  <!-- Top Bar with Search -->
+  <div class="top-bar">
+    <div class="search_container col-12">
+      <div class="search-bar mb-3">
+        <input
+          type="text"
+          placeholder="Search... "
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+          class="form-control"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <h2 class="title">Meeting Reschedule Requests</h2>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div class="loading" *ngIf="isLoading">Loading reschedule requests...</div>
+
+  <!-- Error Message -->
+  <div class="error" *ngIf="errorMessage && !isLoading">{{ errorMessage }}</div>
+
+  <!-- Meeting Cards -->
+  <div class="card-container container-fluid" *ngIf="!isLoading">
+    <div *ngFor="let meeting of filteredMeetings" class="meeting-card">
+      <h3 class="card_title">{{ meeting.title }}</h3>
+      <p class="name bolder">Student Name: {{ meeting.student_name }}</p>
+      <span class="email">{{ meeting.email }}</span>
+
+      <!-- Original Meeting Details -->
+      <p class="sub_title">Original Meeting</p>
+      <div class="row mt-4 original">
+        <p class="col-md-4">
+          <strong>Date:</strong> {{ meeting.org_date | date : "medium" }}
+        </p>
+        <p class="col-md-4">
+          <strong>Time:</strong> {{ meeting.org_time | date : "shortTime" }}
+        </p>
+        <p class="col-md-4">
+          <strong>Meeting Type:</strong> {{ meeting.org_meeting_type }}
+        </p>
+      </div>
+
+      <!-- New Meeting Details -->
+      <div class="row mt-4 changes">
+        <p class="sub_title">New Meeting</p>
+        <p class="col-md-4">
+          <strong>Date:</strong> {{ meeting.new_date | date : "medium" }}
+        </p>
+        <p class="col-md-4">
+          <strong>Time:</strong> {{ meeting.new_time | date : "shortTime" }}
+        </p>
+        <p class="col-md-4">
+          <strong>Meeting Type:</strong> {{ meeting.new_meeting_type }}
+        </p>
+        <p class="col-md-4"><strong>Reason:</strong> {{ meeting.reason }}</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="row mt-3 action-buttons">
+        <button
+          mat-raised-button
+          class="accept-btn"
+          (click)="approve(meeting.id)"
+        >
+          Approve
+        </button>
+        <button
+          mat-raised-button
+          class="reject-btn"
+          (click)="reject(meeting.id)"
+        >
+          Reject
+        </button>
+      </div>
+    </div>
+
+    <!-- No Data Message -->
+    <div class="no-data" *ngIf="filteredMeetings.length === 0">
+      No reschedule requests found.
+    </div>
+  </div>
+</div>

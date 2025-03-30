@@ -1,0 +1,80 @@
+<div class="card table-card">
+  <div class="card-header">
+    <h5 class="card-title mb-0">Available Personal Tutor Lists</h5>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th
+              scope="col"
+              (click)="sortData('tutorId')"
+              [ngClass]="{ sorted: sortColumn === 'tutorId' }"
+              [attr.aria-sort]="sortColumn === 'tutorId' ? sortDirection : null"
+            >
+              Tutor ID
+            </th>
+            <th
+              scope="col"
+              (click)="sortData('name')"
+              [ngClass]="{ sorted: sortColumn === 'name' }"
+              [attr.aria-sort]="sortColumn === 'name' ? sortDirection : null"
+            >
+              Name
+            </th>
+            <th
+              scope="col"
+              (click)="sortData('email')"
+              [ngClass]="{ sorted: sortColumn === 'email' }"
+              [attr.aria-sort]="sortColumn === 'email' ? sortDirection : null"
+            >
+              Email
+            </th>
+            <th
+              scope="col"
+              (click)="sortData('assignments')"
+              [ngClass]="{ sorted: sortColumn === 'assignments' }"
+              [attr.aria-sort]="
+                sortColumn === 'assignments' ? sortDirection : null
+              "
+            >
+              Number of Assignments
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tutor of getPaginatedData()">
+            <td>{{ tutor.tutorId }}</td>
+            <td>{{ tutor.name }}</td>
+            <td>{{ tutor.email }}</td>
+            <td>{{ tutor.assignments }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="pagination-container">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [ngClass]="{ disabled: currentPage === 1 }">
+          <button class="page-link" (click)="previousPage()">Previous</button>
+        </li>
+        <li class="page-item active">
+          <span class="page-link">{{ currentPage }}</span>
+        </li>
+        <li class="page-item" *ngIf="getNextPage()">
+          <button class="page-link" (click)="goToPage(getNextPage()!)">
+            {{ getNextPage() }}
+          </button>
+        </li>
+        <li
+          class="page-item"
+          [ngClass]="{ disabled: currentPage === totalPages }"
+        >
+          <button class="page-link" (click)="nextPage()">Next</button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

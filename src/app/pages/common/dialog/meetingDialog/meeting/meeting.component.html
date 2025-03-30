@@ -1,0 +1,145 @@
+<div class="meeting_dialog">
+  <div class="header"></div>
+  <h2 mat-dialog-title>SCHEDULE A MEETING</h2>
+  <mat-dialog-content>
+    <form [formGroup]="scheduleForm" class="schedule-form">
+      <!-- Meeting Name -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Enter Meeting Name</mat-label>
+        <input
+          matInput
+          formControlName="meetingName"
+          placeholder="Meeting Name"
+          required
+        />
+        <mat-error
+          *ngIf="scheduleForm.get('meetingName')?.hasError('required')"
+        >
+          Meeting name is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Date and Time -->
+      <div class="date-time-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Choose date here</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            formControlName="date"
+            placeholder="Select a date"
+            required
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="scheduleForm.get('date')?.hasError('required')">
+            Date is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Time</mat-label>
+          <input
+            matInput
+            type="time"
+            formControlName="time"
+            placeholder="Select a time"
+            required
+          />
+          <mat-error *ngIf="scheduleForm.get('time')?.hasError('required')">
+            Time is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Meeting Type -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Meeting Type</mat-label>
+        <mat-select formControlName="meetingType" required>
+          <mat-option *ngFor="let type of meetingTypes" [value]="type">
+            {{ type }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="scheduleForm.get('meetingType')?.hasError('required')"
+        >
+          Meeting type is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Location (for Physical meetings) -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+        *ngIf="scheduleForm.get('meetingType')?.value === 'Offline'"
+      >
+        <mat-label>Enter a location</mat-label>
+        <input
+          matInput
+          formControlName="location"
+          placeholder="Enter location"
+        />
+        <mat-error *ngIf="scheduleForm.get('location')?.hasError('required')">
+          Location is required for physical meetings
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Meeting App (for Virtual meetings) -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+        *ngIf="scheduleForm.get('meetingType')?.value === 'Online'"
+      >
+        <mat-label>Meeting App</mat-label>
+        <mat-select formControlName="meetingApp">
+          <mat-option *ngFor="let app of meetingApps" [value]="app">
+            {{ app }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="scheduleForm.get('meetingApp')?.hasError('required')">
+          Meeting app is required for virtual meetings
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Meeting Link (for Virtual meetings) -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+        *ngIf="scheduleForm.get('meetingType')?.value === 'Online'"
+      >
+        <mat-label>Enter Link</mat-label>
+        <input
+          matInput
+          formControlName="meetingLink"
+          placeholder="Enter meeting link"
+        />
+        <mat-error
+          *ngIf="scheduleForm.get('meetingLink')?.hasError('required')"
+        >
+          Meeting link is required for virtual meetings
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Description -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          formControlName="description"
+          rows="3"
+          placeholder="Enter description"
+        ></textarea>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onConfirm()" [disabled]="!scheduleForm.valid">
+      CONFIRM
+    </button>
+    <button mat-button (click)="onCancel()">CANCEL</button>
+  </mat-dialog-actions>
+</div>

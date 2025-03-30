@@ -1,0 +1,25 @@
+.modal-container {
+  overflow: hidden;
+}
+.modal-header {
+  background-color: #000000;
+  padding: 15px 20px;
+}
+.modal-title {
+  color: #ffffff;
+  margin: 0;
+  font-size: 20px;
+}
+.modal-body {
+  padding: 15px;
+  color: #333;
+}
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 20px;
+  gap: 10px;
+}
+.cancel-btn {
+  color: #666;
+}

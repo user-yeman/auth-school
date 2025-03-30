@@ -1,0 +1,19 @@
+.tutor_switch_container {
+  padding: 20px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.mt-5 {
+  margin-top: 20px;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}

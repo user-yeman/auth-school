@@ -1,0 +1,32 @@
+<div class="tutor_switch_container">
+  <!-- Dashboard Content -->
+  <div class="row g-0" *ngIf="dashboardData && !loading">
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+      <app-total-students-card
+        [students]="dashboardData.data.total_students"
+      ></app-total-students-card>
+    </div>
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+      <app-blogging-insights-card
+        [insights]="dashboardData.data.blogging_insights"
+      ></app-blogging-insights-card>
+    </div>
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+      <app-scheduled-meetings-card
+        [meetings]="dashboardData.data.scheduled_meetings"
+      ></app-scheduled-meetings-card>
+    </div>
+  </div>
+
+  <!-- Student Table -->
+  <div *ngIf="dashboardData && !loading" class="mt-5">
+    <app-student-table
+      [students]="dashboardData.data.students"
+    ></app-student-table>
+  </div>
+
+  <!-- Loading or No Data Message -->
+  <div *ngIf="!dashboardData && !loading" class="no-data">
+    No data available for this tutor.
+  </div>
+</div>

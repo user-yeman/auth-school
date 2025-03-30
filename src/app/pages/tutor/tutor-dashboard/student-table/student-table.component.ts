@@ -3,13 +3,14 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Student } from '../../../../model/card-model';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-student-table',
   templateUrl: './student-table.component.html',
   styleUrls: ['./student-table.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
 })
 export class StudentTableComponent implements OnInit {
   @Input() students: Student[] = [];

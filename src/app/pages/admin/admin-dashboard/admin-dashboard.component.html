@@ -1,6 +1,141 @@
-<div class="dashboard_container">
-  <h2>Admin Dashboard</h2>
-  <p>Welcome to the admin dashboard</p>
-  <p>Here you can manage all the data and users of the application</p>
-  <p>Use the sidebar to navigate to different sections</p>
+<!-- admin-dashboard.component.html -->
+<div class="dashboard-container">
+  <mat-form-field appearance="fill" class="full-width custom-select">
+    <mat-label>Switch Dashboard</mat-label>
+    <mat-select
+      [(ngModel)]="selectedDashboard"
+      (selectionChange)="onDashboardChange()"
+    >
+      <mat-option value="own">Own Dashboard</mat-option>
+      <mat-option value="tutor">Tutor Dashboard</mat-option>
+      <mat-option value="student">Student Dashboard</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Own Dashboard -->
+  <div *ngIf="selectedDashboard === 'own'" class="dashboard-section">
+    <ng-container *ngIf="isLoading; else cardSkeletons">
+      <app-skeleton
+        [type]="'card'"
+        [width]="'100%'"
+        [height]="'150px'"
+        *ngFor="let _ of [1, 2, 3]"
+      ></app-skeleton>
+    </ng-container>
+    <ng-template #cardSkeletons>
+      <div class="cards-container">
+        <mat-card class="card">
+          <mat-card-title>Total Tutors</mat-card-title>
+          <mat-card-content>{{ totalTutors }}</mat-card-content>
+        </mat-card>
+        <mat-card class="card">
+          <mat-card-title>Total Students</mat-card-title>
+          <mat-card-content>{{ totalStudents }}</mat-card-content>
+        </mat-card>
+        <mat-card class="card">
+          <mat-card-title>Unassigned Students</mat-card-title>
+          <mat-card-content>{{ unassignedStudents }}</mat-card-content>
+        </mat-card>
+      </div>
+    </ng-template>
+
+    <div class="charts-container">
+      <mat-card class="chart-card" *ngIf="!isLoading; else barSkeletons">
+        <mat-card-title>Most Active Users</mat-card-title>
+        <mat-card-content>
+          <div class="bar-chart">
+            <div
+              *ngFor="let user of activeUsers; let i = index"
+              class="bar-item"
+            >
+              <span>{{ i + 1 }}. {{ user.name }}</span>
+              <div class="bar">
+                <div class="fill" [style.width]="user.activity + '%'"></div>
+              </div>
+              <span>{{ user.activity }}%</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <ng-template #barSkeletons>
+        <app-skeleton
+          [type]="'bar-chart'"
+          [columns]="5"
+          [width]="'100%'"
+          [height]="'250px'"
+        ></app-skeleton>
+      </ng-template>
+
+      <mat-card class="chart-card" *ngIf="!isLoading; else pieSkeleton">
+        <mat-card-title>Number of Most Used Browsers</mat-card-title>
+        <mat-card-content>
+          <div class="chart-container">
+            <canvas
+              #pieChartCanvas
+              id="pieChartCanvas"
+              width="400"
+              height="250"
+            ></canvas>
+            <div *ngIf="chartError" class="chart-error">
+              Unable to load chart: {{ chartError }}
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <ng-template #pieSkeleton>
+        <app-skeleton
+          *ngIf="isLoading"
+          [type]="'pie-chart'"
+          [columns]="5"
+          [rows]="3"
+          [width]="'100%'"
+          [height]="'250px'"
+        ></app-skeleton>
+      </ng-template>
+    </div>
+
+    <div class="mt-5" *ngIf="!isLoading; else tableSkeleton">
+      <app-tutor-list-table
+        [tutors]="dashboardData.tutors"
+      ></app-tutor-list-table>
+    </div>
+
+    <ng-template #tableSkeleton>
+      <app-skeleton
+        [type]="'table'"
+        [rows]="5"
+        [columns]="6"
+        [width]="'100%'"
+        [height]="'auto'"
+      ></app-skeleton>
+    </ng-template>
+  </div>
+
+  <!-- Tutor Dashboard -->
+  <div *ngIf="selectedDashboard === 'tutor'" class="dashboard-section">
+    <ng-container *ngIf="!isLoading; else tutorSkeleton">
+      <app-tutor-switch [dashboardData]="tutorDashboardData"></app-tutor-switch>
+    </ng-container>
+    <ng-template #tutorSkeleton>
+      <div class="cards-container">
+        <app-skeleton
+          [type]="'card'"
+          [width]="'100%'"
+          [height]="'100px'"
+          *ngFor="let _ of [1, 2, 3]"
+        ></app-skeleton>
+      </div>
+      <div class="mt-5">
+        <app-skeleton
+          [type]="'table'"
+          [rows]="5"
+          [columns]="6"
+          [width]="'100%'"
+          [height]="'auto'"
+        ></app-skeleton>
+      </div>
+    </ng-template>
+  </div>
 </div>
