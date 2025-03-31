@@ -1,0 +1,194 @@
+<!-- Main content container without fixed header (since sidebar layout handles that) -->
+<div class="dashboard-container">
+  <!-- Use the component with consistent settings -->
+  <app-student-header 
+    [userName]="studentData?.name || ''" 
+    [lastLoginRaw]="lastLoginFromSession || studentData?.last_login_at || ''"
+    [showWelcome]="false"
+    [isMeetingsMode]="true"
+    [fixedPosition]="true"
+    [topPosition]="'0'">
+  </app-student-header>
+
+  <!-- Main page title -->
+  <div class="main-title">Meeting Schedules</div>
+
+  <!-- Page title with filter -->
+  <div class="meetings-header">
+    <div class="title-filter-group">
+      <h3 class="section-title">{{ (activeFilter === 'upcoming' ? 'Upcoming' : activeFilter === 'pastdue' ? 'Past Due' : 'All') }} Meetings</h3>
+      
+      <!-- Filter Dropdown with 5px spacing -->
+      <div class="filter-wrapper">
+        <select class="meeting-filter" (change)="filterMeetings($event)">
+          <option value="all">All Meetings</option>
+          <option value="upcoming" selected>Upcoming</option>
+          <option value="pastdue">Past Due</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading meetings...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error-container">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ errorMessage }}</p>
+    <button mat-raised-button color="primary" (click)="fetchMeetingsData()">Retry</button>
+  </div>
+
+  <!-- Meetings Content -->
+  <ng-container *ngIf="!isLoading && !errorMessage">
+    <div class="meetings-container">
+      <mat-card class="meeting-card" *ngFor="let meeting of filteredMeetings">
+        <mat-card-content>
+          <div class="meeting-header">
+            <h3 class="meeting-title">{{ meeting.title }}</h3>
+            <!-- <span class="meeting-badge" [ngClass]="meeting.meeting_type">
+              {{ meeting.meeting_type === 'online' ? 'Online' : 'Campus' }}
+            </span> -->
+          </div>
+
+          <!-- New structured meeting details layout -->
+          <div class="meeting-details-container">
+            <!-- Date, Time, and Meeting Type in one row with specific alignment -->
+            <div class="date-time-type-row">
+              <div class="date-section">
+                <span class="info-label">Date:</span>
+                <span class="info-value">{{ formatDate(meeting.date) }}</span>
+              </div>
+              
+              <div class="time-section">
+                <span class="info-label">Time:</span>
+                <span class="info-value">{{ formatTime(meeting.time) }}</span>
+              </div>
+              
+              <div class="type-section">
+                <span class="info-label">Meeting Type:</span>
+                <span class="info-value meeting-type-text" [ngClass]="meeting.meeting_type">
+                  {{ meeting.meeting_type === 'online' ? 'Online' : 'Campus' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="meeting-info-row" *ngIf="meeting.description">
+              <span class="info-label">Description:</span>
+              <span class="info-value">{{ meeting.description }}</span>
+            </div>
+
+            <!-- Meeting Record -->
+            <div class="meeting-info-row">
+              <span class="info-label">Meeting Record:</span>
+              <span class="info-value">{{ meeting.meeting_link || 'No record available' }}</span>
+            </div>
+
+            <!-- Status -->
+            <div class="meeting-info-row">
+              <span class="info-label">Status:</span>
+              <span class="info-value status-text" [ngClass]="getStatusClass(meeting.status)">
+                {{ meeting.status === 'upcomming' ? 'Upcoming' : meeting.status | titlecase }}
+              </span>
+            </div>
+          </div>
+          
+          <!-- Reschedule button at right-bottom side now -->
+          <button mat-raised-button color="accent" class="reschedule-button" 
+                  *ngIf="meeting.status === 'upcomming'" 
+                  (click)="rescheduleMeeting(meeting); $event.stopPropagation()">
+            <mat-icon>event</mat-icon>
+            Reschedule
+          </button>
+
+          <!-- Action buttons for upcoming meetings -->
+          <div class="meeting-actions" *ngIf="meeting.filter_status === 'upcoming'">
+            <div class="action-buttons-container">
+              <ng-container *ngIf="meeting.meeting_type === 'online' && meeting.meeting_link">
+                <button mat-raised-button color="primary" (click)="joinMeeting(meeting)">
+                  <mat-icon>link</mat-icon>
+                  Join Meeting
+                </button>
+              </ng-container>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    
+    <!-- No meetings message -->
+    <div class="no-meetings" *ngIf="filteredMeetings.length === 0">
+      <mat-icon>event_busy</mat-icon>
+      <p>You don't have any {{ activeFilter !== 'all' ? activeFilter : '' }} meetings.</p>
+    </div>
+  </ng-container>
+</div>
+
+<!-- Reschedule Form Modal with improved layout -->
+<div class="overlay" *ngIf="showRescheduleForm" (click)="onCancel()"></div>
+<div class="reschedule-form-container" *ngIf="showRescheduleForm">
+  <div class="reschedule-form" (click)="$event.stopPropagation()">
+    <h2>RESCHEDULE REQUEST FORM</h2>
+
+    <form [formGroup]="rescheduleForm" (ngSubmit)="onConfirmReschedule()">
+      <!-- Topic row -->
+      <div class="form-group horizontal">
+        <label>Topic</label>
+        <input type="text" formControlName="topic" placeholder="e.g., EWSD Coursework Discussion" readonly />
+      </div>
+
+      <!-- Original Date & Time row -->
+      <div class="form-group horizontal">
+        <label> Date & Time</label>
+        <input type="text" formControlName="originalDateTime" readonly />
+      </div>
+      
+      <!-- Meeting Type row - simplified -->
+      <div class="form-group horizontal">
+        <label>Meeting Type</label>
+        <select formControlName="meetingType" (change)="onMeetingTypeChange()">
+          <option value="Online">Online</option>
+          <option value="Campus">Campus</option>
+        </select>
+      </div>
+
+      <!-- Where/Location row with dynamic options based on meeting type -->
+      <div class="form-group horizontal">
+        <label>Where</label>
+        <select formControlName="location">
+          <option *ngFor="let location of availableLocations" [value]="location">{{ location }}</option>
+        </select>
+      </div>
+
+      <!-- New Date row -->
+      <div class="form-group horizontal">
+        <label>Request Date</label>
+        <input type="date" formControlName="newDate" />
+      </div>
+
+      <!-- New Time row with time picker -->
+      <div class="form-group horizontal">
+        <label>Request Time</label>
+        <div class="time-picker-container">
+          <input type="time" formControlName="newTime" class="time-picker" />
+        </div>
+      </div>
+
+      <!-- Reason row -->
+      <div class="form-group horizontal reason-group">
+        <label>Reason</label>
+        <textarea formControlName="reason" rows="3" placeholder="Enter your reason..."></textarea>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="form-actions">
+        <button type="submit" class="btn btn-confirm">Confirm</button>
+        <button type="button" class="btn btn-cancel" (click)="onCancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

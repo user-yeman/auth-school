@@ -1,0 +1,142 @@
+/* Main container */
+.user-header-container {
+  width: 100%;
+  padding: 15px 0;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* Row 1: Welcome and user profile - consistent positioning */
+.header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+  /* Remove the negative margin that was causing inconsistency */
+  margin-top: 0;
+}
+
+/* When welcome is hidden, maintain right alignment */
+.header-top-row:not(:has(.welcome-section)) .user-profile-section {
+  margin-left: auto; /* Force right alignment when welcome is hidden */
+}
+
+/* Welcome section - left side */
+.welcome-section {
+  flex: 1;
+}
+
+.welcome-text {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* User profile section - always right aligned, consistent with dashboard */
+.user-profile-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+/* Consistent user name styling */
+.user-name {
+  font-weight: 500;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Consistent icon group styling */
+.user-icon-group {
+  display: flex;
+  align-items: center;
+}
+
+/* Match the dashboard icon size */
+.user-icon {
+  width: 36px; /* Match dashboard size */
+  height: 36px; /* Match dashboard size */
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid #e0e0e0; /* Add subtle border like dashboard */
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menu-icon {
+  margin-left: 5px;
+  cursor: pointer;
+  color: #555; /* Match dashboard color */
+}
+
+/* Row 2: Last login - consistent style */
+.header-bottom-row {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 4px; /* Add small gap between rows */
+}
+
+.last-login-info {
+  font-size: 12px;
+  color: #666;
+  text-align: right;
+}
+
+/* Special styling for meetings layout - for reuse consistency */
+.meetings-layout .header-top-row {
+  justify-content: flex-end;
+}
+
+/* Fixed position variant for specific pages that need it */
+.fixed-position-header .user-profile-section {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.fixed-position-header .header-bottom-row {
+  position: absolute;
+  right: 0;
+  top: 40px; /* Position below the user profile */
+}
+
+/* Responsive styles - keep these for mobile compatibility */
+@media (max-width: 768px) {
+  .header-top-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .welcome-section {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .user-profile-section {
+    justify-content: center;
+  }
+  
+  .header-bottom-row {
+    justify-content: center;
+  }
+  
+  .last-login-info {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-profile-section {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
