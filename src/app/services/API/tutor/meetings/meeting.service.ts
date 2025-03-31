@@ -11,65 +11,13 @@ import {
   providedIn: 'root',
 })
 export class MeetingService {
-  private mockApiData = {
-    status: 'success',
-    data: {
-      id: 1,
-      name: 'Karianne Zboncak',
-      email: 'zgaylord@example.net',
-      student_id: 'STD001',
-      meetings: {
-        upcoming: [
-          {
-            id: 2,
-            title: 'Project Kickoff Meeting',
-            date: '2025-03-27T14:30:00.000000Z',
-            time: '2025-03-27T14:30:00.000000Z',
-            meeting_type: 'online',
-            description: 'Initial discussion about project scope and timeline',
-            meeting_link: 'https://zoom.us/j/123456789',
-            location: null,
-            status: 'rescheduled',
-            filter_status: 'upcoming',
-          },
-          {
-            id: 1,
-            title: 'Template Checking',
-            date: '2025-03-27T14:30:00.000000Z',
-            time: '2025-03-27T14:30:00.000000Z',
-            meeting_type: 'online',
-            description: 'Initial discussion about project scope and timeline',
-            meeting_link: 'https://zoom.us/j/123456789',
-            location: null,
-            status: 'upcomming',
-            filter_status: 'upcoming',
-          },
-        ],
-        pastdue: [
-          {
-            id: 3,
-            title: 'Progress Checking',
-            date: '2025-03-25T14:30:00.000000Z',
-            time: '2025-03-25T14:30:00.000000Z',
-            meeting_type: 'offline',
-            description: 'I wanna check progress of the applciation',
-            meeting_link: 'https://zoom.us/j/123456789',
-            location: 'second floor kfc',
-            status: 'completed',
-            filter_status: 'pastdue',
-          },
-        ],
-      },
-    },
-    id: '',
-    message: 'Meeting Fetched Successfully',
-  };
-
   private meetingListUrl = 'http://127.0.0.1:8000/api/meetinglist';
   private addScheduleUrl = 'http://127.0.0.1:8000/api/arranging';
   private rescheduleUrl = 'http://127.0.0.1:8000/api/arranging';
   private deleteUrl = 'http://127.0.0.1:8000/api/arranging';
   private addNoteUrl = 'http://127.0.0.1:8000/api/meetingrecord/store';
+  private updateNoteUrl = 'http://127.0.0.1:8000/api/meetingrecord/update';
+  private deleteNoteUrl = 'http://127.0.0.1:8000/api/meetingrecord/delete';
 
   private rescheduleRequestListUrl =
     'http://127.0.0.1:8000/api/tutor/meetingrequest';
@@ -126,6 +74,21 @@ export class MeetingService {
   recordNote(meetingData: any): Observable<any> {
     return this.http.post(`${this.addNoteUrl}`, meetingData);
   }
+
+  // update note
+  updateMeetingRecord(recordId: number, meetingData: any): Observable<any> {
+    return this.http
+      .post(`${this.updateNoteUrl}/${recordId}`, meetingData)
+      .pipe(catchError(this.handleError));
+  }
+
+  // delete note
+  deleteMeetingRecord(recordId: number): Observable<any> {
+    return this.http
+      .delete<any>(`${this.deleteNoteUrl}/${recordId}`)
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred';
     if (error.error instanceof ErrorEvent) {

@@ -46,7 +46,7 @@ export interface ScheduleDialogData {
 })
 export class MeetingComponent implements OnInit {
   scheduleForm: FormGroup;
-  meetingTypes = ['Offline', 'Online'];
+  meetingTypes = ['Physical', 'Online'];
   meetingApps = ['Microsoft Teams', 'Zoom', 'Google Meet'];
   mode: 'add' | 'update';
 
@@ -78,9 +78,7 @@ export class MeetingComponent implements OnInit {
         meetingName: meeting.title,
         date: dateTime,
         time: dateTime.toTimeString().slice(0, 5), // Extract HH:MM
-        meetingType:
-          meeting.meeting_type.charAt(0).toUpperCase() +
-          meeting.meeting_type.slice(1), // Capitalize first letter
+        meetingType: meeting.meeting_type === 'offline' ? 'Physical' : 'Online',
         location: meeting.location || '',
         meetingLink: meeting.meeting_link || '',
         meetingApp: meeting.meeting_app || '',
@@ -94,7 +92,7 @@ export class MeetingComponent implements OnInit {
       const meetingLinkControl = this.scheduleForm.get('meetingLink');
       const meetingAppControl = this.scheduleForm.get('meetingApp');
 
-      if (type === 'Offline') {
+      if (type === 'Physical') {
         locationControl?.setValidators(Validators.required);
         meetingLinkControl?.clearValidators();
         meetingAppControl?.clearValidators();
@@ -119,7 +117,9 @@ export class MeetingComponent implements OnInit {
           : {}), // Include ID for update
         student_id: this.data.studentId,
         arrange_date: this.formatDate(formValue.date, formValue.time),
-        meeting_type: formValue.meetingType.toLowerCase(),
+        meeting_type:
+          formValue.meetingType === 'Physical' ? 'offline' : 'online',
+
         location:
           formValue.meetingType === 'Offline' ? formValue.location : null,
         meeting_link:

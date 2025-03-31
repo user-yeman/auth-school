@@ -20,6 +20,8 @@ import { HttpClient } from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SkeletonComponent } from '../../../common/loading/skeleton/skeleton/skeleton.component';
 import { TutorSwitchComponent } from '../switch-tutor-dashboard/tutor-switch/tutor-switch.component';
+import { StudentSwitchComponent } from '../switch-student-dashboard/student-switch/student-switch.component';
+import { MatTableModule } from '@angular/material/table';
 
 export interface Tutor {
   tutorId: string | number;
@@ -46,6 +48,8 @@ export interface Tutor {
     MatFormFieldModule,
     SkeletonComponent,
     TutorSwitchComponent,
+    StudentSwitchComponent,
+    MatTableModule,
   ],
 })
 export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
@@ -64,10 +68,11 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
   pieChartColors: string[] = ['#42A5F5', '#FF7043', '#FFCA28', '#B0BEC5'];
 
   tutors: Tutor[] = [];
-  students: { name: string; email: string }[] = [];
+  students: { id: string | number; name: string; email: string }[] = [];
   dashboardData = { tutors: this.tutors };
   tutorDashboardData: any = null;
-  isLoading: boolean = true;
+  studentDashboardData: any = null;
+  isLoading: boolean = false; // Start as false
   selectedDashboard: string = 'own';
 
   constructor(
@@ -82,7 +87,11 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
     this.fetchStudents();
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    if (this.pieChartCanvas && !this.isLoading) {
+      this.createPieChart();
+    }
+  }
 
   ngOnDestroy(): void {
     this.destroyChart();
@@ -116,10 +125,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
         this.isLoading = false;
         if (this.pieChartCanvas) {
           this.createPieChart();
-        } else {
-          setTimeout(() => this.createPieChart(), 100);
         }
-        this.isLoading = false;
       },
       error: (error) => {
         console.error('Error fetching dashboard data:', error);
@@ -148,6 +154,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
     this.http.get('http://127.0.0.1:8000/api/students').subscribe({
       next: (response: any) => {
         this.students = (response.data || []).map((student: any) => ({
+          id: student.id || student.student_id || '',
           name: student.name || 'Unknown',
           email: student.email || '',
         }));
@@ -162,15 +169,35 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
       .get(`http://127.0.0.1:8000/api/admin/tutor/dashboard/${tutorId}`)
       .subscribe({
         next: (response: any) => {
-          this.tutorDashboardData = response; // Ensure full response is stored
-          console.log('Tutor dashboard data:', this.tutorDashboardData); // Debug log
-          this.selectedDashboard = 'tutor'; // Switch to tutor dashboard
+          this.tutorDashboardData = response;
+          this.selectedDashboard = 'tutor';
           this.isLoading = false;
         },
         error: (error) => {
           console.error('Error fetching tutor dashboard data:', error);
           this.isLoading = false;
           this.selectedDashboard = 'own';
+          this.tutorDashboardData = null;
+          this.fetchDashboardData();
+        },
+      });
+  }
+
+  fetchStudentDashboardData(studentId: string | number) {
+    this.isLoading = true;
+    this.http
+      .get(`http://127.0.0.1:8000/api/admin/student/dashboard/${studentId}`)
+      .subscribe({
+        next: (response: any) => {
+          this.studentDashboardData = response.data || response;
+          this.selectedDashboard = 'student';
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error fetching student dashboard data:', error);
+          this.isLoading = false;
+          this.selectedDashboard = 'own';
+          this.studentDashboardData = null;
           this.fetchDashboardData();
         },
       });
@@ -218,17 +245,6 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
     this.chartError = null;
   }
 
-  private updateChart(): void {
-    if (this.chartInstance) {
-      this.chartInstance.data.labels = this.pieChartLabels;
-      this.chartInstance.data.datasets[0].data = this.pieChartData;
-      this.chartInstance.update();
-      this.chartError = null;
-    } else {
-      this.createPieChart();
-    }
-  }
-
   private destroyChart(): void {
     if (this.chartInstance) {
       this.chartInstance.destroy();
@@ -237,19 +253,26 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
   }
 
   onDashboardChange() {
+    // Don’t change selectedDashboard yet, just open the modal if needed
     if (this.selectedDashboard === 'tutor') {
+      this.tutorDashboardData = null; // Clear previous data
       this.openModal(
         'SWITCH TUTOR DASHBOARD',
         'Search Tutor by NAME or Email',
         this.tutors
       );
     } else if (this.selectedDashboard === 'student') {
+      this.studentDashboardData = null; // Clear previous data
+      this.isLoading = true; // Show loading state while modal is open
       this.openModal(
         'SWITCH STUDENT DASHBOARD',
         'Search Student by NAME or Email',
         this.students
       );
     } else {
+      this.tutorDashboardData = null;
+      this.studentDashboardData = null;
+      this.isLoading = false;
       this.fetchDashboardData();
     }
   }
@@ -257,21 +280,39 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
   openModal(
     title: string,
     searchPlaceholder: string,
-    list: { name: string; email: string }[]
+    list: { id?: string | number; name: string; email: string }[]
   ) {
     const dialogRef = this.dialog.open(ModelListComponent, {
       width: '500px',
       data: { title, searchPlaceholder, list },
     });
     dialogRef.afterClosed().subscribe((result) => {
+      this.isLoading = false; // Reset loading after modal closes
       if (result) {
         if (this.selectedDashboard === 'tutor') {
-          this.fetchTutorDashboardData(result.tutorId);
+          const tutor = this.tutors.find((t) => t.email === result.email);
+          if (tutor) {
+            this.fetchTutorDashboardData(tutor.tutorId);
+          } else {
+            this.selectedDashboard = 'own';
+            this.fetchDashboardData();
+          }
         } else if (this.selectedDashboard === 'student') {
-          this.router.navigate(['/student', result.email]);
+          const student = this.students.find((s) => s.email === result.email);
+          if (student && student.id) {
+            this.fetchStudentDashboardData(student.id);
+          } else {
+            console.error('Student ID not found for:', result);
+            this.selectedDashboard = 'own';
+            this.studentDashboardData = null;
+            this.fetchDashboardData();
+          }
         }
       } else {
+        // If modal is closed without selection, revert to 'own'
         this.selectedDashboard = 'own';
+        this.tutorDashboardData = null;
+        this.studentDashboardData = null;
         this.fetchDashboardData();
       }
     });
@@ -280,7 +321,6 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
   selectedTutor: Tutor | null = null;
 
   onTutorSelected(tutor: Tutor) {
-    // Changed from 'event: any' to 'tutor: Tutor'
     this.selectedTutor = tutor;
     this.fetchTutorDashboardData(tutor.tutorId);
   }

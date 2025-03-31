@@ -21,12 +21,16 @@
 
   <!-- Loading Indicator -->
   <div class="loading" *ngIf="isLoading">Loading reschedule requests...</div>
+  <div class="loading" *ngIf="actionInProgress">Processing request...</div>
 
   <!-- Error Message -->
   <div class="error" *ngIf="errorMessage && !isLoading">{{ errorMessage }}</div>
 
   <!-- Meeting Cards -->
-  <div class="card-container container-fluid" *ngIf="!isLoading">
+  <div
+    class="card-container container-fluid"
+    *ngIf="!isLoading && !actionInProgress"
+  >
     <div *ngFor="let meeting of filteredMeetings" class="meeting-card">
       <h3 class="card_title">{{ meeting.title }}</h3>
       <p class="name bolder">Student Name: {{ meeting.student_name }}</p>
@@ -67,6 +71,7 @@
           mat-raised-button
           class="accept-btn"
           (click)="approve(meeting.id)"
+          [disabled]="actionInProgress"
         >
           Approve
         </button>
@@ -74,6 +79,7 @@
           mat-raised-button
           class="reject-btn"
           (click)="reject(meeting.id)"
+          [disabled]="actionInProgress"
         >
           Reject
         </button>

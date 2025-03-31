@@ -16,6 +16,7 @@ export interface Tutor {
 }
 
 export interface Meeting {
+  meeting_detail_id: number;
   id: number;
   title: string;
   date: string;
@@ -27,6 +28,7 @@ export interface Meeting {
   location: string | null;
   status: string;
   filter_status: string;
+  meetingRecord: meetingNote[];
 }
 
 export interface MeetingsData {
@@ -86,4 +88,14 @@ export interface PaginationData {
 export interface RescheduleResponse {
   data: PaginationData;
   meta: PaginationMeta;
+}
+
+export interface meetingNote {
+  id: number;
+  meeting_note: string;
+  meeting_detail_id: number;
+  uploaded_document: string | null;
+  deleted_at: string;
+  created_at: string;
+  updated_at: string;
 }

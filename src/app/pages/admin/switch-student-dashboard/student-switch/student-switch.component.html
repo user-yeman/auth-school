@@ -1,3 +1,8 @@
+<h3>
+  Student Name -
+  <span style="color: blue">{{ user.name }}</span>
+</h3>
+
 <!-- Cards Row -->
 <div class="cards-container">
   <!-- User Card - now shows tutor info -->
@@ -21,12 +26,6 @@
         <span class="status-value"></span>
         <span class="status-text">{{ tutor.email }}</span>
       </div>
-
-      <!-- <div class="card-detail">
-          <img src="assets/office_hours_icon.png" alt="Clock Icon" class="detail-icon">
-          <span class="status-value">Your Email:</span>
-          <span class="status-text">{{ user.email }}</span>
-        </div> -->
     </mat-card-content>
   </mat-card>
 
@@ -126,11 +125,6 @@
 <div class="student_display_container container mt-3">
   <h2 class="table_title">Uploaded Documents List</h2>
   <mat-card>
-    <!--       <div class="search-bar mb-3">
-        <input type="text" placeholder="Search by Document Name or Status" (input)="applyFilter($event)"
-               [(ngModel)]="filterValue" class="form-control" />
-      </div>
-      <!-- Table -->
     <table
       mat-table
       [dataSource]="documents"
@@ -181,7 +175,5 @@
       >
       </mat-paginator>
     </div>
-
-    <!-- Pagination -->
   </mat-card>
 </div>
