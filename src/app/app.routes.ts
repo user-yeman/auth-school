@@ -8,15 +8,13 @@ import { AllocationComponent } from './pages/admin/allocation/allocation.compone
 import { CreateAllocationComponent } from './pages/admin/create-allocation/create-allocation.component';
 import { AllocationlistComponent } from './pages/admin/allocationlist/allocationlist.component';
 import { ReallocationFormComponent } from './pages/admin/allocationlist/reallocation/reallocationform/reallocationform.component';
-<<<<<<< HEAD
 import { StudentManagementComponent } from './pages/tutor/studentManagement/student-management/student-management.component';
 import { MeetingScheduleComponent } from './pages/tutor/meetingSchedules/meeting-schedule/meeting-schedule.component';
 import { RescheduleComponent } from './pages/tutor/rescheduleMeeting/reschedule/reschedule.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
-=======
-import { StudentMeetingsComponent } from './pages/student/student-meetings/student-meetings.component';
 import { StudentBlogComponent } from './pages/student/student-blog/student-blog.component';
->>>>>>> ba8056782498fe4d33afcdb4d95ad140aafe7f79
+import { StudentMeetingsComponent } from './pages/student/student-meetings/student-meetings.component';
+
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
