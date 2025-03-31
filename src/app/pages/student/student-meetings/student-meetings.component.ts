@@ -68,7 +68,7 @@ type FilterType = 'all' | 'upcoming' | 'pastdue';
     StudentHeaderComponent // Add this line!
   ],
   templateUrl: './student-meetings.component.html',
-  styleUrls: ['./student-meetings.component.css']
+  styleUrls: ['../shared/student-responsive.css',]
 })
 export class StudentMeetingsComponent implements OnInit {
   studentData: StudentData | null = null;

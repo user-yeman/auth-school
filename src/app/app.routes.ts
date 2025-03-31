@@ -10,6 +10,7 @@ import { CreateAllocationComponent } from './pages/admin/create-allocation/creat
 import { AllocationlistComponent } from './pages/admin/allocationlist/allocationlist.component';
 import { ReallocationFormComponent } from './pages/admin/allocationlist/reallocation/reallocationform/reallocationform.component';
 import { StudentMeetingsComponent } from './pages/student/student-meetings/student-meetings.component';
+import { StudentBlogComponent } from './pages/student/student-blog/student-blog.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -72,6 +73,10 @@ export const routes: Routes = [
           {
             path: 'student-dashboard',
             component: StudentDashboardComponent,
+          },
+          {
+            path: 'student-blog',
+            component: StudentBlogComponent,
           },
           {
             path: 'student-meetings',

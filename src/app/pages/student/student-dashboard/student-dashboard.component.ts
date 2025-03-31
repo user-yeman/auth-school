@@ -58,7 +58,10 @@ interface ApiResponse {
 @Component({
   selector: 'app-student-dashboard',
   templateUrl: './student-dashboard.component.html',
-  styleUrls: ['./student-dashboard.component.css'],
+  styleUrls: [
+    './student-dashboard.component.css',
+    '../shared/student-responsive.css'
+  ],
   standalone: true,
   imports: [
     CommonModule,

@@ -115,7 +115,7 @@ export class SidebarComponent implements OnInit {
           {
             label: 'Blog',
             icon: 'message',
-            route: '/student/Blog',
+            route: '/student/student-blog',
           },
           // {
           //   label: 'Documents',
