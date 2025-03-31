@@ -3,119 +3,224 @@
     <button mat-button class="back-btn" (click)="goBack()">← Back</button>
   </div>
   <div class="search_container col-12">
+    <!-- Search Bar -->
     <div class="search-bar mb-3">
       <input
         type="text"
-        placeholder="Search... "
+        placeholder="Search..."
         [(ngModel)]="searchTerm"
         (input)="onSearchChange()"
         class="form-control"
+        [disabled]="isLoading"
       />
     </div>
 
+    <!-- Header -->
     <div class="header">
-      <h1>{{ data?.name }}'s Dashboard</h1>
+      <h1>{{ data?.name ? data.name + "'s Dashboard" : "Loading..." }}</h1>
       <button
         mat-raised-button
         class="new-meeting-btn"
         (click)="openAddDialog()"
+        [disabled]="isLoading"
       >
         + New Meetings
       </button>
     </div>
 
-    <mat-tab-group
-      class="tab-group"
-      mat-stretch-tabs="false"
-      mat-align-tabs="start"
-    >
-      <mat-tab label="Meetings">
-        <div class="filter-section">
-          <mat-form-field appearance="fill" class="filter-form-field">
-            <mat-label>Filter by</mat-label>
-            <mat-select
-              [(value)]="selectedFilter"
-              (selectionChange)="onFilterChange($event.value)"
-              aria-label="Filter meetings by type"
-            >
-              <mat-option *ngFor="let option of filterOptions" [value]="option">
-                {{ option }}
-                <span class="badge">({{ getFilterCount(option) }})</span>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+    <!-- Skeleton Loading or Content -->
+    <div *ngIf="isLoading; else content">
+      <!-- Skeleton for Filter Section -->
+      <div class="filter-section">
+        <div class="skeleton-filter">
+          <div class="skeleton-text medium"></div>
         </div>
-        <div *ngIf="isLoading" class="loading">Loading Meetings...</div>
-        <div class="card-container" *ngIf="!isLoading">
-          <div *ngFor="let meeting of filteredMeetings" class="meeting-card">
-            <h3 class="card_title">{{ meeting.title }}</h3>
-            <div class="row mt-4">
-              <p class="col-md-4">
-                <strong>Date:</strong> {{ meeting.date | date : "medium" }}
-              </p>
-              <p class="col-md-4">
-                <strong>Time:</strong> {{ meeting.time | date : "shortTime" }}
-              </p>
-              <p class="col-md-4">
-                <strong>Meeting Type:</strong> {{ meeting.meeting_type }}
-              </p>
-            </div>
-            <p><strong>Description:</strong> {{ meeting.description }}</p>
-            <p *ngIf="meeting.meeting_link">
-              <strong>Meeting Link:</strong>
-              <a
-                [href]="meeting.meeting_link"
-                target="_blank"
-                class="meeting_link"
-                >{{ meeting.meeting_link }}</a
+      </div>
+
+      <!-- Skeleton for Tabs -->
+      <div class="skeleton-tabs">
+        <div class="skeleton-tab">
+          <div class="skeleton-text short"></div>
+          <div class="skeleton-text short"></div>
+        </div>
+      </div>
+
+      <!-- Skeleton for Meeting Cards -->
+      <app-skeleton
+        type="card"
+        [rows]="3"
+        [width]="'100%'"
+        [height]="'auto'"
+      ></app-skeleton>
+    </div>
+
+    <!-- Actual Content -->
+    <ng-template #content>
+      <mat-tab-group
+        class="tab-group"
+        mat-stretch-tabs="false"
+        mat-align-tabs="start"
+      >
+        <mat-tab label="Meetings">
+          <div class="filter-section">
+            <mat-form-field appearance="fill" class="filter-form-field">
+              <mat-label>Filter by</mat-label>
+              <mat-select
+                [(value)]="selectedFilter"
+                (selectionChange)="onFilterChange($event.value)"
+                aria-label="Filter meetings by type"
               >
-            </p>
-            <p *ngIf="meeting.location">
-              <strong>Location:</strong> {{ meeting.location }}
-            </p>
-            <p><strong>Status:</strong> {{ meeting.status | titlecase }}</p>
-            <div
-              class="action-buttons"
-              *ngIf="selectedFilter === 'Upcoming' && isFutureMeeting(meeting)"
-            >
-              <button
-                mat-raised-button
-                class="finish-btn"
-                (click)="finishMeeting(meeting.id)"
+                <mat-option
+                  *ngFor="let option of filterOptions"
+                  [value]="option"
+                >
+                  {{ option }}
+                  <span class="badge">({{ getFilterCount(option) }})</span>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="card-container">
+            <div *ngFor="let meeting of filteredMeetings" class="meeting-card">
+              <h3 class="card_title">{{ meeting.title }}</h3>
+              <div class="row mt-4">
+                <p class="col-md-4">
+                  <strong>Date:</strong> {{ meeting.date | date : "medium" }}
+                </p>
+                <p class="col-md-4">
+                  <strong>Time:</strong> {{ meeting.time | date : "shortTime" }}
+                </p>
+                <p class="col-md-4">
+                  <strong>Meeting Type:</strong>
+                  {{
+                    meeting.meeting_type === "offline" ? "Physical" : "Online"
+                  }}
+                </p>
+              </div>
+              <p><strong>Description:</strong> {{ meeting.description }}</p>
+              <p *ngIf="meeting.meeting_link">
+                <strong>Meeting Link:</strong>
+                <a
+                  [href]="meeting.meeting_link"
+                  target="_blank"
+                  class="meeting_link"
+                  >{{ meeting.meeting_link }}</a
+                >
+              </p>
+              <p *ngIf="meeting.location">
+                <strong>Location:</strong> {{ meeting.location }}
+              </p>
+              <p><strong>Status:</strong> {{ meeting.status | titlecase }}</p>
+
+              <!-- Meeting Record Section for Pastdue and Completed Meetings -->
+              <div
+                *ngIf="
+                  (selectedFilter === 'Pastdue' ||
+                    selectedFilter === 'Completed') &&
+                  meeting.meetingRecord
+                "
+                class="meeting-record-section"
               >
-                Finish
-              </button>
-              <div class="secondary-buttons">
+                <h4>Meeting Record</h4>
+                <p>
+                  <strong>Notes:</strong>
+                  {{ meeting.meetingRecord.meeting_note }}
+                </p>
+                <div
+                  *ngIf="meeting.meetingRecord.uploaded_document"
+                  class="file-section"
+                >
+                  <span
+                    class="d-flex align-items-center justify-between fw-bold"
+                    >Attachments:
+                    <div class="file-item">
+                      <button
+                        class="m-3"
+                        mat-raised-button
+                        class="download-btn"
+                        (click)="
+                          downloadFile(
+                            meeting.meetingRecord.uploaded_document,
+                            meeting.meetingRecord.uploaded_document
+                              .split('/')
+                              .pop()
+                          )
+                        "
+                      >
+                        <mat-icon>arrow_downward</mat-icon>
+                        Download
+                        {{
+                          meeting.meetingRecord.uploaded_document
+                            .split("/")
+                            .pop()
+                        }}
+                      </button>
+                    </div>
+                  </span>
+                </div>
+                <div class="record-actions d-flex justify-content-end">
+                  <button
+                    mat-raised-button
+                    class="edit-btn"
+                    (click)="editMeetingRecord(meeting)"
+                  >
+                    <mat-icon class="mat-18">edit</mat-icon>
+                    Edit
+                  </button>
+                  <button
+                    mat-raised-button
+                    class="delete-btn"
+                    (click)="deleteMeetingRecord(meeting.meetingRecord.id)"
+                  >
+                    <mat-icon class="mat-18">delete</mat-icon>
+                    Delete
+                  </button>
+                </div>
+              </div>
+
+              <!-- Action Buttons for Upcoming Meetings -->
+              <div
+                class="action-buttons"
+                *ngIf="
+                  selectedFilter === 'Upcoming' && isFutureMeeting(meeting)
+                "
+              >
                 <button
                   mat-raised-button
-                  class="secondary-btn"
-                  (click)="rescheduleMeeting(meeting.id)"
+                  class="finish-btn"
+                  (click)="finishMeeting(meeting.meeting_detail_id)"
                 >
-                  Reschedule
+                  Finish
                 </button>
-                <button
-                  mat-raised-button
-                  class="secondary-btn"
-                  (click)="cancelMeeting(meeting.id)"
-                >
-                  Cancel
-                </button>
+                <div class="secondary-buttons">
+                  <button
+                    mat-raised-button
+                    class="secondary-btn"
+                    (click)="rescheduleMeeting(meeting.id)"
+                  >
+                    Reschedule
+                  </button>
+                  <button
+                    mat-raised-button
+                    class="secondary-btn"
+                    (click)="cancelMeeting(meeting.id)"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
+            <p *ngIf="!isLoading && filteredMeetings.length === 0">
+              No meetings found for this filter.
+            </p>
           </div>
-          <p *ngIf="!isLoading && filteredMeetings.length === 0">
-            No meetings found for this filter.
-          </p>
-        </div>
-      </mat-tab>
+        </mat-tab>
 
-      <mat-tab label="Documents">
-        <p>No documents available.</p>
-      </mat-tab>
-
-      <mat-tab label="Blogs">
-        <p>No blogs available.</p>
-      </mat-tab>
-    </mat-tab-group>
+        <mat-tab label="Blogs">
+          <p>No blogs available.</p>
+        </mat-tab>
+      </mat-tab-group>
+    </ng-template>
   </div>
 </div>

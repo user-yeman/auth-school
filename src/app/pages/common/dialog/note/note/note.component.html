@@ -13,6 +13,35 @@
         class="notes-textarea"
       ></textarea>
     </mat-form-field>
+
+    <label>Add your file here (Optional)</label>
+    <div class="file-drop-area" [class.disabled]="fileLimitReached">
+      <input
+        id="fileInput"
+        type="file"
+        (change)="onFileSelected($event)"
+        [disabled]="fileLimitReached"
+        title="Upload your file"
+      />
+      <p>
+        Drop your file here, or
+        <span class="browse-text">click to browse</span>
+      </p>
+    </div>
+
+    <div class="file-list">
+      <div *ngFor="let file of files; let i = index" class="file-item">
+        <span>{{ file.name }}</span>
+        <span *ngIf="file.status === 'uploading'">
+          {{ file.size / 1000 | number : "1.0-2" }} KB - {{ file.progress }}%
+        </span>
+        <span *ngIf="file.status === 'success'" class="success-text"
+          >Upload Successful!</span
+        >
+        <progress [value]="file.progress" max="100"></progress>
+        <button (click)="removeFile(i)">X</button>
+      </div>
+    </div>
   </mat-dialog-content>
   <mat-dialog-actions class="dialog-actions">
     <button mat-button class="cancel-btn" (click)="onCancel()">Cancel</button>

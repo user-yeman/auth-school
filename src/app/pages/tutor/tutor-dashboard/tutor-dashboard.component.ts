@@ -11,6 +11,7 @@ import { TutorDashboardService } from '../../../services/API/tutor/tutor-dashboa
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { StudentTableComponent } from './student-table/student-table.component';
 import { AuthService } from '../../../services/auth.service';
+import { SkeletonComponent } from '../../../common/loading/skeleton/skeleton/skeleton.component';
 
 @Component({
   selector: 'app-tutor-dashboard',
@@ -25,14 +26,15 @@ import { AuthService } from '../../../services/auth.service';
     TotalStudentsCardComponent,
     NgxSpinnerModule,
     StudentTableComponent,
+    SkeletonComponent,
   ],
-  providers: [DatePipe], // Add DatePipe to providers
+  providers: [DatePipe],
 })
 export class TutorDashboardComponent implements OnInit {
   dashboardData: ApiDashboardResponse | null = null;
   apiError: string | null = null;
   groups: any;
-  loading: boolean = false;
+  loading: boolean = true;
   userName: string = '';
   lastLogin: string = '';
 
@@ -49,15 +51,18 @@ export class TutorDashboardComponent implements OnInit {
   }
 
   fetchDashboardData(forceRefresh: boolean = false) {
+    this.loading = true; // Ensure loading is true at the start
     this.spinner.show();
     this.apiService.getDashboardData(forceRefresh).subscribe({
       next: (data) => {
         this.dashboardData = data;
+        this.loading = false; // Set loading to false on success
         this.spinner.hide();
         console.log('Dashboard data fetched:', this.dashboardData);
       },
       error: (err) => {
         this.apiError = 'Failed to load dashboard data';
+        this.loading = false; // Set loading to false on error
         this.spinner.hide();
         console.error('Error fetching dashboard data:', err);
       },

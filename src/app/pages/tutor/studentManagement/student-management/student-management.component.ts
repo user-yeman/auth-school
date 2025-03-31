@@ -11,6 +11,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { SkeletonComponent } from '../../../../common/loading/skeleton/skeleton/skeleton.component';
 
 @Component({
   selector: 'app-student-management',
@@ -23,6 +24,7 @@ import { ToastrService } from 'ngx-toastr';
     FormsModule,
     CommonModule,
     RouterModule,
+    SkeletonComponent,
   ],
   templateUrl: './student-management.component.html',
   styleUrls: ['./student-management.component.css'],

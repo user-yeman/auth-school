@@ -157,6 +157,119 @@ h1 {
   display: flex;
   gap: 8px;
 }
+.meeting-record-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #ccc;
+}
+
+.meeting-record-section h4 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.file-section {
+  margin-top: 10px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.file-item span {
+  flex: 1;
+}
+
+.download-btn {
+  background-color: #007bff !important;
+  color: white !important;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  text-transform: none;
+  margin-left: 10px;
+}
+
+.download-btn mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  line-height: 18px;
+}
+
+.record-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.edit-btn {
+  background-color: #28a745 !important;
+  color: white !important;
+}
+
+.delete-btn {
+  background-color: #dc3545 !important;
+  color: white !important;
+}
+
+/* Skeleton Styles */
+.skeleton-filter {
+  margin-bottom: 16px;
+}
+
+.skeleton-tabs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.skeleton-tab {
+  display: flex;
+  gap: 8px;
+}
+
+.skeleton-text {
+  height: 16px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-text.medium {
+  width: 200px; /* Approximate width of the filter dropdown */
+}
+
+.skeleton-text.short {
+  width: 80px; /* Approximate width of a tab label */
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Adjust Skeleton Card to Match Meeting Card */
+:host ::ng-deep .skeleton-card {
+  width: 100%;
+  max-width: 600px; /* Match the width of your meeting cards */
+  margin: 0 auto 16px auto; /* Center and add spacing */
+}
 
 /* Responsive adjustments */
 
