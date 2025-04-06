@@ -12,12 +12,14 @@ import { AuthInterceptor } from './services/auth.interceptor';
 import { AuthGuard } from './services/auth.guard';
 import { MatNativeDateModule } from '@angular/material/core';
 import { HttpCacheInterceptor } from './services/interceptor/http-cache/http-cache.interceptor';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimationsAsync(),
+    provideHttpClient(withFetch()),
     importProvidersFrom(
       ToastrModule.forRoot({
         timeOut: 5000,
