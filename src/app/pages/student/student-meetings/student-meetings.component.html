@@ -49,72 +49,56 @@
         <mat-card-content>
           <div class="meeting-header">
             <h3 class="meeting-title">{{ meeting.title }}</h3>
-            <!-- <span class="meeting-badge" [ngClass]="meeting.meeting_type">
-              {{ meeting.meeting_type === 'online' ? 'Online' : 'Campus' }}
-            </span> -->
           </div>
 
-          <!-- New structured meeting details layout -->
-          <div class="meeting-details-container">
-            <!-- Date, Time, and Meeting Type in one row with specific alignment -->
-            <div class="date-time-type-row">
-              <div class="date-section">
-                <span class="info-label">Date:</span>
-                <span class="info-value">{{ formatDate(meeting.date) }}</span>
-              </div>
-              
-              <div class="time-section">
-                <span class="info-label">Time:</span>
-                <span class="info-value">{{ formatTime(meeting.time) }}</span>
-              </div>
-              
-              <div class="type-section">
-                <span class="info-label">Meeting Type:</span>
-                <span class="info-value meeting-type-text" [ngClass]="meeting.meeting_type">
-                  {{ meeting.meeting_type === 'online' ? 'Online' : 'Campus' }}
-                </span>
-              </div>
+          <!-- Meeting header row with metadata aligned horizontally -->
+          <div class="meeting-header-row">
+            <div><strong>Date:</strong> {{ formatDate(meeting.date) }}</div>
+            <div><strong>Time:</strong> {{ formatTime(meeting.time) }}</div>
+            <div>
+              <strong>Meeting Type:</strong> 
+              <span class="meeting-type-text" [ngClass]="meeting.meeting_type">
+                {{ meeting.meeting_type === 'online' ? 'Online' : 'Campus' }}
+              </span>
             </div>
+          </div>
 
-            <!-- Description -->
-            <div class="meeting-info-row" *ngIf="meeting.description">
-              <span class="info-label">Description:</span>
-              <span class="info-value">{{ meeting.description }}</span>
+          <!-- Meeting details section -->
+          <div class="meeting-details">
+            <div *ngIf="meeting.description">
+              <strong>Description:</strong> {{ meeting.description }}
             </div>
-
-            <!-- Meeting Record -->
-            <div class="meeting-info-row">
-              <span class="info-label">Meeting Record:</span>
-              <span class="info-value">{{ meeting.meeting_link || 'No record available' }}</span>
+            <div>
+              <strong>Meeting Link:</strong>
+              <a *ngIf="meeting.meeting_link" [href]="meeting.meeting_link" target="_blank">
+                {{ meeting.meeting_link }}
+              </a>
+              <span *ngIf="!meeting.meeting_link">No record available</span>
             </div>
-
-            <!-- Status -->
-            <div class="meeting-info-row">
-              <span class="info-label">Status:</span>
-              <span class="info-value status-text" [ngClass]="getStatusClass(meeting.status)">
+            <div>
+              <strong>Status:</strong> 
+              <span class="status-text" [ngClass]="getStatusClass(meeting.status)">
                 {{ meeting.status === 'upcomming' ? 'Upcoming' : meeting.status | titlecase }}
               </span>
             </div>
           </div>
           
-          <!-- Reschedule button at right-bottom side now -->
-          <button mat-raised-button color="accent" class="reschedule-button" 
-                  *ngIf="meeting.status === 'upcomming'" 
-                  (click)="rescheduleMeeting(meeting); $event.stopPropagation()">
-            <mat-icon>event</mat-icon>
-            Reschedule
-          </button>
-
-          <!-- Action buttons for upcoming meetings -->
-          <div class="meeting-actions" *ngIf="meeting.filter_status === 'upcoming'">
-            <div class="action-buttons-container">
-              <ng-container *ngIf="meeting.meeting_type === 'online' && meeting.meeting_link">
-                <button mat-raised-button color="primary" (click)="joinMeeting(meeting)">
-                  <mat-icon>link</mat-icon>
-                  Join Meeting
-                </button>
-              </ng-container>
-            </div>
+          <!-- Positioned at the bottom-right with custom styling -->
+          <div class="reschedule-button">
+            <button mat-button 
+                    *ngIf="meeting.status === 'upcomming'" 
+                    (click)="rescheduleMeeting(meeting); $event.stopPropagation()">
+              <mat-icon>event</mat-icon>
+              Reschedule
+            </button>
+            
+            <button mat-button 
+                    color="primary"
+                    *ngIf="meeting.meeting_type === 'online' && meeting.meeting_link && meeting.filter_status === 'upcoming'"
+                    (click)="joinMeeting(meeting)">
+              <mat-icon>link</mat-icon>
+              Join Meeting
+            </button>
           </div>
         </mat-card-content>
       </mat-card>
@@ -143,7 +127,7 @@
 
       <!-- Original Date & Time row -->
       <div class="form-group horizontal">
-        <label> Date & Time</label>
+        <label>Date & Time</label>
         <input type="text" formControlName="originalDateTime" readonly />
       </div>
       
@@ -192,3 +176,4 @@
     </form>
   </div>
 </div>
+

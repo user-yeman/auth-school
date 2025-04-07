@@ -4,12 +4,12 @@
   position: relative;
   width: 100%;
   max-width: 1038px;
-  background: #F5F5F5;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border-radius: 12px;
   margin: 0 auto 20px;
   transition: all 0.3s ease;
-  padding-bottom: 0; /* Reset padding */
+  padding: 16px;
 }
 
 .meeting-card:hover {
@@ -96,11 +96,15 @@ mat-card-content {
 }
 
 .meeting-type-text.online {
-  color: #10B981; /* Green */
+  color: #2196F3; /* Updated to blue */
 }
 
 .meeting-type-text.offline {
   color: #4F46E5; /* Blue */
+}
+
+.meeting-type-text.campus {
+  color: #4CAF50; /* Green */
 }
 
 /* For items with icons, ensure the spacing is also 5px */
@@ -122,7 +126,15 @@ mat-card-content {
 
 /* Reschedule button */
 .reschedule-button {
-  position: relative; /* Not absolute */
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+/* Custom button styling to match previous design */
+.reschedule-button button {
   background-color: #4F46E5;
   color: white;
   padding: 10px 16px;
@@ -130,7 +142,6 @@ mat-card-content {
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 500;
-  width: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -140,7 +151,7 @@ mat-card-content {
   cursor: pointer;
 }
 
-.reschedule-button:hover {
+.reschedule-button button:hover {
   background-color: #4338CA;
   transform: translateY(-2px);
 }
@@ -149,6 +160,63 @@ mat-card-content {
   font-size: 18px;
   height: 18px;
   width: 18px;
+}
+
+/* Button for join meeting */
+.reschedule-button button[color="primary"] {
+  background-color: #2196F3;
+}
+
+.reschedule-button button[color="primary"]:hover {
+  background-color: #1976D2;
+}
+
+/* ===== MEETING HEADER ===== */
+.meeting-header {
+  margin-bottom: 16px;
+}
+
+.meeting-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.meeting-header-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  font-size: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.meeting-header-row div {
+  flex: 1 1 30%;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+/* ===== MEETING DETAILS ===== */
+.meeting-details {
+  font-size: 14px;
+  margin-bottom: 50px; /* Make space for the button */
+  line-height: 1.6;
+}
+
+.meeting-details div {
+  margin-bottom: 8px;
+}
+
+.meeting-details a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.meeting-details a:hover {
+  text-decoration: underline;
 }
 
 /* ===== RESPONSIVE ADJUSTMENTS ===== */
