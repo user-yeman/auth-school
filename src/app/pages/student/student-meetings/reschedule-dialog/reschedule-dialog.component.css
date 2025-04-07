@@ -1,0 +1,49 @@
+/* Form styles */
+.form-group.horizontal {
+  display: flex;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.form-group.horizontal label {
+  width: 120px;
+  font-weight: 500;
+  color: #4B5563;
+  font-size: 14px;
+}
+
+.form-group.horizontal input,
+.form-group.horizontal select,
+.form-group.horizontal textarea {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #D1D5DB;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.reason-group textarea {
+  min-height: 80px;
+}
+
+.time-picker-container {
+  flex: 1;
+}
+
+.time-picker {
+  width: 100%;
+}
+
+/* Dialog-specific styles */
+:host {
+  display: block;
+  max-width: 500px;
+  width: 100%;
+}
+
+h2 {
+  margin-top: 0;
+  color: #111827;
+  font-size: 20px;
+  font-weight: 600;
+}

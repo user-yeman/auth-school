@@ -12,6 +12,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { StudentHeaderComponent } from '../student-header/student-header/student-header.component';
+import { MatDialog } from '@angular/material/dialog';
+import { RescheduleDialogComponent } from './reschedule-dialog/reschedule-dialog.component';
 
 // Define interfaces for the API response
 interface Meeting {
@@ -211,7 +213,8 @@ export class StudentMeetingsComponent implements OnInit {
     private http: HttpClient, 
     private fb: FormBuilder,
     private snackBar: MatSnackBar, // Add this
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private dialog: MatDialog
   ) {
     this.rescheduleForm = this.fb.group({
       topic: ['', Validators.required],
@@ -395,59 +398,57 @@ export class StudentMeetingsComponent implements OnInit {
     }
   }
   
-  rescheduleMeeting(meeting: Meeting): void {
-    console.log('Rescheduling meeting called with:', meeting);
-    this.selectedMeeting = meeting;
-    
-    // Prepare original date time string
-    const originalDate = this.formatDate(meeting.date);
-    const originalTime = this.formatTime(meeting.time);
-    
-    // Map API meeting type to UI labels
-    // API uses 'online'/'offline' but UI shows 'Online'/'Campus'
-    const uiMeetingType = meeting.meeting_type === 'online' ? 'Online' : 'Campus';
-    
-    // Set location options based on meeting type
-    if (uiMeetingType === 'Online') {
-      this.availableLocations = ['Zoom', 'Teams', 'Google Meeting'];
-    } else {
-      this.availableLocations = [...this.onCampusLocations];
-    }
-    
-    // Determine the current location/platform
-    let currentLocation = '';
-    if (uiMeetingType === 'Online') {
-      if (meeting.meeting_link?.includes('teams')) {
-        currentLocation = 'Teams';
-      } else if (meeting.meeting_link?.includes('google') || meeting.meeting_link?.includes('meet.google')) {
-        currentLocation = 'Google Meeting';
-      } else {
-        currentLocation = 'Zoom'; // Default for online
-      }
-    } else {
-      currentLocation = meeting.location || this.availableLocations[0];
-    }
-    
-    // Format the time for the time input
-    const timeDate = new Date(meeting.time);
-    const hours = timeDate.getHours().toString().padStart(2, '0');
-    const minutes = timeDate.getMinutes().toString().padStart(2, '0');
-    const formattedTime = `${hours}:${minutes}`;
-    
-    // Set form values
-    this.rescheduleForm.patchValue({
-      topic: meeting.title || 'Meeting',
-      originalDateTime: `${originalDate}, ${originalTime}`,
-      meetingType: uiMeetingType, // Use the mapped UI value
-      location: currentLocation,
-      newDate: new Date(meeting.date).toISOString().split('T')[0],
-      newTime: formattedTime, // Format: HH:MM (24-hour format)
-      reason: ''
+  rescheduleMeeting(meeting: any): void {
+    // Create the form
+    const rescheduleForm = this.fb.group({
+      topic: [meeting.title || 'Meeting', { disabled: true }],
+      originalDateTime: [`${this.formatDate(meeting.date)}, ${this.formatTime(meeting.time)}`, { disabled: true }],
+      meetingType: [meeting.meeting_type === 'online' ? 'Online' : 'Campus', [Validators.required]],
+      location: [meeting.location || 'Zoom', [Validators.required]],
+      newDate: [new Date(), [Validators.required]],
+      newTime: [this.formatTime(meeting.time), [Validators.required]],
+      reason: ['', [Validators.required]]
     });
     
-    // Show the form
-    this.showRescheduleForm = true;
-    console.log('Form should be visible now. showRescheduleForm =', this.showRescheduleForm);
+    // Define available locations based on meeting type
+    const locations = meeting.meeting_type === 'online' 
+      ? ['Zoom', 'Microsoft Teams', 'Google Meet'] 
+      : ['Room 101', 'Room 102', 'Conference Hall'];
+    
+    // Open dialog
+    const dialogRef = this.dialog.open(RescheduleDialogComponent, {
+      width: '500px',
+      data: {
+        form: rescheduleForm,
+        availableLocations: locations
+      }
+    });
+    
+    // Handle dialog close
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Handle form submission with result data
+        this.submitRescheduleRequest(meeting.id, result);
+      }
+    });
+  }
+  
+  private submitRescheduleRequest(meetingId: number, formData: any): void {
+    // Implement your API call to submit the reschedule request
+    console.log('Submitting reschedule request', meetingId, formData);
+    
+    // Example implementation
+    this.isLoading = true;
+    // this.meetingsService.requestReschedule(meetingId, formData).subscribe(
+    //   response => {
+    //     this.isLoading = false;
+    //     // Show success message
+    //   },
+    //   error => {
+    //     this.isLoading = false;
+    //     this.errorMessage = 'Failed to submit reschedule request';
+    //   }
+    // );
   }
 
   onMeetingTypeChange(): void {
