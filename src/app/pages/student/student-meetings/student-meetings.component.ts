@@ -346,12 +346,16 @@ export class StudentMeetingsComponent implements OnInit {
   
   joinMeeting(meeting: Meeting): void {
     if (meeting.meeting_link) {
-      // For this example, we'll just show the link
-      alert(`Meeting link: ${meeting.meeting_link}`);
-      // In a real app, you might open the meeting link
-      // window.open(meeting.meeting_link, '_blank');
+      // Replace alert with snackbar
+      this.showSnackBar(`Joining meeting: ${meeting.title}`);
+      
+      // Open the meeting link in a new tab
+      if (isPlatformBrowser(this.platformId)) {
+        window.open(meeting.meeting_link, '_blank');
+      }
     } else {
-      alert('No meeting link available');
+      // Show error message with snackbar instead of alert
+      this.showSnackBar('No meeting link available. Please contact your tutor.', true);
     }
   }
   
@@ -630,7 +634,8 @@ export class StudentMeetingsComponent implements OnInit {
   
   // Your existing helper methods remain the same
   viewLocation(location: string): void {
-    alert(`Location: ${location}`);
+    // Replace alert with snackbar
+    this.showSnackBar(`Location: ${location}`);
   }
   
   formatDate(dateString: string): string {
