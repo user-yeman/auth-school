@@ -399,56 +399,108 @@ export class StudentMeetingsComponent implements OnInit {
   }
   
   rescheduleMeeting(meeting: any): void {
+    // Format the current date properly for the date input
+    const today = new Date();
+    const formattedDate = this.formatDateToYYYYMMDD(today);
+    
+    // Format the time properly for the time input (24-hour format)
+    const formattedTime = this.convert12HourTo24Hour(meeting.time || '09:00 AM');
+    
     // Create the form
     const rescheduleForm = this.fb.group({
-      topic: [meeting.title || 'Meeting', { disabled: true }],
-      originalDateTime: [`${this.formatDate(meeting.date)}, ${this.formatTime(meeting.time)}`, { disabled: true }],
-      meetingType: [meeting.meeting_type === 'online' ? 'Online' : 'Campus', [Validators.required]],
-      location: [meeting.location || 'Zoom', [Validators.required]],
-      newDate: [new Date(), [Validators.required]],
-      newTime: [this.formatTime(meeting.time), [Validators.required]],
-      reason: ['', [Validators.required]]
+      topic: [{value: meeting.title || 'Meeting', disabled: true}],
+      originalDateTime: [{value: `${this.formatDate(meeting.date)}, ${this.formatTime(meeting.time)}`, disabled: true}],
+      meetingType: [meeting.meeting_type === 'online' ? 'Online' : 'Campus', Validators.required],
+      location: [meeting.location || 'Zoom', Validators.required],
+      newDate: [formattedDate, Validators.required], // Use string format yyyy-MM-dd
+      newTime: [formattedTime, Validators.required], // Use string format HH:mm (24-hour)
+      reason: ['', Validators.required]
     });
     
     // Define available locations based on meeting type
     const locations = meeting.meeting_type === 'online' 
       ? ['Zoom', 'Microsoft Teams', 'Google Meet'] 
-      : ['Room 101', 'Room 102', 'Conference Hall'];
+      : ['Room 101', 'Room 102', 'Conference Hall', 'Library'];
+    
+    // Store the selected meeting
+    this.selectedMeeting = meeting;
     
     // Open dialog
     const dialogRef = this.dialog.open(RescheduleDialogComponent, {
-      width: '500px',
+      width: '680px', // Match the exact width from specs
+      panelClass: 'reschedule-dialog-container',
       data: {
         form: rescheduleForm,
         availableLocations: locations
-      }
+      },
+      disableClose: true
     });
     
     // Handle dialog close
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Handle form submission with result data
         this.submitRescheduleRequest(meeting.id, result);
       }
     });
   }
   
   private submitRescheduleRequest(meetingId: number, formData: any): void {
-    // Implement your API call to submit the reschedule request
     console.log('Submitting reschedule request', meetingId, formData);
     
-    // Example implementation
+    // Display loading state
     this.isLoading = true;
-    // this.meetingsService.requestReschedule(meetingId, formData).subscribe(
-    //   response => {
-    //     this.isLoading = false;
-    //     // Show success message
-    //   },
-    //   error => {
-    //     this.isLoading = false;
-    //     this.errorMessage = 'Failed to submit reschedule request';
-    //   }
-    // );
+    
+    // Get the tutor_id from the selected meeting
+    const tutor_id = this.selectedMeeting?.tutor_id || 1;
+    
+    // Create request data object with properly formatted fields
+    const requestData = {
+      tutor_id: tutor_id,
+      arrange_date: formData.newDate, // Already in YYYY-MM-DD format
+      meeting_time: formData.newTime, // Already in 24-hour format
+      meeting_type: formData.meetingType === 'Online' ? 'online' : 'offline',
+      reason: formData.reason,
+      meeting_place: formData.meetingType === 'Online' ? 'N/A' : formData.location,
+      meeting_app: formData.meetingType === 'Online' ? formData.location : 'N/A'
+    };
+    
+    if (this.useMockData) {
+      // Mock data implementation - simulates successful API call
+      setTimeout(() => {
+        this.isLoading = false;
+        this.showSnackBar('Meeting rescheduled successfully! (Mock Mode)');
+        // Refresh the meetings data
+        this.fetchMeetingsData();
+      }, 1000);
+    } else {
+      // Real API implementation
+      const apiUrl = `http://127.0.0.1:8000/api/meetingrequest/${meetingId}`;
+      
+      this.http.post(apiUrl, requestData).subscribe({
+        next: (response: any) => {
+          this.isLoading = false;
+          
+          if (response.status === 'success') {
+            this.showSnackBar('Meeting rescheduled successfully!');
+            this.fetchMeetingsData();
+          } else {
+            this.showSnackBar('Failed to reschedule meeting: ' + (response.message || 'Unknown error'), true);
+          }
+        },
+        error: (error) => {
+          console.error('Error rescheduling meeting:', error);
+          this.isLoading = false;
+          
+          // Handle specific error cases
+          if (error.error?.exception === 'ErrorException' && 
+              error.error?.message?.includes('Undefined variable')) {
+            this.showSnackBar('Server error. Please try again later.', true);
+          } else {
+            this.showSnackBar('Failed to reschedule meeting: ' + (error.error?.message || 'Network error'), true);
+          }
+        }
+      });
+    }
   }
 
   onMeetingTypeChange(): void {
@@ -658,5 +710,39 @@ export class StudentMeetingsComponent implements OnInit {
       horizontalPosition: 'center', // Keep centered horizontally 
       verticalPosition: 'top',      // Change from 'bottom' to 'top'
     });
+  }
+
+  // Helper methods for date and time formatting
+  private formatDateToYYYYMMDD(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private convert12HourTo24Hour(timeString: string): string {
+    try {
+      // Already in 24-hour format
+      if (timeString.match(/^\d{2}:\d{2}$/) && !timeString.includes(' ')) {
+        return timeString;
+      }
+      
+      // Parse 12-hour format (e.g. "11:30 PM")
+      const [time, period] = timeString.split(' ');
+      let [hours, minutes] = time.split(':').map(Number);
+      
+      // Convert to 24-hour
+      if (period === 'PM' && hours !== 12) {
+        hours += 12;
+      } else if (period === 'AM' && hours === 12) {
+        hours = 0;
+      }
+      
+      // Format as 24-hour (e.g. "23:30")
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    } catch (e) {
+      console.error('Error converting time format:', e);
+      return '09:00'; // Default fallback time
+    }
   }
 }
