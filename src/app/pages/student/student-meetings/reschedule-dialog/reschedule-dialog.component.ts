@@ -22,7 +22,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule,
   ],
   template: `
-    <h2 mat-dialog-title>RESCHEDULE REQUEST FORM</h2>
+    <div class="dialog-header">
+      <h2 class="dialog-title">RESCHEDULE REQUEST FORM</h2>
+    </div>
     <mat-dialog-content>
       <form [formGroup]="form">
         <!-- Topic row -->
@@ -96,7 +98,6 @@ export class RescheduleDialogComponent {
   }
 
   onMeetingTypeChange() {
-    // Implement the same logic you had in your parent component
     const meetingType = this.form.get('meetingType')?.value;
     // Update available locations based on meeting type
   }
