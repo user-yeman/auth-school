@@ -18,14 +18,6 @@
     <!-- Header -->
     <div class="header">
       <h1>{{ data?.name ? data.name + "'s Dashboard" : "Loading..." }}</h1>
-      <button
-        mat-raised-button
-        class="new-meeting-btn"
-        (click)="openAddDialog()"
-        [disabled]="isLoading"
-      >
-        + New Meetings
-      </button>
     </div>
 
     <!-- Skeleton Loading or Content -->
@@ -62,6 +54,14 @@
         mat-align-tabs="start"
       >
         <mat-tab label="Meetings">
+          <button
+            mat-raised-button
+            class="new-meeting-btn"
+            (click)="openAddDialog()"
+            [disabled]="isLoading"
+          >
+            + New Meetings
+          </button>
           <div class="filter-section">
             <mat-form-field appearance="fill" class="filter-form-field">
               <mat-label>Filter by</mat-label>
@@ -218,7 +218,7 @@
         </mat-tab>
 
         <mat-tab label="Blogs">
-          <p>No blogs available.</p>
+          <app-blog-cards-holder></app-blog-cards-holder>
         </mat-tab>
       </mat-tab-group>
     </ng-template>
