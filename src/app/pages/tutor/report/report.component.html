@@ -1,1 +1,154 @@
-<p>report works!</p>
+<div class="report-container">
+  <!-- Bar Chart for Messages in the Last 7 Days -->
+  <div class="chart-container">
+    <h3>Number of messages in the last 7 days</h3>
+    <canvas *ngIf="!isLoading" #messagesChart id="messagesChart"></canvas>
+
+    <app-skeleton
+      *ngIf="isLoading"
+      type="bar-chart"
+      [rows]="7"
+      [columns]="1"
+    ></app-skeleton>
+  </div>
+
+  <!-- Search Bar and Table Header -->
+  <div class="header_wrapper d-flex justify-content-between align-items-center">
+    <h2>Students with No Interaction</h2>
+
+    <div class="filter-container">
+      <div class="filter-wrapper">
+        <button class="filter-btn" (click)="toggleFilterPanel()">
+          <span class="funnel-icon">
+            <mat-icon class="mat-18">filter_list</mat-icon>
+          </span>
+          Filter by
+          <span class="filter-status">{{ filterStatus }}</span>
+        </button>
+        <div class="filter-panel" *ngIf="showFilterPanel">
+          <a (click)="onFilterChange('All'); toggleFilterPanel()">All</a>
+          <a (click)="onFilterChange('Active'); toggleFilterPanel()">Active</a>
+          <a (click)="onFilterChange('Inactive'); toggleFilterPanel()"
+            >Inactive</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Search by ID or Name"
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()"
+    />
+  </div>
+  <!-- Table -->
+  <table class="table table-bordered table-hover" *ngIf="!isLoading">
+    <thead class="thead-dark">
+      <tr>
+        <th (click)="sort('student_id')">
+          Student ID
+          <span
+            class="sort-icon"
+            [ngClass]="{
+              asc: sortColumn === 'student_id' && sortDirection === 'asc',
+              desc: sortColumn === 'student_id' && sortDirection === 'desc'
+            }"
+          ></span>
+        </th>
+        <th (click)="sort('name')">
+          Student Name
+          <span
+            class="sort-icon"
+            [ngClass]="{
+              asc: sortColumn === 'name' && sortDirection === 'asc',
+              desc: sortColumn === 'name' && sortDirection === 'desc'
+            }"
+          ></span>
+        </th>
+        <th (click)="sort('email')">
+          Student Email
+          <span
+            class="sort-icon"
+            [ngClass]="{
+              asc: sortColumn === 'email' && sortDirection === 'asc',
+              desc: sortColumn === 'email' && sortDirection === 'desc'
+            }"
+          ></span>
+        </th>
+        <th (click)="sort('last_active')">
+          Last Active
+          <span
+            class="sort-icon"
+            [ngClass]="{
+              asc: sortColumn === 'last_active' && sortDirection === 'asc',
+              desc: sortColumn === 'last_active' && sortDirection === 'desc'
+            }"
+          ></span>
+        </th>
+        <th (click)="sort('inactive_days')">
+          Inactive Days
+          <span
+            class="sort-icon"
+            [ngClass]="{
+              asc: sortColumn === 'inactive_days' && sortDirection === 'asc',
+              desc: sortColumn === 'inactive_days' && sortDirection === 'desc'
+            }"
+          ></span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let student of paginatedStudents">
+        <td>{{ student.student_id }}</td>
+        <td>{{ student.name }}</td>
+        <td>{{ student.email }}</td>
+        <td>{{ student.last_active }}</td>
+        <td>{{ student.inactive_days | number : "1.0-0" }} Days</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Skeleton Loader for Table -->
+  <app-skeleton
+    *ngIf="isLoading"
+    type="table"
+    [rows]="5"
+    [columns]="5"
+  ></app-skeleton>
+
+  <!-- Pagination -->
+  <nav aria-label="Page navigation" *ngIf="!isLoading">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [ngClass]="{ disabled: currentPage === 1 }">
+        <a class="page-link" (click)="goToPage(currentPage - 1)">Previous</a>
+      </li>
+      <li class="page-item" *ngIf="currentPage > 3">
+        <a class="page-link" (click)="goToPage(1)">1</a>
+      </li>
+      <li class="page-item" *ngIf="currentPage > 4">
+        <span class="page-link">...</span>
+      </li>
+      <li
+        class="page-item"
+        *ngFor="let page of visiblePageNumbers"
+        [ngClass]="{ active: currentPage === page }"
+      >
+        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+      </li>
+      <li class="page-item" *ngIf="currentPage < totalPages - 3">
+        <span class="page-link">...</span>
+      </li>
+      <li class="page-item" *ngIf="currentPage < totalPages - 2">
+        <a class="page-link" (click)="goToPage(totalPages)">{{ totalPages }}</a>
+      </li>
+      <li
+        class="page-item"
+        [ngClass]="{ disabled: currentPage === totalPages }"
+      >
+        <a class="page-link" (click)="goToPage(currentPage + 1)">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>
