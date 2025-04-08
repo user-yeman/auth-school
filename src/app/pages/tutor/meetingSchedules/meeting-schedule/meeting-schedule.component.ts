@@ -21,6 +21,8 @@ import {
 import { ConfirmComponent } from '../../../common/dialog/confirmDialog/confirm/confirm.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SkeletonComponent } from '../../../../common/loading/skeleton/skeleton/skeleton.component';
+import { BlogComponent } from '../../blog-cards-holder/blogs/blog.component';
+import { BlogCardsHolderComponent } from '../../blog-cards-holder/blog-cards-holder.component';
 
 @Component({
   selector: 'app-meeting-schedule',
@@ -36,6 +38,7 @@ import { SkeletonComponent } from '../../../../common/loading/skeleton/skeleton/
     FormsModule,
     MatDialogModule,
     SkeletonComponent,
+    BlogCardsHolderComponent,
   ],
   templateUrl: './meeting-schedule.component.html',
   styleUrl: './meeting-schedule.component.css',

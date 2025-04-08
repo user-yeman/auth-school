@@ -42,9 +42,9 @@ export interface MeetingResponse {
   student_id: string;
   meetings: MeetingsData;
 }
-export interface ApiResponse {
+export interface ApiResponse<T = any> {
   status: string;
-  data: MeetingResponse;
+  data: T;
   id: string;
   message: string;
 }

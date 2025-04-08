@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,8 @@ export class AuthService {
     token: string,
     role: string,
     userName: string,
-    lastLogin: string = new Date().toISOString()
+    lastLogin: string = new Date().toISOString(),
+    user_id: number
   ): void {
     this.cookieService.set(
       'authToken',
@@ -32,10 +33,12 @@ export class AuthService {
       false,
       'Lax'
     );
+
     this.cookieService.set('userRole', role);
     this.cookieService.set('userName', userName);
     console.log('username', userName);
     this.cookieService.set('lastLogin', lastLogin);
+    this.cookieService.set('user_id', user_id.toString());
   }
   getUserName(): string {
     return this.cookieService.get('userName') || '';
@@ -46,6 +49,9 @@ export class AuthService {
   }
   getUserRole(): string {
     return this.cookieService.get('userRole') || '';
+  }
+  getUserId(): number {
+    return parseInt(this.cookieService.get('user_id') || '0', 10);
   }
 
   isAuthenticated(): boolean {

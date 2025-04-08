@@ -1,0 +1,129 @@
+.dialog-container {
+  padding: 16px;
+}
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  color: white;
+  background-color: #000;
+  padding: 12px 16px;
+  margin: -16px -16px 16px -16px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+.form-field {
+  margin-bottom: 16px;
+}
+.form-field label {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+  display: block;
+}
+.form-field .required {
+  color: #ff0000;
+}
+.custom-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.custom-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+textarea.custom-input {
+  resize: none;
+  height: 100px;
+}
+.file-upload-section {
+  margin-bottom: 16px;
+}
+.file-upload-section p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 8px 0;
+}
+.drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  background-color: transparent;
+}
+.drop-zone p {
+  margin: 0;
+  font-size: 14px;
+  color: #007bff;
+}
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+.file-info {
+  display: flex;
+  align-items: center;
+}
+.file-info mat-icon {
+  margin-right: 8px;
+  color: #666;
+}
+.file-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+.file-info p:last-child {
+  font-size: 12px;
+  color: #999;
+}
+.file-status {
+  display: flex;
+  align-items: center;
+}
+.file-status mat-progress-bar {
+  width: 60px;
+  margin-right: 8px;
+}
+.file-status p {
+  margin: 0;
+  font-size: 12px;
+  color: #333;
+}
+.file-status .success {
+  color: #28a745;
+}
+mat-dialog-actions {
+  margin-top: 16px;
+}
+mat-dialog-actions button {
+  font-size: 14px;
+  text-transform: uppercase;
+  border-radius: 50%;
+  width: 80px;
+  height: 40px;
+  line-height: 40px;
+  padding: 0;
+}
+.cancel-btn {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+}
+.post-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}

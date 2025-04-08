@@ -1,0 +1,35 @@
+<button mat-raised-button class="new-blog-btn" (click)="openAddDialog()">
+  + New Blogs
+</button>
+<div class="container">
+  <div class="header">
+    <h2>{{ filter === "new" ? "New Blogs" : "Old Blogs" }}</h2>
+    <div class="filter">
+      <label for="filter">Filter Blogs:</label>
+      <select id="filter" (change)="onFilterChange($event)">
+        <option value="new">New (Last 30 Days)</option>
+        <option value="old">Old (Older than 30 Days)</option>
+      </select>
+    </div>
+  </div>
+  <!-- Show skeleton while loading -->
+  <div *ngIf="loading" class="skeleton-wrapper">
+    <app-skeleton type="card" [rows]="3"></app-skeleton>
+  </div>
+  <!-- Show blog cards when not loading -->
+  <div *ngIf="!loading" class="blog-list">
+    <!-- Add fallback message if filteredBlogs is empty -->
+    <div *ngIf="filteredBlogs.length === 0" class="no-blogs">
+      No {{ filter === "new" ? "new" : "old" }} blogs to display.
+    </div>
+    <app-blog
+      *ngFor="let blog of filteredBlogs"
+      [blog]="blog"
+      [canEdit]="canEdit(blog)"
+      [isOldBlog]="filter === 'old'"
+      (editBlog)="onEditBlog($event)"
+      (deleteBlog)="onDeleteBlog($event)"
+      (addCommentEvent)="onAddComment(blog.id, $event)"
+    ></app-blog>
+  </div>
+</div>
