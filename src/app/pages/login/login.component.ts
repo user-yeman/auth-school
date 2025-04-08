@@ -27,12 +27,13 @@ export class LoginComponent {
         // Assuming the API response includes user name and last login
         const userName = res.name || res.username || 'User'; // Adjust based on your API response
         const lastLogin = res.last_login || new Date().toISOString(); // Use current time if last_login isn't provided
-
+        const id = res.user_id || 0; // Default to 0 if not provided
         this.authService.storeUserData(
           res.token,
           res.role,
           userName,
-          lastLogin
+          lastLogin,
+          id
         );
 
         if (res.first_login) {

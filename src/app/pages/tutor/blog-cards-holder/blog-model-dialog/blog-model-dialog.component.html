@@ -1,0 +1,82 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>
+    {{ isEditMode ? "EDIT BLOG POST" : "ADD NEW BLOG POST" }}
+  </h2>
+  <mat-dialog-content>
+    <div class="form-field">
+      <label>Blog Post Title:<span class="required">*</span></label>
+      <input
+        [(ngModel)]="blog.title"
+        placeholder="Enter the title of the blog post"
+        title="Blog Post Title"
+        required
+        class="custom-input"
+      />
+    </div>
+
+    <div class="form-field">
+      <label>Blog Post Content:<span class="required">*</span></label>
+      <textarea
+        [(ngModel)]="blog.content"
+        placeholder="Enter the content of the blog post"
+        title="Blog Post Content"
+        rows="5"
+        required
+        class="custom-input"
+      ></textarea>
+    </div>
+
+    <div class="file-upload-section">
+      <p>Add your files here (Optional)</p>
+      <div
+        class="drop-zone"
+        (click)="fileInput.click()"
+        (drop)="onDrop($event)"
+        (dragover)="onDragOver($event)"
+      >
+        <p>Drop your files here, or click to browse</p>
+        <input
+          type="file"
+          #fileInput
+          multiple
+          (change)="onFileSelected($event)"
+          style="display: none"
+        />
+      </div>
+      <div *ngFor="let file of uploadedFiles" class="file-item">
+        <div class="file-info">
+          <mat-icon>description</mat-icon>
+          <div>
+            <p>{{ file.name }}</p>
+            <p>
+              {{ file.size }}
+              {{
+                file.status === "uploading"
+                  ? ", " + (100 - file.progress) + " seconds left"
+                  : ""
+              }}
+            </p>
+          </div>
+        </div>
+        <div class="file-status">
+          <mat-progress-bar
+            *ngIf="file.status === 'uploading'"
+            mode="determinate"
+            [value]="file.progress"
+          ></mat-progress-bar>
+          <p *ngIf="file.status === 'uploading'">{{ file.progress }}%</p>
+          <p *ngIf="file.status === 'success'" class="success">
+            Upload Successful
+          </p>
+          <button mat-icon-button (click)="removeFile(file)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button class="cancel-btn" (click)="onCancel()">Cancel</button>
+    <button mat-button class="post-btn" (click)="onPost()">Post</button>
+  </mat-dialog-actions>
+</div>

@@ -12,6 +12,7 @@ import { StudentManagementComponent } from './pages/tutor/studentManagement/stud
 import { MeetingScheduleComponent } from './pages/tutor/meetingSchedules/meeting-schedule/meeting-schedule.component';
 import { RescheduleComponent } from './pages/tutor/rescheduleMeeting/reschedule/reschedule.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
+import { ReportComponent } from './pages/tutor/report/report.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -67,6 +68,7 @@ export const routes: Routes = [
           },
           { path: 'meetings/:id', component: MeetingScheduleComponent },
           { path: 'request', component: RescheduleComponent },
+          { path: 'report', component: ReportComponent },
           // more routes
         ],
       },
@@ -82,7 +84,6 @@ export const routes: Routes = [
             component: StudentDashboardComponent,
           },
           // more routes
-
         ],
       },
       // Default redirect (could be role-based in AuthGuard)

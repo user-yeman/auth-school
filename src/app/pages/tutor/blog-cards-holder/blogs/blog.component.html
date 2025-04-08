@@ -1,0 +1,41 @@
+<div class="blog-card">
+  <div class="header">
+    <h3>{{ blog.title }}</h3>
+    <div class="settings" *ngIf="canEdit">
+      <button (click)="toggleSettings()">⋮</button>
+      <div class="dropdown" *ngIf="showSettings">
+        <button (click)="editBlog.emit(blog)">Edit</button>
+        <button (click)="deleteBlog.emit(blog.id)">Delete</button>
+      </div>
+    </div>
+  </div>
+  <p class="author">
+    Author: {{ blog.author }}
+    <span class="date">{{ formatDate(blog.created_at || "") }}</span>
+  </p>
+  <p class="content">{{ blog.content }}</p>
+  <!-- Show attachments section only if documents array is not empty -->
+  <div class="attachments" *ngIf="blog.documents && blog.documents.length > 0">
+    <h5>Attachments :</h5>
+    <button class="download-btn" (click)="downloadFiles()">
+      <span class="icon">⭳</span> Download All Files
+    </button>
+  </div>
+  <div class="comments-section">
+    <p>Comments ({{ blog.comments?.length || 0 }})</p>
+    <div class="comments">
+      <div *ngFor="let comment of blog.comments" class="comment">
+        <p>{{ comment.content }}</p>
+      </div>
+    </div>
+    <!-- Show "Add a comment" only for new blogs -->
+    <div class="add-comment" *ngIf="!isOldBlog">
+      <input
+        [(ngModel)]="newComment"
+        placeholder="Add a comment..."
+        (keyup.enter)="addComment()"
+      />
+      <button (click)="addComment()">➤</button>
+    </div>
+  </div>
+</div>
