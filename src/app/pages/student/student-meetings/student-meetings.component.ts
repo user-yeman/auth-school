@@ -82,7 +82,7 @@ export class StudentMeetingsComponent implements OnInit {
   activeFilter: 'all' | 'upcoming' | 'pastdue' = 'upcoming'; // Default to upcoming
   lastLoginFromSession: string = '';
   
-  private useMockData = true; // Set to false when backend is stable
+  private useMockData = false; // Set to false when backend is stable
   private mockApiResponse: ApiResponse = {
     "status": "success",
     "data": {
