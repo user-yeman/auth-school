@@ -20,6 +20,14 @@ interface Document {
   displayStatus: string;   // No longer optional
 }
 
+// New interface for notifications
+interface ScheduleNotification {
+  topic: string;
+  date: string;
+  time: string;
+  status: string;
+}
+
 interface ApiResponse {
   status: number;
   data: {
@@ -82,6 +90,28 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  // Mock data for schedule notifications
+  scheduleNotifications: ScheduleNotification[] = [
+    {
+      topic: "Student's Progress Review",
+      date: "March 18",
+      time: "1:00 PM",
+      status: "approved"
+    },
+    {
+      topic: "Exam Preparation",
+      date: "March 22",
+      time: "2:00 PM",
+      status: "rejected"
+    },
+    {
+      topic: "Course Review",
+      date: "March 23",
+      time: "1:00 PM",
+      status: "approved"
+    }
+  ];
+
   user = { 
     name: '', 
     email: '', 
@@ -135,6 +165,9 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
     if (this.user && this.user.lastLogin) {
       this.user.lastLogin = this.formatLastLogin(this.user.lastLogin);
     }
+    
+    // Log the schedule notifications for testing
+    console.log('Schedule Notifications:', this.scheduleNotifications);
   }
 
   ngAfterViewInit() {

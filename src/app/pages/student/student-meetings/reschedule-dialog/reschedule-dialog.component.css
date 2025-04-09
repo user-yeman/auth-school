@@ -1,0 +1,131 @@
+/* Dialog header with background highlight - exact match to specifications */
+.dialog-header {
+  background-color: #2c2c2c; /* Updated to match #2c2c2c */
+  height: 97px; /* Exact height as specified */
+  width: 110%; /* Full width of container */
+  margin: -24px -24px 24px -24px; /* Negative margin to extend to the edges of dialog */
+  border-radius: 10px 10px 0 0; /* Match specs: rounded only at top */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); /* Match specs: 0px 4px 4px #00000040 */
+  position: relative; /* Positioning context */
+  
+  /* Flexbox for perfect centering */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.dialog-title {
+  color: white;
+  font-size: 18px;
+  font-weight: 700; /* Bolder text */
+  margin: 0;
+  letter-spacing: 0.5px;
+  font-family: 'Inter', sans-serif; /* Match font from screenshot */
+  text-align: center; /* Ensure text is centered */
+  width: 100%; /* Full width for centering */
+  position: absolute; /* Position within header */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Perfect centering */
+  margin-top: 10px; /* Remove margin from top */
+}
+
+/* Form container styles */
+mat-dialog-content {
+  padding: 20px 24px; /* Match padding from screenshot */
+  border-radius: 0; /* Sharp corners for rectangle look */
+  background-color: #ffffff; /* White background */
+}
+
+/* Make the form take full width */
+form {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Form styles */
+.form-group.horizontal {
+  display: flex;
+  margin-bottom: 16px;
+  align-items: center;
+  width: 100%; /* Full width */
+  box-sizing: border-box;
+}
+
+.form-group.horizontal label {
+  width: 120px;
+  font-weight: 500;
+  color: #333333;
+  font-size: 14px;
+  flex-shrink: 0; /* Prevent labels from shrinking */
+  font-family: 'Inter', sans-serif; /* Match font from screenshot */
+}
+
+.form-group.horizontal input,
+.form-group.horizontal select,
+.form-group.horizontal textarea {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #D1D5DB;
+  border-radius: 4px; /* Less rounded corners for more rectangular look */
+  font-size: 14px;
+  background-color: #f9f9f9; /* Light background for inputs */
+  font-family: 'Inter', sans-serif; /* Match font from screenshot */
+}
+
+/* Inputs with readonly state */
+.form-group.horizontal input[readonly] {
+  background-color: #f0f0f0;
+  border-color: #e0e0e0;
+}
+
+.reason-group textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.time-picker-container {
+  flex: 1;
+}
+
+.time-picker {
+  width: 100%;
+}
+
+/* Dialog-specific styles */
+:host {
+  display: block;
+  max-width: 680px; /* Match width specification of 680px */
+  width: 100%;
+}
+
+/* Override Material Dialog padding to accommodate our header */
+::ng-deep .mat-mdc-dialog-container .mat-mdc-dialog-surface {
+  overflow: hidden;
+  border-radius: 10px !important; /* Match border-radius from specs */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Enhanced shadow from screenshot */
+}
+
+/* Dialog actions area */
+mat-dialog-actions {
+  padding: 12px 24px 24px; /* Match padding from screenshot */
+  margin: 0;
+  justify-content: center; /* Center buttons from screenshot */
+  border-top: none; /* Remove border */
+  background-color: transparent; /* Remove background */
+}
+
+/* Button styles */
+button {
+  min-width: 100px;
+  border-radius: 25px !important; /* Fully rounded buttons from screenshot */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Button shadow from screenshot */
+  text-transform: none;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+button:first-child {
+  margin-left: 0;
+}
+

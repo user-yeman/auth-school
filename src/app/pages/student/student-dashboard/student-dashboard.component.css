@@ -132,10 +132,14 @@
 }
 
 .section-title {
+  font-family: Inter, sans-serif;
+  font-weight: 600;
   font-size: 20px;
-  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 0%;
+  vertical-align: middle;
+  margin-bottom: 20px;
   color: #333;
-  margin: 0;
 }
 
 /* Search bar */
@@ -150,27 +154,45 @@
   border: 1px solid #ddd;
 }
 
-/* Grid Layout for Cards - Exact 4 cards in a row */
+/* Grid Layout for Cards - Exact 3 cards in a row with full width */
 .cards-container {
-  position: relative;
-  width: 100%;
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Exactly 4 columns */
-  gap: 20px; /* Slightly reduced gap for better fit */
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+  gap: 20px;
   margin-bottom: 30px;
   margin-top: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Card styling optimized for 4-card layout */
+/* Card styling optimized for 3-card layout */
 .stats-card {
-  padding: 16px; /* Slightly reduced padding for better fit */
+  padding: 20px;
   border-radius: 8px;
   background: #F5F5F5;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  height: auto;
-  width: auto;
+  height: 100%;
+  width: 100%; /* Ensure card takes full width of its grid cell */
+  box-sizing: border-box; /* Include padding in the width calculation */
+  overflow: hidden; /* Prevent content from expanding card */
+}
+
+/* Fix for wider cards container as well */
+.wider-cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 30px;
+  margin-top: 20px;
+  box-sizing: border-box;
+}
+
+.wider-card {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Fix card content styles for more compact display */
@@ -356,7 +378,7 @@
   margin-bottom: 20px;
 }
 
-/* Table Styles */
+/* Table Styles
 mat-table {
   width: 100%;
   background: transparent;
@@ -375,7 +397,7 @@ mat-header-cell {
 mat-cell {
   font-size: 14px;
   color: #1f2937;
-}
+} */
 
 /* Status Colors */
 .status-completed {
@@ -425,6 +447,7 @@ mat-paginator {
   align-items: center;
   margin-top: 20px;
   gap: 10px;
+  width: 100%;
 }
 
 .page-info {
@@ -439,40 +462,233 @@ mat-paginator {
   font-weight: 600;
 }
 
-/* Responsive Adjustments for 4-card layout */
-@media (max-width: 1200px) {
-  .cards-container {
-    grid-template-columns: repeat(4, 1fr); /* Still 4 columns */
-    gap: 16px; /* Further reduce gap */
+/* Enhanced Notifications Container */
+.notifications-container {
+  margin-top: 40px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.notification-cards-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;
+  max-width: 1200px; /* Match dashboard container max width */
+}
+
+.wider-notification-card {
+  width: 100%;
+  max-width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background: #F5F5F5;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-left: 6px solid transparent;
+  margin: 0;
+}
+
+.reschedule-topic {
+  font-size: 20px;
+  margin-bottom: 16px;
+  color: #333;
+  font-weight: 500;
+  padding-right: 40px; /* Add space for status label */
+}
+
+.reschedule-details {
+  font-size: 16px;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  line-height: 1.5;
+  width: 100%;
+}
+
+.status-label {
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-left: 10px;
+  text-align: left;
+  display: inline-block;
+}
+
+.reschedule-card {
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #f9f9f9;
+  border-left: 4px solid transparent;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.reschedule-topic {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.reschedule-details {
+  font-size: 14px;
+  color: #444;
+}
+
+.status-label {
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.reschedule-card.approved .status-label {
+  color: #22C55E;
+}
+
+.reschedule-card.rejected .status-label {
+  color: #EF4444;
+}
+
+/* Responsive adjustments for notification cards */
+@media (max-width: 1024px) {
+  .wider-notification-card {
+    padding: 20px;
   }
   
-  /* Further reduce padding */
-  .stats-card {
-    padding: 14px;
+  .reschedule-topic {
+    padding-right: 0;
+  }
+  
+  .reschedule-details {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .status-label {
+    margin-left: auto;
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
+  .notifications-container {
+    padding: 0 10px;
+  }
+  
+  .wider-notification-card {
+    padding: 16px;
+  }
+  
+  .reschedule-topic {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  
+  .reschedule-details {
+    font-size: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .status-label {
+    margin-left: 0;
+    align-self: flex-start;
+    margin-top: 8px;
+  }
+  
+  .meeting-time {
+    margin-right: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wider-notification-card {
+    padding: 14px;
+  }
+  
+  .reschedule-topic {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .reschedule-details {
+    font-size: 14px;
+    gap: 10px;
+  }
+  
+  .status-label {
+    padding: 4px 8px;
+    font-size: 12px;
+    display: inline-block;
+    width: auto;
+  }
+  
+  .meeting-time {
+    margin-right: 15px;
+  }
+}
+
+/* Add these improved card layout styles */
+.cards-row {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 0 -10px; /* Negative margin to offset padding */
+}
+
+.card-column {
+  width: 33.33%;
+  padding: 0 10px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+/* Responsive adjustments for wider cards */
+@media (max-width: 1200px) {
+  .cards-container, 
+  .wider-cards-container {
+    grid-template-columns: repeat(3, 1fr); /* Maintain 3 columns */
+    gap: 15px;
+  }
+}
+
+/* Updated breakpoint to maintain 3 columns for laptop view at 100% zoom */
+@media (min-width: 992px) and (max-width: 1024px) {
   .dashboard-container {
     padding: 20px;
   }
-
+  
   .cards-container {
+    grid-template-columns: repeat(3, 1fr); /* Force 3 columns on laptop */
+    gap: 15px;
+  }
+  
+  .wider-card {
+    flex: 1 1 calc(33.33% - 10px);
+    min-width: 240px;
+    max-width: calc(33.33% - 10px);
+  }
+  
+  .card-column {
+    width: 33.33%;
+  }
+}
+
+/* Only go to 2 columns when screen is genuinely tablet-sized */
+@media (max-width: 991px) {
+  .cards-container,
+  .wider-cards-container {
     grid-template-columns: repeat(2, 1fr); /* Switch to 2 columns */
-    gap: 16px;
   }
   
-  .stats-card {
-    padding: 16px; /* Restore padding for better readability */
+  .wider-card {
+    flex: 1 1 calc(50% - 10px);
+    min-width: 240px;
+    max-width: calc(50% - 10px);
   }
   
-  .card-title {
-    font-size: 17px; /* Restore font size for better readability */
-    margin-bottom: 14px;
-  }
-  
-  .card-detail {
-    margin-bottom: 10px;
+  .card-column {
+    width: 50%;
   }
 }
 
@@ -485,11 +701,6 @@ mat-paginator {
     font-size: 28px;
     margin-top: 60px;
     margin-bottom: 30px;
-  }
-
-  .cards-container {
-    grid-template-columns: repeat(2, 1fr); /* Maintain 2 columns on tablets */
-    gap: 12px;
   }
   
   .stats-card {
@@ -519,11 +730,22 @@ mat-paginator {
   .last-login-info {
     text-align: center;
   }
+  
+  .card-column {
+    width: 50%;
+  }
 }
 
 @media (max-width: 600px) {
-  .cards-container {
+  .cards-container,
+  .wider-cards-container {
     grid-template-columns: 1fr; /* Single column on smaller screens */
+  }
+  
+  .wider-card {
+    flex: 1 1 100%;
+    min-width: 100%;
+    max-width: 100%;
   }
   
   .stats-card {
@@ -532,6 +754,10 @@ mat-paginator {
   
   .main-title {
     font-size: 26px;
+  }
+  
+  .card-column {
+    width: 100%;
   }
 }
 
@@ -575,4 +801,10 @@ mat-paginator {
 /* Alternatively, add space to the container */
 .student_display_container {
   margin-top: 23px;
+}
+
+/* Meeting Time */
+.meeting-time {
+  margin-right: 30px;
+  display: inline-block;
 }

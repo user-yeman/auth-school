@@ -1,598 +1,15 @@
-/* Main container that works with sidebar */
-.dashboard-container {
-  width: 100%;
-  padding: 24px;
-  position: relative;
-}
-
-/* Main page title styling */
-.main-title {
-  color: #000;
-  text-align: left;
-  font-family: Inter, sans-serif;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  margin-top: 0%; /* Position from top as specified */
-  margin-bottom: 40px; /* Add some space below the title */
-}
-
-/* Responsive styling for the main title */
-@media (max-width: 768px) {
-  .main-title {
-    margin-top: 60px; /* Less space on mobile */
-    font-size: 28px; /* Slightly smaller on mobile */
-    margin-bottom: 30px;
-  }
-}
-
-/* User info header layout */
-.user-info-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0; /* Remove bottom margin to help with positioning */
-  padding-bottom: 16px;
-  border-bottom: 1px solid #eaeaea;
-  position: relative;
-}
-
-/* Left side empty space for layout balance */
-.left-icon {
-  visibility: hidden;
-  width: 24px;
-}
-
-/* Group for user icon and menu icon - repositioned to left */
-.user-icon-group {
-  display: flex;
-  align-items: center;
-  position: relative;
-  order: -1; /* Move this element to the start of the flex container */
-  margin-right: 16px; /* Add space between icons and text */
-}
-
-/* User icon styling - profile picture */
-.user-icon {
-  width: 44px;
-  height: 44px;
-  border: 1.5px solid #292D32;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 2px; /* 2px spacing to the menu icon */
-}
-
-/* Profile image inside user icon */
-.profile-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Menu icon styling - positioned as dropdown icon */
-.menu-icon {
-  margin-left: 5px; /* 5px spacing from profile icon */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  top: 30px; /* Positioned 30px down as requested */
-}
-
-.menu-icon mat-icon {
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
-  color: #292D32;
-  transform: rotate(0deg); /* Ensure it's not rotated */
-}
-
-/* Right side user info with proper positioning - updated for new order */
-.user-info {
-  display: flex;
-  align-items: flex-start; /* Changed to allow vertical alignment with menu icon offset */
-  gap: 16px;
-  position: relative;
-  margin-left: auto; /* Push to right side of container */
-}
-
-/* User details container */
-.user-details {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Align text to left since icon is now on left */
-  margin-left: 16px; /* Space after the icons */
-}
-
-/* User name styling */
-.user-name {
-  font-family: 'Inter', sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 100%;
-  color: #000000;
-  margin-bottom: 8px;
-}
-
-/* Last login info styling */
-.last-login-info {
-  font-family: 'Inter', sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 100%;
-  color: #6B7280;
-}
-
-/* Meetings header with filter */
-.meetings-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  position: relative;
-}
-
-/* Title and filter group container */
-.title-filter-group {
-  display: flex;
-  align-items: center;
-  gap: 5px; /* Exact 5px spacing between title and filter */
-}
-
-/* Ensure the title doesn't grow too large */
-.section-title {
-  font-size: 20px;
-  font-weight: 500;
-  color: #333;
-  margin: 0;
-  white-space: nowrap;
-}
-
-/* Filter wrapper modifications */
-.filter-wrapper {
-  position: relative;
-  flex-shrink: 0; /* Prevent filter from shrinking */
-}
-
-.meeting-filter {
-  box-sizing: border-box;
-  width: 141px;
-  height: 36px;
-  background: #F1F1FC;
-  border: 1px solid #D9D9D9;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 3px;
-  padding: 0 12px;
-  font-family: inherit;
-  font-size: 14px;
-  color: #333;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-}
-
-/* Custom dropdown arrow */
-.filter-wrapper::after {
-  content: '';
-  position: absolute;
-  right: 12px;
-  top: 16px;
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 6px solid #666;
-  pointer-events: none;
-}
-
-.meeting-filter:focus {
-  outline: none;
-  border-color: #1976D2;
-}
-
-/* Loading container */
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 0;
-}
-
-.loading-container p {
-  margin-top: 16px;
-  color: #666;
-}
-
-/* Error container */
-.error-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 0;
-  color: #f44336;
-}
-
-.error-container mat-icon {
-  font-size: 48px;
-  height: 48px;
-  width: 48px;
-  margin-bottom: 16px;
-}
-
-.error-container button {
-  margin-top: 16px;
-}
-
-/* Meetings container */
-.meetings-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
-  margin-top: 24px;
-}
-
-/* Meeting card styles */
+/* ===== RESET PROBLEMATIC STYLES ===== */
+/* Reset meeting card styles */
 .meeting-card {
-  border-radius: 8px;
-  overflow: hidden;
-  transition: box-shadow 0.3s ease;
-}
-
-.meeting-card:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.meeting-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.meeting-title {
-  font-size: 20px;
-  font-weight: 700; /* Keep title bold */
-  color: #333;
-  margin: 0;
-  flex-grow: 1;
-}
-
-.meeting-badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.meeting-badge.online {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-.meeting-badge.offline {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.meeting-details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.details-column {
-  flex: 1;
-  min-width: 120px;
-}
-
-.detail-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.detail-item mat-icon {
-  margin-right: 8px;
-  color: #666;
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-/* Meeting actions container */
-.meeting-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 24px;
-}
-
-/* Regular action buttons container */
-.action-buttons-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-/* Reschedule button styling - moved to right-bottom corner */
-.reschedule-button {
-  position: absolute;
-  bottom: 16px;
-  right: 16px; /* Changed from left: 16px to right: 16px */
-  background-color: #ff9800; /* Amber/orange color */
-  color: white;
-}
-
-/* Hover effect for reschedule button */
-.reschedule-button:hover {
-  background-color: #f57c00;
-}
-
-.meeting-status {
-  margin-top: 16px;
-}
-
-.status-badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.status-completed {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.status-rescheduled {
-  background-color: #fff8e1;
-  color: #f57f17;
-}
-
-.status-upcoming {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-/* Empty state styling */
-.no-meetings {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 0;
-  color: #666;
-}
-
-.no-meetings mat-icon {
-  font-size: 64px;
-  height: 64px;
-  width: 64px;
-  margin-bottom: 16px;
-  color: #ccc;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .user-info-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .user-info {
-    width: 100%;
-    justify-content: space-between;
-    margin-top: 16px;
-  }
-  
-  .user-details {
-    align-items: flex-start;
-  }
-  
-  .left-icon {
-    margin-bottom: 16px;
-  }
-  
-  .meetings-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-  
-  .filter-wrapper {
-    width: 100%;
-  }
-  
-  .meeting-filter {
-    width: 100%;
-    max-width: 200px;
-  }
-  
-  .meetings-container {
-    grid-template-columns: 1fr;
-  }
-
-  .title-filter-group {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px; /* A bit more space on mobile */
-  }
-}
-
-/* Updated welcome header with user profile */
-.welcome-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.welcome-header h2 {
-  font-size: 24px;
-  font-weight: 500;
-  color: #333;
-  margin: 0;
-}
-
-/* User profile section */
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-/* User name on left side */
-.user-name {
-  position: absolute;
-  width: 90px;
-  height: 30px;
-  right: 156px;
-  top: 38px;
-  font-family: 'Inter', sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 100%;
-  text-align: center;
-  color: #000000;
-}
-
-/* User icon on right side */
-.user-icon {
-  position: absolute;
-  width: 44px;
-  height: 44px;
-  right: 44px; /* 2.78% of viewport - converted to fixed value */
-  top: 24px;
-  border: 1.5px solid #292D32;
-  border-radius: 50%;
-  overflow: hidden; /* Ensure the image respects the circular border */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.user-icon mat-icon {
-  font-size: 40px;
-  width: 40px;
-  height: 40px;
-}
-
-.profile-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Ensure the image covers the container nicely */
-}
-
-.last-login-info {
-  font-size: 14px;
-  color: #666;
-  text-align: right;
-}
-
-/* Last login container */
-.last-login-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 40px;
-}
-
-/* Last login info */
-.last-login-info {
-  position: absolute;
-  width: 280px;
-  height: 18px;
-  right: 44px;
-  top: 77px;
-  font-family: 'Inter', sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 100%;
-  text-align: center;
-  color: #6B7280;
-}
-
-.last-login-time {
-  font-weight: 500;
-  color: #1976D2;
-}
-
-.profile-avatar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.profile-avatar mat-icon {
-  font-size: 36px;
-  height: 36px;
-  width: 36px;
-  color: #1976D2;
-}
-
-.profile-name {
-  font-weight: 500;
-  color: #333;
-  max-width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.page-title {
-  font-size: 20px;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 20px;
-  margin: 0;
-}
-
-.section-header {
-  margin: 24px 0 16px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 8px;
-  margin-top: 30px;
-}
-
-.section-header h3 {
-  font-size: 18px;
-  font-weight: 500;
-  color: #333;
-  margin: 0;
-}
-
-.meetings-container {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin-bottom: 30px;
-  margin-top: 30px;
-}
-
-.meeting-card {
+  position: relative;
   width: 100%;
   max-width: 1038px;
-  height: auto;
-  min-height: 218px;
-  background: #F5F5F5;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
-  margin: 0 auto;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border-radius: 12px;
+  margin: 0 auto 20px;
   transition: all 0.3s ease;
+  padding: 16px;
 }
 
 .meeting-card:hover {
@@ -600,925 +17,240 @@
   transform: translateY(-2px);
 }
 
-.meeting-card.past-due {
-  background: #FAFAFA;
-  opacity: 0.9;
-}
-
-/* Meeting card content container */
+/* Reset content container */
 mat-card-content {
+  padding: 24px;
   position: relative;
-  padding-bottom: 70px; /* Add padding at bottom to make room for the button */
-}
-
-mat-card-content {
-  padding: 16px;
-  height: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
 }
 
-/* Card detail fonts - all text except headers */
-.meeting-details-container,
-.info-value,
-.info-separator {
-  font-family: 'Inter', sans-serif;
-  font-weight: 400; /* Changed from 700 to 400 for normal weight */
-  font-size: 14px;
-  line-height: 100%;
-  letter-spacing: 0%;
-  vertical-align: middle;
-}
-
-/* Info label styling - keep labels bold for contrast */
-.info-label {
-  font-family: 'Inter', sans-serif;
-  font-weight: 700; /* Keep labels bold for better distinction */
-  font-size: 14px;
-  line-height: 100%;
-  letter-spacing: 0%;
-  vertical-align: middle;
-  color: #555;
-}
-
-/* Meeting info row spacing */
-.meeting-info-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  width: 100%;
-}
-
-/* Special styling ONLY for the first row with date/time/type */
+/* ===== MEETING INFO ROWS ===== */
+/* Date-Time-Type row (first row) */
 .date-time-type-row {
   display: flex;
+  justify-content: space-between;
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #E5E7EB;
+  align-items: center;
+}
+
+.date-section,
+.time-section,
+.type-section {
+  flex: 1;
+  display: flex;
   align-items: center;
 }
 
 .date-section {
-  width: 33%;
-  text-align: left;
-  padding-right: 8px;
-  display: flex;
-  align-items: center;
+  justify-content: flex-start;
 }
 
 .time-section {
-  width: 33%;
-  text-align: center;
-  display: flex;
-  align-items: center;
   justify-content: center;
 }
 
 .type-section {
-  width: 33%;
-  text-align: right;
-  padding-left: 8px;
-  display: flex;
-  align-items: center;
   justify-content: flex-end;
 }
 
-/* Responsive adjustment for the special row */
-@media (max-width: 768px) {
-  .date-time-type-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  
-  .date-time-type-row .date-section,
-  .date-time-type-row .time-section,
-  .date-time-type-row .type-section {
-    width: 100%;
-    justify-content: flex-start; /* All left-aligned on mobile */
-  }
-}
-
-/* Hide separators as we're using space-between instead */
-.meeting-info-row .info-separator {
-  display: none;
-}
-
-/* Responsive adjustment */
-@media (max-width: 768px) {
-  .meeting-info-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  
-  .meeting-info-row .date-section,
-  .meeting-info-row .time-section,
-  .meeting-info-row .type-section {
-    width: 100%;
-    justify-content: flex-start; /* All left-aligned on mobile */
-  }
-}
-
-/* Info value styling */
-.info-value {
-  color: #333;
-}
-
-/* Separator styling */
-.info-separator {
-  color: #ccc;
-  margin: 0 8px;
-}
-
-/* Status text styling - add colors but not bold */
-.status-text {
-  font-weight: 400; /* Regular weight for status text */
-}
-
-.status-text.status-completed {
-  color: #2E7D32;
-}
-
-.status-text.status-rescheduled {
-  color: #FF8F00;
-}
-
-.status-text.status-upcoming {
-  color: #1565C0;
-}
-
-/* Meeting details container spacing */
-.meeting-details-container {
+/* Regular info rows */
+.meeting-info-row {
   display: flex;
-  flex-direction: column;
-  margin: 16px 0;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  width: 100%;
 }
 
-/* Responsive adjustments while maintaining font specs */
-@media (max-width: 768px) {
-  .meeting-info-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  
-  .info-separator {
-    display: none;
-  }
-}
-
-.meeting-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.meeting-badge {
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 14px;
+/* ===== LABELS AND VALUES ===== */
+.info-label {
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
-  white-space: nowrap;
+  font-size: 14px;
+  color: #4B5563;
+  margin-right: 5px; /* Changed from 8px to 5px */
+  min-width: 120px; /* Consistent width for alignment */
 }
 
-.meeting-badge.online {
-  background-color: #E8F5E9;
-  color: #2E7D32;
-}
-
-.meeting-badge.offline {
-  background-color: #E3F2FD;
-  color: #1565C0;
-}
-
-.meeting-details {
-  display: flex;
-  gap: 60px;
-  margin-bottom: 20px;
-}
-
-.details-column {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 200px;
+.info-value {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: #111827;
   flex: 1;
 }
 
-.detail-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  min-height: 24px;
+.date-section .info-label,
+.time-section .info-label,
+.type-section .info-label {
+  margin-right: 5px; /* Ensure 5px spacing in the first row too */
 }
 
-.detail-item mat-icon {
-  color: #666;
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+.meeting-type-text {
+  font-weight: 500;
+  margin-left: 5px; /* Add consistent spacing if needed */
 }
 
+.meeting-type-text.online {
+  color: #2196F3; /* Updated to blue */
+}
+
+.meeting-type-text.offline {
+  color: #4F46E5; /* Blue */
+}
+
+.meeting-type-text.campus {
+  color: #4CAF50; /* Green */
+}
+
+/* For items with icons, ensure the spacing is also 5px */
+.card-detail, 
+.meeting-detail {
+  gap: 5px; /* Update if you have elements with gap property */
+}
+
+/* ===== RESCHEDULE BUTTON ===== */
+/* Meeting actions container */
 .meeting-actions {
   display: flex;
-  gap: 16px;
-  margin-top: auto;
-  flex-wrap: wrap;
+  justify-content: flex-start; /* Left alignment */
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #E5E7EB;
+  width: 100%;
 }
 
-.meeting-status {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-}
-
-.status-badge {
-  padding: 5px 12px;
-  border-radius: 4px;
-  font-size: 14px;
-  background-color: #F5F5F5;
-  color: #666;
-  text-transform: capitalize;
-}
-
-.status-badge.status-completed {
-  background-color: #E8F5E9;
-  color: #2E7D32;
-}
-
-.status-badge.status-rescheduled {
-  background-color: #FFF8E1;
-  color: #FF8F00;
-}
-
-.status-badge.status-upcoming {
-  background-color: #E3F2FD;
-  color: #1565C0;
-}
-
-.loading-container, .error-container, .no-meetings {
-  text-align: center;
-  padding: 40px 0;
-  color: #666;
-}
-
-button[mat-raised-button], button[mat-stroked-button] {
-  min-width: 130px;
-}
-
-@media (max-width: 1100px) {
-  .meeting-card {
-    max-width: 100%;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .welcome-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-  
-  .meeting-details {
-    flex-direction: column;
-    gap: 24px;
-  }
-  
-  .meeting-actions {
-    justify-content: space-between;
-  }
-  
-  .user-profile {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    width: 100%;
-  }
-
-  .last-login-info {
-    text-align: left;
-  }
-
-  .user-name {
-    position: absolute;
-    right: 50%;
-    transform: translateX(50%);
-    top: 20px;
-    width: auto;
-    text-align: center;
-  }
-
-  .user-icon {
-    position: absolute;
-    right: 50%;
-    transform: translateX(50%);
-    top: 50px;
-  }
-
-  .last-login-info {
-    position: absolute;
-    width: 100%;
-    right: 0;
-    top: 110px;
-    text-align: center;
-  }
-
-  .dashboard-container {
-    padding-top: 20px; /* Reset padding on mobile */
-  }
-
-  .meetings-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-  
-  .filter-wrapper {
-    width: 100%;
-    margin-bottom: 16px;
-  }
-  
-  .meeting-filter {
-    width: 100%;
-    max-width: 200px;
-  }
-}
-
-/* Meetings header with filter */
-.meetings-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  position: relative;
-}
-
-.section-title {
-  font-size: 20px;
-  font-weight: 500;
-  color: #333;
-  margin: 0;
-}
-
-/* Filter styling with exact specifications */
-.filter-wrapper {
-  position: relative;
-}
-
-.meeting-filter {
-  box-sizing: border-box;
-  width: 141px;
-  height: 36px;
-  background: #F1F1FC;
-  border: 1px solid #D9D9D9;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 3px;
-  padding: 0 12px;
-  font-family: inherit;
-  font-size: 14px;
-  color: #333;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-}
-
-/* Custom dropdown arrow */
-.filter-wrapper::after {
-  content: '';
+/* Reschedule button */
+.reschedule-button {
   position: absolute;
-  right: 12px;
-  top: 16px;
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 6px solid #666;
-  pointer-events: none;
-}
-
-.meeting-filter:focus {
-  outline: none;
-  border-color: #1976D2;
-}
-
-@media screen and (max-width: 480px) {
-  .dashboard-container {
-    padding: 16px 12px;
-  }
-  
-  .welcome-header h2 {
-    font-size: 20px;
-  }
-  
-  .meeting-card {
-    padding: 12px;
-  }
-  
-  mat-card-content {
-    padding: 16px;
-  }
-}
-
-/* Empty state styling */
-.no-meetings {
+  bottom: 16px;
+  right: 16px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 0;
-  color: #666;
-}
-
-.no-meetings mat-icon {
-  font-size: 64px;
-  height: 64px;
-  width: 64px;
-  margin-bottom: 16px;
-  color: #ccc;
-}
-
-/* Loading state */
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 0;
-}
-
-.loading-container p {
-  margin-top: 16px;
-  color: #666;
-}
-
-/* Error state */
-.error-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 0;
-  color: #f44336;
-}
-
-.error-container mat-icon {
-  font-size: 64px;
-  height: 64px;
-  width: 64px;
-  margin-bottom: 16px;
-}
-
-.error-container button {
-  margin-top: 16px;
-}
-
-@media (max-width: 768px) {
-  .meetings-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-  
-  .filter-wrapper {
-    width: 100%;
-    margin-bottom: 16px;
-  }
-  
-  .meeting-filter {
-    position: relative;
-    width: 100%;
-    max-width: 200px;
-  }
-}
-
-/* Fixed header styles */
-.fixed-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 120px;
-  background-color: #fff;
-  z-index: 1000;
-  border-bottom: 1px solid #eaeaea;
-}
-
-/* Overlay for modal form */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-}
-
-/* Container for the form to ensure proper centering */
-.reschedule-form-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1001;
-}
-
-.reschedule-form {
-  padding: 20px;
-  border-radius: 12px;
-  background-color: #fff;
-  width: 520px;
-  max-width: 90%;
-  margin: 0 auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-.reschedule-form h2 {
-  font-family: 'Inter', sans-serif;
-  font-weight: 800; 
-  font-size: 20px; 
-  line-height: 100%; 
-  letter-spacing: 0%; 
-  text-align: center; 
-  vertical-align: middle; 
-  
-  /*properties */
-  margin: 0 auto 20px;
-  background: #333;
-  width: auto;
-  height: 60px;
-
-  color: #fff;
-  padding: 12px;
-  border-radius: 12px 12px 0 0;
-
-    /* vertical centering */
-    display: flex;
-    align-items: center; /* Vertical center alignment */
-    justify-content: center; /* Horizontal center alignment */
-}
-
-.form-group {
-  margin-bottom: 16px;
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  font-weight: 500;
-  margin-bottom: 6px;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-/* Style dropdowns consistently */
-.form-group select {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  background-color: white;
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23666' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 30px;
-}
-
-/* Horizontal form group layout */
-.form-group.horizontal {
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 16px;
-  gap: 12px;
-}
-
-.form-group.horizontal label {
-  min-width: 150px;
-  margin-bottom: 0;
-  text-align: right;
-}
-
-.form-group.horizontal input,
-.form-group.horizontal select {
-  flex: 1;
-  min-width: 0;
-}
-
-/* Special styling for the reason field */
-.form-group.reason-group {
-  align-items: flex-start;
-}
-
-.form-group.reason-group textarea {
-  flex: 1;
-  min-height: 80px;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 20px;
-}
-
-.btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.btn-confirm {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn-confirm:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-.btn-cancel {
-  background-color: #f1f1f1;
-  color: #333;
-}
-
-.error-message {
-  color: #d32f2f;
-  font-size: 12px;
-  margin-top: 4px;
-}
-
-/* Style for input group with multiple form controls */
-.input-group {
-  display: flex;
-  flex: 1;
   gap: 8px;
 }
 
-.input-group input[readonly] {
-  flex: 1;
-  min-width: 0;
-  background-color: #f5f5f5;
-}
-
-.input-group select {
-  flex: 1;
-  min-width: 120px;
-}
-
-/* Time picker styling */
-.time-picker-container {
-  flex: 1;
-}
-
-.time-picker {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  font-family: 'Inter', sans-serif;
-}
-
-/* Time picker on focus */
-.time-picker:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-/* Snackbar styles with top positioning */
-::ng-deep .success-snackbar {
-  background: #666; /* Green background for success */
+/* Custom button styling to match previous design */
+.reschedule-button button {
+  background-color: #4F46E5;
   color: white;
-  margin-top: 20px !important; /* Add some space from the top of the screen */
-}
-
-::ng-deep .error-snackbar {
-  background: #666; /* Red background for errors */
-  color: white;
-  margin-top: 20px !important; /* Add some space from the top of the screen */
-}
-
-::ng-deep .mat-mdc-snack-bar-container {
-  --mdc-snackbar-container-color: transparent;
-  --mat-mdc-snack-bar-button-color: #fff;
-}
-
-::ng-deep .mat-mdc-snack-bar-container .mdc-snackbar__surface {
   padding: 10px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.3s, transform 0.2s;
+  border: none;
+  cursor: pointer;
 }
 
-::ng-deep .mat-mdc-snack-bar-action {
-  color: rgba(255, 255, 255, 0.9);
+.reschedule-button button:hover {
+  background-color: #4338CA;
+  transform: translateY(-2px);
 }
 
-/* Animation for top snackbar */
-::ng-deep .mat-mdc-snack-bar-container.mat-mdc-snack-bar-container-top {
-  animation: slide-down 0.3s ease-out;
+.reschedule-button mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
 }
 
-@keyframes slide-down {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+/* Button for join meeting */
+.reschedule-button button[color="primary"] {
+  background-color: #2196F3;
 }
 
-/* New minimal styling for meeting type text - just color differentiation */
-.meeting-type-text {
-  font-weight: 500; /* Slightly bolder than normal text */
+.reschedule-button button[color="primary"]:hover {
+  background-color: #1976D2;
 }
 
-/* Online meeting text - just green color, no background */
-.meeting-type-text.online {
-  color: #10B981; /* Green text */
+/* ===== MEETING HEADER ===== */
+.meeting-header {
+  margin-bottom: 16px;
 }
 
-/* Offline/campus meeting text - just blue color, no background */
-.meeting-type-text.offline {
-  color: #4F46E5; /* Blue text */
+.meeting-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  color: #333;
 }
 
-/* Ensure consistent positioning with other info values */
-.type-section .info-value {
-  margin-left: 4px; /* Match other info values spacing */
+.meeting-header-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  font-size: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
 }
 
-/* Responsive adjustments for the meeting type text */
-@media (max-width: 768px) {
-  .type-section {
-    display: flex;
-    align-items: center;
-  }
-  
-  .type-section .info-label {
-    min-width: 80px;
-  }
-  
-  .meeting-type-text {
-    font-weight: 500;
-  }
+.meeting-header-row div {
+  flex: 1 1 30%;
+  margin-right: 8px;
+  white-space: nowrap;
 }
 
-/* Small screen adjustments */
-@media (max-width: 575px) {
-  .type-section {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    width: 100%;
-  }
-  
-  .meeting-type-text {
-    margin-left: 0;
-  }
+/* ===== MEETING DETAILS ===== */
+.meeting-details {
+  font-size: 14px;
+  margin-bottom: 50px; /* Make space for the button */
+  line-height: 1.6;
 }
 
-/* Ensure consistent left alignment of meeting type text on mobile */
+.meeting-details div {
+  margin-bottom: 8px;
+}
+
+.meeting-details a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.meeting-details a:hover {
+  text-decoration: underline;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
 @media (max-width: 767px) {
-  /* Stack the date-time-type elements */
+  /* Mobile: stack date-time-type sections vertically */
   .date-time-type-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 10px; /* Slightly larger gap between sections */
   }
   
-  /* Make each section full width and left aligned */
-  .date-section, .time-section, .type-section {
+  .date-section, 
+  .time-section, 
+  .type-section {
     width: 100%;
-    display: flex;
-    align-items: center;
     justify-content: flex-start;
-    text-align: left;
   }
   
-  /* Consistent spacing for labels */
+  /* Mobile: make label widths consistent */
   .info-label {
-    min-width: 5px;
-    margin-right: 8px;
-    padding-right: 0; /* Ensure no extra padding */
-  }
-  
-  /* Ensure meeting type text is left-aligned like other values */
-  .meeting-type-text {
-    text-align: left;
-    margin-left: 0 !important; /* Force no left margin */
-    padding-left: 0 !important; /* Force no left padding */
-  }
-  
-  /* Ensure no extra space in the type section */
-  .type-section {
-    padding-left: 0 !important; /* Override any padding */
-    padding-right: 0 !important;
-  }
-  
-  /* Ensure consistent spacing between stacked sections */
-  .date-time-type-row {
-    gap: 8px; /* Reduce gap for more consistent appearance */
-  }
-}
-
-/* Small phone specific adjustments */
-@media (max-width: 575px) {
-  /* Further refinements for very small screens */
-  .info-label {
-    min-width: 90px; /* Slightly smaller on very small screens */
-  }
-  
-  .meeting-type-text {
-    margin-left: 0 !important;
-    padding-left: 0 !important;
-    display: inline-block;
-  }
-  
-  /* Ensure info sections stack properly */
-  .date-time-type-row {
-    gap: 8px;
-  }
-  
-  /* Add a bit of margin between stacked sections */
-  .date-section, .time-section, .type-section {
-    margin-bottom: 4px;
-  }
-}
-
-/* Even more specific fix for extra small screens */
-@media (max-width: 480px) {
-  /* Fix for the alignment issue on very small screens */
-  .type-section {
-    margin-left: 0 !important;
-    padding-left: 0 !important;
-    width: 100%;
-    display: flex;
-    align-items: flex-start; /* Align to top for better visual alignment */
-  }
-  
-  /* Make labels consistent width */
-  .type-section .info-label,
-  .date-section .info-label,
-  .time-section .info-label {
-    width: 100px; /* Set exact same width for all labels */
     min-width: 100px;
-    margin-right: 8px;
-    display: inline-block;
-    text-align: left;
+    margin-right: 5px; /* Maintain 5px spacing on mobile */
   }
   
-  /* Reset any margins on the meeting type text */
-  .meeting-type-text {
-    margin-left: 0 !important;
-    padding-left: 0 !important;
-    display: inline-block;
+  /* Full width button on mobile */
+  .reschedule-button {
+    width: 100%;
   }
 }
 
-/* Force removal of any conflicting styles */
-.type-section .info-value.meeting-type-text {
-  margin-left: 0 !important; /* Override the 4px margin we had before */
-}
-
-/* Ensure the type-section has standard styling */
-.type-section {
-  display: flex;
-  align-items: center; /* Vertically center label and value */
-}
-
-/* Ensure meeting type text has consistent styling */
-.meeting-type-text {
-  font-weight: 500;
-}
-
-/* Keep color coding */
-.meeting-type-text.online {
-  color: #10B981; /* Green text */
-}
-
-.meeting-type-text.offline {
-  color: #4F46E5; /* Blue text */
+/* Small phones */
+@media (max-width: 480px) {
+  .info-label {
+    min-width: 90px;
+    margin-right: 5px; /* Maintain 5px spacing on small phones */
+  }
 }

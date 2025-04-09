@@ -12,10 +12,10 @@
   <!-- Main page title -->
   <div class="main-title"></div>
 
-  <!-- Cards Row (keeping your existing cards) -->
-  <div class="cards-container">
-    <!-- User Card - now shows tutor info -->
-    <mat-card class="stats-card user-card">
+  <!-- Cards Row with wider cards -->
+  <div class="wider-cards-container">
+    <!-- User Card -->
+    <mat-card class="stats-card user-card wider-card">
       <mat-card-header>
         <mat-card-title></mat-card-title>
       </mat-card-header>
@@ -34,39 +34,8 @@
       </mat-card-content>
     </mat-card>
 
-    <!-- Documents Card -->
-    <mat-card class="stats-card documents-card">
-      <mat-card-header>
-        <mat-card-title></mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="card-title">
-          Total Documents
-          <span class="highlight-value">{{ documentsTotal.total }}</span>
-        </p>
-        
-        <div class="card-detail">
-          <img src="assets/Ellipse1.svg" alt="Finished Icon" class="detail-icon">
-          <span class="status-value status-value-finished">{{ documentsTotal.status.finished }}</span>
-          <span class="status-text">Finished</span>
-        </div>
-        
-        <div class="card-detail">
-          <img src="assets/Ellipse2.svg" alt="Watched Icon" class="detail-icon">
-          <span class="status-value status-value-watched">{{ documentsTotal.status.watched }}</span>
-          <span class="status-text">Watched</span>
-        </div>
-        
-        <div class="card-detail">
-          <img src="assets/Ellipse3.svg" alt="Accepted Icon" class="detail-icon">
-          <span class="status-value status-value-accepted">{{ documentsTotal.status.accepted }}</span>
-          <span class="status-text">Feedback Required</span>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
     <!-- Blogs Card -->
-    <mat-card class="stats-card vlogs-card">
+    <mat-card class="stats-card vlogs-card wider-card">
       <mat-card-header>
         <mat-card-title></mat-card-title>
       </mat-card-header>
@@ -89,7 +58,7 @@
     </mat-card>
 
     <!-- Meetings Card -->
-    <mat-card class="stats-card meetings-card">
+    <mat-card class="stats-card meetings-card wider-card">
       <mat-card-header>
         <mat-card-title></mat-card-title>
       </mat-card-header>
@@ -112,74 +81,27 @@
     </mat-card>
   </div>
 
-  <!-- Uploaded Documents Table -->
-  <div class="section-container">
-    <div class="section-header">
-      <h2 class="section-title">Uploaded Documents List</h2>
+  <!-- Reschedule Notifications Section -->
+  <div class="notifications-container">
+    <h3 class="section-title">Meeting Reschedule Notifications</h3>
+
+    <div class="notification-cards-wrapper">
+      <mat-card *ngFor="let notification of scheduleNotifications" class="reschedule-card wider-notification-card" [ngClass]="{
+          'approved': notification.status === 'approved',
+          'rejected': notification.status === 'rejected'
+        }">
+        <div class="reschedule-topic">
+          <strong>Topic: {{ notification.topic }}</strong>
+        </div>
+        <div class="reschedule-details">
+          <div class="reschedule-info">
+            Request to reschedule meeting to {{ notification.date }} 
+            <span class="meeting-time">at {{ notification.time }}</span>
+            <span class="status-label">{{ notification.status }}</span>
+          </div>
+        </div>
+      </mat-card>
     </div>
-    
-    <mat-card>
-      <div class="search-bar">
-        <input type="text" placeholder="Search by Document Name or Status" (input)="applyFilter($event)"
-               [(ngModel)]="filterValue" class="form-control" />
-      </div>
-      
-      <!-- Table -->
-      <table mat-table [dataSource]="documents" matSort (matSortChange)="applySorting($event)" class="mat-elevation-z8 w-100">
-        <!-- Document Name Column -->
-        <ng-container matColumnDef="file_name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Document Name</th>
-          <td mat-cell *matCellDef="let doc">{{ doc.file_name }}</td>
-        </ng-container>
-
-        <!-- Status Column -->
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-          <td mat-cell *matCellDef="let doc">
-            <span [ngClass]="{
-              'status-completed': doc.status === 'finished',
-              'status-draft': doc.status === 'watched',
-              'status-feedback': doc.status === 'accepted',
-              'status-canceled': doc.status === 'canceled'
-            }">
-              {{ doc.displayStatus || doc.status }}
-            </span>
-          </td>
-        </ng-container>
-
-        <!-- Uploaded Date Column -->
-        <ng-container matColumnDef="uploaded_date">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Uploaded Date</th>
-          <td mat-cell *matCellDef="let doc">{{ doc.uploaded_date | date:'mediumDate':'UTC' }}</td>
-        </ng-container>
-
-        <!-- Deadline Column -->
-        <ng-container matColumnDef="deadline">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Deadline</th>
-          <td mat-cell *matCellDef="let doc" [ngClass]="{'approaching-deadline': isDeadlineApproaching(doc.deadline)}">
-            {{ doc.deadline | date:'mediumDate':'UTC' }}
-          </td>
-        </ng-container>
-
-        <!-- Header and Row Declarations -->
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        
-        <!-- No data message -->
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="4">No data matching the filter "{{filterValue}}"</td>
-        </tr>
-      </table>
-      
-      <!-- Pagination - Centered -->
-      <div class="pagination-wrapper">
-        <mat-paginator 
-            [pageSizeOptions]="[10]" 
-            [pageSize]="10" 
-            showFirstLastButtons>
-        </mat-paginator>
-      </div>
-    </mat-card>
   </div>
   <!-- Cards Row -->
   <div class="cards-container">
@@ -378,31 +300,3 @@
   </div>
 </div>
 
-<script>
-  function applySorting(sortState) {
-    if (!sortState.active || sortState.direction === '') {
-      return;
-    }
-
-    const key = sortState.active;
-
-    this.documents.data = [...this.documents.data].sort((a, b) => {
-      let valueA = a[key];
-      let valueB = b[key];
-
-      // Special handling for status column
-      if (key === 'status') {
-        valueA = a.displayStatus || a.status;
-        valueB = b.displayStatus || b.status;
-      }
-
-      // Convert date strings to dates for sorting
-      if (key === 'uploaded_date' || key === 'deadline') {
-        valueA = new Date(valueA).getTime();
-        valueB = new Date(valueB).getTime();
-      }
-
-      return (valueA < valueB ? -1 : 1) * (sortState.direction === 'asc' ? 1 : -1);
-    });
-  }
-</script>
