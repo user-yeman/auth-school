@@ -86,21 +86,29 @@
     <h3 class="section-title">Meeting Reschedule Notifications</h3>
 
     <div class="notification-cards-wrapper">
-      <mat-card *ngFor="let notification of scheduleNotifications" class="reschedule-card wider-notification-card" [ngClass]="{
-          'approved': notification.status === 'approved',
-          'rejected': notification.status === 'rejected'
+      <mat-card *ngFor="let meeting of upcomingMeetings" class="reschedule-card wider-notification-card" [ngClass]="{
+          'approved': meeting.status === 'approved',
+          'pending': meeting.status === 'pending',
+          'rejected': meeting.status === 'rejected' || meeting.status === 'cancelled' || meeting.status === 'canceled'
         }">
         <div class="reschedule-topic">
-          <strong>Topic: {{ notification.topic }}</strong>
+          <strong>Topic: {{ meeting.topic }}</strong>
         </div>
         <div class="reschedule-details">
           <div class="reschedule-info">
-            Request to reschedule meeting to {{ notification.date }} 
-            <span class="meeting-time">at {{ notification.time }}</span>
-            <span class="status-label">{{ notification.status }}</span>
+            <span class="reschedule-request">
+              Request the meeting schedule time to {{ formatDate(meeting.arrange_date) }} at {{ formatTime(meeting.arrange_date) }}
+              <span class="status-label"> - {{ getDisplayStatus(meeting.status) }}</span>
+            </span>
           </div>
         </div>
       </mat-card>
     </div>
+    
+    <!-- Show message when no meetings are available -->
+    <div *ngIf="!upcomingMeetings || upcomingMeetings.length === 0" class="empty-state">
+      <p>No upcoming meetings found</p>
+    </div>
   </div>
+</div>
 

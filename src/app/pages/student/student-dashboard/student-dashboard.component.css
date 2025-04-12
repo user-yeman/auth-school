@@ -484,29 +484,30 @@ mat-paginator {
   box-sizing: border-box;
   border-radius: 10px;
   background: #F5F5F5;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 4px 0px #00000040; /* Updated shadow as requested */
   border-left: 6px solid transparent;
   margin: 0;
 }
 
 .reschedule-topic {
-  font-size: 20px;
+  font-size: 18px;
   margin-bottom: 16px;
   color: #333;
   font-weight: 500;
-  padding-right: 40px; /* Add space for status label */
+  padding-right: 0; /* Remove right padding to allow full width */
+  display: block; /* Ensure it's a block element */
+  width: 100%; /* Take full width */
+  word-wrap: break-word; /* Allow words to break */
+  overflow-wrap: break-word; /* Support for newer browsers */
 }
 
 .reschedule-details {
   font-size: 16px;
   color: #555;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 15px;
-  line-height: 1.5;
+  flex-direction: column; /* Stack elements vertically */
   width: 100%;
+  gap: 8px;
 }
 
 .status-label {
@@ -517,6 +518,8 @@ mat-paginator {
   margin-left: 10px;
   text-align: left;
   display: inline-block;
+  white-space: nowrap; /* Keep status on one line */
+  margin-left: 5px; /* Small spacing from previous text */
 }
 
 .reschedule-card {
@@ -537,6 +540,13 @@ mat-paginator {
   color: #444;
 }
 
+.reschedule-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .status-label {
   font-weight: 600;
   margin-left: 6px;
@@ -548,6 +558,40 @@ mat-paginator {
 
 .reschedule-card.rejected .status-label {
   color: #EF4444;
+}
+
+/* Status label styling */
+.status-label {
+  display: inline;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Status color schemes */
+.approved .status-label {
+  color: #2e7d32;
+}
+
+/* Yellow color for pending status */
+.pending .status-label {
+  color: #f57c00; /* Orange-yellow text */
+}
+
+/* Red color for rejected (and cancelled) status */
+.rejected .status-label {
+  color: #c62828; /* Red text */
+}
+
+.reschedule-request {
+  display: block;
+  margin: 8px 0;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.5;
+  width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Responsive adjustments for notification cards */
