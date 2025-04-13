@@ -1,0 +1,410 @@
+/* Main container */
+.dashboard-container {
+  width: 100%;
+  padding: 24px;
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Main title - exact same as meetings component */
+.main-title {
+  color: #000;
+  text-align: left;
+  font-family: Inter, sans-serif;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-top: 0;
+  margin-bottom: 40px;
+}
+
+/* Actions container - match meetings component */
+.actions-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+/* New blog button - match primary button in meetings */
+.primary-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #4f46e5;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.primary-btn:hover {
+  background-color: #4338ca;
+}
+
+.primary-btn mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+/* Blogs container - match meetings container */
+.blogs-container {
+  width: 100%;
+}
+
+/* Blog card - updated styles */
+.blog-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  padding: 20px;
+  transition: transform 0.3s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Blog header - updated styles */
+.blog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.blog-title h3 {
+  margin: 0 0 5px 0;
+  color: #333;
+  font-size: 1.4rem;
+}
+
+.blog-info {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.author {
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+.date {
+  font-style: italic;
+}
+
+.blog-actions {
+  position: relative;
+}
+
+.settings-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.settings-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.settings-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 8px 15px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.settings-dropdown button:hover {
+  background-color: #f5f5f5;
+}
+
+/* Blog content */
+.blog-content {
+  margin-bottom: 20px;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* Blog documents */
+.blog-documents {
+  margin-bottom: 20px;
+}
+
+.blog-documents h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.download-btn {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.download-btn:hover {
+  background-color: #357ab8;
+}
+
+/* Blog comments */
+.blog-comments h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.comment {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.comment:last-child {
+  border-bottom: none;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.comment-author {
+  font-weight: 500;
+  color: #555;
+}
+
+.comment-date {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.delete-comment {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.comment-content {
+  margin-top: 5px;
+  color: #555;
+}
+
+/* Add comment */
+.add-comment {
+  margin-top: 15px;
+}
+
+.add-comment textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-height: 80px;
+  margin-bottom: 10px;
+  resize: vertical;
+}
+
+.add-comment button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-comment button:hover {
+  background-color: #357ab8;
+}
+
+/* Old blog */
+.old-blog {
+  background-color: #f9f9f9;
+  border-left: 4px solid #ccc;
+}
+
+/* Loading and error containers - match meetings */
+.loading-container, .error-container, .no-data-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: #F9FAFB;
+  border-radius: 10px;
+  margin: 30px 0;
+  text-align: center;
+}
+
+.loading-container p, .error-container p, .no-data-container p {
+  color: #6B7280;
+  margin-top: 16px;
+}
+
+.error-container p {
+  color: #EF4444;
+}
+
+.no-data-container mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: #9CA3AF;
+}
+
+/* Error message */
+.error-message {
+  padding: 20px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  color: #721c24;
+  text-align: center;
+}
+
+/* Filter container */
+.filter-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter select {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Blog list */
+.blog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* No blogs message */
+.no-blogs-message {
+  text-align: center;
+  padding: 40px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #666;
+}
+
+/* Responsive styles - match meetings component exactly */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    padding: 20px;
+  }
+  
+  .blog-card {
+    max-width: 900px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+  
+  .main-title {
+    font-size: 28px;
+    margin-bottom: 30px;
+    margin-top: 60px; /* Account for fixed header */
+  }
+  
+  .blog-card {
+    max-width: 100%;
+  }
+  
+  .actions-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .primary-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .attachments-list {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .attachment-btn {
+    width: 100%;
+  }
+  
+  .filter-container {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-container {
+    padding: 12px;
+  }
+  
+  .main-title {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+  
+  .blog-card mat-card-content {
+    padding: 16px;
+  }
+  
+  .blog-title {
+    font-size: 18px;
+  }
+  
+  .section-label {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .blog-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .menu-button {
+    align-self: flex-end;
+    margin-top: -30px;
+  }
+}

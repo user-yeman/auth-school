@@ -13,7 +13,7 @@ import { MeetingScheduleComponent } from './pages/tutor/meetingSchedules/meeting
 import { RescheduleComponent } from './pages/tutor/rescheduleMeeting/reschedule/reschedule.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { ReportComponent } from './pages/tutor/report/report.component';
-import { StudentBlogComponent } from './pages/student/student-blog/student-blog.component';
+import { StudentBlogComponent } from './pages/student/blog-cards-holer/student-blog/student-blog.component';
 import { StudentMeetingsComponent } from './pages/student/student-meetings/student-meetings.component';
 
 export const routes: Routes = [

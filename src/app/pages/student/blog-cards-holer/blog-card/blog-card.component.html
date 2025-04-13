@@ -1,0 +1,44 @@
+<mat-card class="blog-card">
+  <mat-card-header>
+    <mat-card-title>{{ blog.title }}</mat-card-title>
+    <mat-card-subtitle>
+      By {{ blog.author }} ({{ blog.author_role === 'tutor' ? 'Tutor' : 'Student' }})
+      <span class="date">{{ formatDate(blog.created_at) }}</span>
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <p>{{ blog.content }}</p>
+
+    <!-- Attachments section -->
+    <div *ngIf="blog.documents && blog.documents.length > 0" class="attachments">
+      <h4>Attachments:</h4>
+      <button mat-button color="primary" (click)="downloadFiles()">
+        <mat-icon>download</mat-icon> Download Files
+      </button>
+    </div>
+
+    <!-- Comments section -->
+    <div class="divider"></div>
+    <div class="comments-section">
+      <h4>Comments ({{ blog.comments?.length || 0 }})</h4>
+      
+      <div *ngIf="blog.comments && blog.comments.length > 0" class="comments-list">
+        <div *ngFor="let comment of blog.comments" class="comment">
+          <p class="comment-author">{{ getCommentAuthor(comment) }}</p>
+          <p class="comment-content">{{ comment.content }}</p>
+          <p class="comment-date">{{ formatDate(comment.created_at) }}</p>
+        </div>
+      </div>
+      
+      <div *ngIf="!isOldBlog" class="add-comment">
+        <mat-form-field appearance="outline" class="full-width">
+          <input matInput [(ngModel)]="newComment" placeholder="Add a comment..." (keyup.enter)="addComment()">
+          <button mat-icon-button matSuffix (click)="addComment()" [disabled]="!newComment.trim()">
+            <mat-icon>send</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

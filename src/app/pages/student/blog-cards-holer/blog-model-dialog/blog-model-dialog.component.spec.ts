@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StudentBlogComponent } from './student-blog.component';
+import { BlogModelDialogComponent } from './blog-model-dialog.component';
 
-describe('StudentBlogComponent', () => {
-  let component: StudentBlogComponent;
-  let fixture: ComponentFixture<StudentBlogComponent>;
+describe('BlogModelDialogComponent', () => {
+  let component: BlogModelDialogComponent;
+  let fixture: ComponentFixture<BlogModelDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StudentBlogComponent]
+      imports: [BlogModelDialogComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(StudentBlogComponent);
+    fixture = TestBed.createComponent(BlogModelDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
