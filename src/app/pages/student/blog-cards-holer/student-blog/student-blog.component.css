@@ -297,12 +297,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.filter select {
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  margin-left: auto; /* Add this to push it to the right */
 }
 
 /* Blog list */
@@ -320,6 +315,38 @@
   border-radius: 8px;
   font-weight: 500;
   color: #666;
+}
+
+/* Header row */
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Add this to push items apart */
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  /* Remove width: 100%; to allow the filter to be positioned independently */
+}
+
+/* New blog button */
+.new-blog-btn {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+/* Modify the container to add position relative */
+.container {
+  position: relative;
+  width: 100%;
 }
 
 /* Responsive styles - match meetings component exactly */
@@ -371,6 +398,22 @@
   .filter-container {
     justify-content: center;
   }
+
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  /* When stacked, align filter to the right */
+  .filter {
+    margin-left: auto;
+    align-self: flex-end;
+  }
+
+  .new-blog-btn {
+    top: -45px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -393,6 +436,20 @@
   
   .section-label {
     font-size: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%; /* Full width on mobile */
+    gap: 10px;
+  }
+  
+  /* Filter should be full width on very small screens */
+  .filter {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
   }
 }
 

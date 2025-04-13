@@ -1,82 +1,56 @@
-<div class="dialog-container">
-  <h2 mat-dialog-title>
-    {{ isEditMode ? "EDIT BLOG POST" : "ADD NEW BLOG POST" }}
-  </h2>
-  <mat-dialog-content>
-    <div class="form-field">
-      <label>Blog Post Title:<span class="required">*</span></label>
-      <input
-        [(ngModel)]="blog.title"
-        placeholder="Enter the title of the blog post"
-        title="Blog Post Title"
-        required
-        class="custom-input"
-      />
-    </div>
-
-    <div class="form-field">
-      <label>Blog Post Content:<span class="required">*</span></label>
-      <textarea
-        [(ngModel)]="blog.content"
-        placeholder="Enter the content of the blog post"
-        title="Blog Post Content"
-        rows="5"
-        required
-        class="custom-input"
-      ></textarea>
-    </div>
-
-    <div class="file-upload-section">
-      <p>Add your files here (Optional)</p>
-      <div
-        class="drop-zone"
-        (click)="fileInput.click()"
-        (drop)="onDrop($event)"
-        (dragover)="onDragOver($event)"
-      >
-        <p>Drop your files here, or click to browse</p>
-        <input
-          type="file"
-          #fileInput
-          multiple
-          (change)="onFileSelected($event)"
-          style="display: none"
-        />
+<div class="blog-dialog">
+  <h2 mat-dialog-title>{{ data.mode === 'create' ? 'Create New Blog' : 'Edit Blog' }}</h2>
+  
+  <div mat-dialog-content>
+    <form>
+      <div class="form-field">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Blog Title</mat-label>
+          <input matInput [(ngModel)]="blog.title" name="title" placeholder="Enter a title for your blog" required>
+          <mat-error *ngIf="formSubmitted && titleError">{{ titleError }}</mat-error>
+        </mat-form-field>
       </div>
-      <div *ngFor="let file of uploadedFiles" class="file-item">
-        <div class="file-info">
-          <mat-icon>description</mat-icon>
-          <div>
-            <p>{{ file.name }}</p>
-            <p>
-              {{ file.size }}
-              {{
-                file.status === "uploading"
-                  ? ", " + (100 - file.progress) + " seconds left"
-                  : ""
-              }}
-            </p>
+
+      <div class="form-field">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Blog Content</mat-label>
+          <textarea matInput [(ngModel)]="blog.content" name="content" placeholder="Write your blog content here" rows="8" required></textarea>
+          <mat-error *ngIf="formSubmitted && contentError">{{ contentError }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- File upload section -->
+      <div class="file-upload-section">
+        <h3>Attachments</h3>
+        
+        <div class="file-upload-container">
+          <button type="button" mat-stroked-button color="primary" (click)="fileInput.click()">
+            <mat-icon>attach_file</mat-icon>
+            Select Files
+          </button>
+          <input #fileInput type="file" style="display: none;" multiple (change)="onFileSelected($event)">
+        </div>
+
+        <!-- Selected files list -->
+        <div class="selected-files" *ngIf="selectedFileNames.length > 0">
+          <h4>Selected Files:</h4>
+          <div class="file-list">
+            <div class="file-item" *ngFor="let fileName of selectedFileNames; let i = index">
+              <span class="file-name">{{ fileName }}</span>
+              <button mat-icon-button color="warn" (click)="removeFile(i)" title="Remove file">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
           </div>
         </div>
-        <div class="file-status">
-          <mat-progress-bar
-            *ngIf="file.status === 'uploading'"
-            mode="determinate"
-            [value]="file.progress"
-          ></mat-progress-bar>
-          <p *ngIf="file.status === 'uploading'">{{ file.progress }}%</p>
-          <p *ngIf="file.status === 'success'" class="success">
-            Upload Successful
-          </p>
-          <button mat-icon-button (click)="removeFile(file)">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
       </div>
-    </div>
-  </mat-dialog-content>
-  <mat-dialog-actions>
-    <button mat-button class="cancel-btn" (click)="onCancel()">Cancel</button>
-    <button mat-button class="post-btn" (click)="onPost()">Post</button>
-  </mat-dialog-actions>
+    </form>
+  </div>
+  
+  <div mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()">
+      {{ data.mode === 'create' ? 'Create Blog' : 'Save Changes' }}
+    </button>
+  </div>
 </div>

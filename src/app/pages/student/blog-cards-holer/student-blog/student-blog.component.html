@@ -1,42 +1,56 @@
 <div class="dashboard-container">
-  <app-student-header
-    [userName]="user.name"
-    [lastLoginRaw]="user.lastLogin"
-    [showWelcome]="true"
+  <app-student-header 
+    [userName]="studentData?.name || ''" 
+    [lastLoginRaw]="lastLoginFromSession"
+    [showWelcome]="false"
     [isMeetingsMode]="false"
-    [fixedPosition]="false">
+    [fixedPosition]="true"
+    [topPosition]="'0'">
   </app-student-header>
 
   <!-- Main page title -->
-  <h1 class="main-title">Student Blogs</h1>
+  <h1 class="main-title">Blogs</h1>
+  
+  <div class="container">
+    <!-- New Blog button positioned absolute -->
+    <button mat-raised-button color="primary" class="new-blog-btn" (click)="openAddDialog()">
+      + New Blog
+    </button>
 
-  <div class="filter-container">
-    <div class="filter">
-      <label for="filter">Filter Blogs:</label>
-      <select id="filter" (change)="onFilterChange($event)">
-        <option value="new">New (Last 30 Days)</option>
-        <option value="old">Old (Older than 30 Days)</option>
-      </select>
+    <div class="header-row">
+      <div class="header">
+        <h2>{{ filter === "new" ? "New Blogs" : "Old Blogs" }}</h2>
+      </div>
+      
+      <div class="filter">
+        <label for="filter">Filter Blogs:</label>
+        <select id="filter" (change)="onFilterChange($event)">
+          <option value="new">New (Last 30 Days)</option>
+          <option value="old">Old (Older than 30 Days)</option>
+        </select>
+      </div>
     </div>
-  </div>
 
-  <!-- Loading indicator -->
-  <div *ngIf="isLoading" class="loading-container">
-    <mat-spinner diameter="40"></mat-spinner>
-    <p>Loading blogs...</p>
-  </div>
-
-  <!-- Blog cards list -->
-  <div *ngIf="!isLoading" class="blog-list">
-    <div *ngIf="filteredBlogs.length === 0" class="no-blogs-message">
-      No {{ filter === "new" ? "new" : "old" }} blogs to display.
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading blogs...</p>
     </div>
-    
-    <app-blog-card
-      *ngFor="let blog of filteredBlogs"
-      [blog]="blog"
-      [isOldBlog]="filter === 'old'"
-      (addCommentEvent)="onAddComment($event.blogId, $event.content)">
-    </app-blog-card>
+
+    <!-- Blog cards list -->
+    <div *ngIf="!isLoading" class="blog-list">
+      <div *ngIf="filteredBlogs.length === 0" class="no-blogs-message">
+        No {{ filter === "new" ? "new" : "old" }} blogs to display.
+      </div>
+      
+      <app-blog-card
+        *ngFor="let blog of filteredBlogs"
+        [blog]="blog"
+        [isOldBlog]="filter === 'old'"
+        (addCommentEvent)="onAddComment($event.blogId, $event.content)"
+        (blogUpdated)="onBlogUpdated()"
+        (blogDeleted)="onBlogDeleted($event)">
+      </app-blog-card>
+    </div>
   </div>
 </div>

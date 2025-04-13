@@ -6,9 +6,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDialog } from '@angular/material/dialog';
 import { Blog, Comment } from '../../../../model/student-blogs-model';
 import { StudentBlogService } from '../../../../services/student/blogs/student-blog.service';
 import { ToastrService } from 'ngx-toastr';
+import { EditBlogDialogComponent } from '../edit-blog-dialog/edit-blog-dialog.component';
 
 @Component({
   selector: 'app-blog-card',
@@ -20,7 +23,8 @@ import { ToastrService } from 'ngx-toastr';
     MatButtonModule, 
     MatIconModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatMenuModule
   ],
   templateUrl: './blog-card.component.html',
   styleUrls: ['./blog-card.component.css']
@@ -29,6 +33,8 @@ export class BlogCardComponent {
   @Input() blog!: Blog;
   @Input() isOldBlog: boolean = false;
   @Output() addCommentEvent = new EventEmitter<{ blogId: number, content: string }>();
+  @Output() blogUpdated = new EventEmitter<void>();
+  @Output() blogDeleted = new EventEmitter<number>();
 
   newComment = '';
   loggedInUserId: number;
@@ -36,7 +42,8 @@ export class BlogCardComponent {
 
   constructor(
     private blogService: StudentBlogService,
-    private toastService: ToastrService
+    private toastService: ToastrService,
+    private dialog: MatDialog
   ) {
     this.loggedInUserId = this.blogService.getLoggedInUserId();
     this.loggedInUserRole = this.blogService.getLoggedInUserRole();
@@ -98,5 +105,47 @@ export class BlogCardComponent {
       return 'Tutor';
     }
     return 'Unknown';
+  }
+
+  // Edit blog functionality - similar to tutor implementation
+  editBlog(): void {
+    const dialogRef = this.dialog.open(EditBlogDialogComponent, {
+      width: '600px',
+      data: {
+        title: this.blog.title,
+        content: this.blog.content
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.blogService.updateBlog(this.blog.id, result).subscribe({
+          next: () => {
+            this.toastService.success('Blog updated successfully');
+            this.blogUpdated.emit();
+          },
+          error: (error) => {
+            console.error('Error updating blog:', error);
+            this.toastService.error('Failed to update blog');
+          }
+        });
+      }
+    });
+  }
+
+  // Delete blog functionality - similar to tutor implementation
+  deleteBlog(): void {
+    if (confirm('Are you sure you want to delete this blog?')) {
+      this.blogService.deleteBlog(this.blog.id).subscribe({
+        next: () => {
+          this.toastService.success('Blog deleted successfully');
+          this.blogDeleted.emit(this.blog.id);
+        },
+        error: (error) => {
+          console.error('Error deleting blog:', error);
+          this.toastService.error('Failed to delete blog');
+        }
+      });
+    }
   }
 }

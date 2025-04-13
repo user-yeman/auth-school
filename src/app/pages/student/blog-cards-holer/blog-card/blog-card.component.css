@@ -75,3 +75,13 @@ mat-card-subtitle {
 .full-width {
   width: 100%;
 }
+
+.menu-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+mat-card-header {
+  position: relative;
+}
