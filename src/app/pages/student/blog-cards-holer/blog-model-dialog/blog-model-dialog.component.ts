@@ -126,33 +126,40 @@ export class BlogModelDialogComponent {
   onSubmit(): void {
     this.formSubmitted = true;
     
-    // Validate title
-    if (!this.blog.title || !this.blog.title.trim()) {
-      this.titleError = 'Blog title is required';
+    // Validate form
+    this.validateForm();
+    
+    // If there are errors, don't proceed
+    if (this.titleError || this.contentError) {
       return;
-    } else {
-      this.titleError = '';
+    }
+    
+    console.log('Submitting blog:', this.blog);
+    console.log('Files:', this.files);
+    
+    // Create the result object to return
+    const result = {
+      blog: this.blog,
+      files: this.files
+    };
+    
+    // Close the dialog and return the result
+    this.dialogRef.close(result);
+  }
+
+  validateForm(): void {
+    // Reset errors
+    this.titleError = '';
+    this.contentError = '';
+    
+    // Validate title
+    if (!this.blog.title || this.blog.title.trim() === '') {
+      this.titleError = 'Title is required';
     }
     
     // Validate content
-    if (!this.blog.content || !this.blog.content.trim()) {
-      this.contentError = 'Blog content is required';
-      return;
-    } else {
-      this.contentError = '';
+    if (!this.blog.content || this.blog.content.trim() === '') {
+      this.contentError = 'Content is required';
     }
-    
-    // If validation passes, close the dialog with the data
-    if (this.isFormValid()) {
-      this.dialogRef.close({
-        blog: this.blog,
-        files: this.files
-      });
-    }
-  }
-
-  isFormValid(): boolean {
-    return !!(this.blog.title && this.blog.title.trim() && 
-              this.blog.content && this.blog.content.trim());
   }
 }

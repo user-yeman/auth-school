@@ -39,6 +39,7 @@ export class BlogCardComponent {
   newComment = '';
   loggedInUserId: number;
   loggedInUserRole: string | null;
+  isSubmittingComment = false;
 
   constructor(
     private blogService: StudentBlogService,
@@ -50,13 +51,28 @@ export class BlogCardComponent {
   }
 
   addComment(): void {
-    if (this.newComment.trim()) {
-      this.addCommentEvent.emit({ 
-        blogId: this.blog.id, 
-        content: this.newComment 
-      });
-      this.newComment = '';
-    }
+    if (!this.newComment.trim()) return;
+    
+    this.isSubmittingComment = true;
+    
+    this.blogService.addComment(this.blog.id, this.newComment).subscribe({
+      next: (comment) => {
+        console.log('Comment added successfully:', comment);
+        // Clear the input field
+        this.newComment = '';
+        
+        // No need to manually update the blog.comments array
+        // The service has already updated the blogs subject
+        
+        this.toastService.success('Comment added successfully');
+        this.isSubmittingComment = false;
+      },
+      error: (error) => {
+        console.error('Error adding comment:', error);
+        this.toastService.error('Failed to add comment');
+        this.isSubmittingComment = false;
+      }
+    });
   }
 
   downloadFiles(): void {
