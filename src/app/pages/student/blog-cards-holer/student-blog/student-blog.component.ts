@@ -13,6 +13,7 @@ import { BlogCardComponent } from '../blog-card/blog-card.component';
 import { StudentHeaderComponent } from '../../student-header/student-header/student-header.component';
 import { BlogModelDialogComponent } from '../blog-model-dialog/blog-model-dialog.component';
 import { AuthService } from '../../../../services/auth.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-student-blog',
@@ -26,7 +27,8 @@ import { AuthService } from '../../../../services/auth.service';
     MatProgressSpinnerModule,
     MatDialogModule,
     BlogCardComponent,
-    StudentHeaderComponent
+    StudentHeaderComponent,
+    HttpClientModule
   ],
   templateUrl: './student-blog.component.html',
   styleUrls: ['./student-blog.component.css']
@@ -173,15 +175,25 @@ export class StudentBlogComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        console.log('Blog dialog result:', result);
+        
+        // Ensure blog object has required fields
+        const blogData = {
+          ...result.blog,
+          student_id: result.blog.student_id || this.loggedInUserId,
+          author_role: 'student'
+        };
+        
         // The dialog returns a blog object and optionally files
-        this.blogService.addBlog(result.blog, result.files || []).subscribe({
-          next: () => {
+        this.blogService.addBlog(blogData, result.files || []).subscribe({
+          next: (createdBlog) => {
+            console.log('Blog created successfully:', createdBlog);
             this.toastService.success('Blog created successfully');
             this.fetchBlogs();
           },
-          error: (error: Error) => { // Specify the type as Error
+          error: (error: Error) => {
             console.error('Error creating blog:', error);
-            this.toastService.error('Failed to create blog');
+            this.toastService.error('Failed to create blog. Please try again.');
           }
         });
       }

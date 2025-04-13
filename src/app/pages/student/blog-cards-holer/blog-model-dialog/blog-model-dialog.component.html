@@ -1,56 +1,42 @@
-<div class="blog-dialog">
-  <h2 mat-dialog-title>{{ data.mode === 'create' ? 'Create New Blog' : 'Edit Blog' }}</h2>
-  
-  <div mat-dialog-content>
-    <form>
-      <div class="form-field">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Blog Title</mat-label>
-          <input matInput [(ngModel)]="blog.title" name="title" placeholder="Enter a title for your blog" required>
-          <mat-error *ngIf="formSubmitted && titleError">{{ titleError }}</mat-error>
-        </mat-form-field>
-      </div>
+<div class="blog-edit-dialog">
+  <h2 class="dialog-title">{{ data.mode === 'create' ? 'CREATE BLOG POST' : 'EDIT BLOG POST' }}</h2>
 
-      <div class="form-field">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Blog Content</mat-label>
-          <textarea matInput [(ngModel)]="blog.content" name="content" placeholder="Write your blog content here" rows="8" required></textarea>
-          <mat-error *ngIf="formSubmitted && contentError">{{ contentError }}</mat-error>
-        </mat-form-field>
-      </div>
+  <!-- Blog Post Title -->
+  <label class="form-label">Blog Post Title:</label>
+  <input class="form-input" type="text" [(ngModel)]="blog.title" placeholder="Enter a title for your blog" />
+  <div *ngIf="formSubmitted && titleError" class="error-message">{{ titleError }}</div>
 
-      <!-- File upload section -->
-      <div class="file-upload-section">
-        <h3>Attachments</h3>
-        
-        <div class="file-upload-container">
-          <button type="button" mat-stroked-button color="primary" (click)="fileInput.click()">
-            <mat-icon>attach_file</mat-icon>
-            Select Files
-          </button>
-          <input #fileInput type="file" style="display: none;" multiple (change)="onFileSelected($event)">
-        </div>
+  <!-- Blog Post Content -->
+  <label class="form-label">Blog Post Content:</label>
+  <textarea class="form-textarea" rows="6" [(ngModel)]="blog.content" placeholder="Write your blog content here"></textarea>
+  <div *ngIf="formSubmitted && contentError" class="error-message">{{ contentError }}</div>
 
-        <!-- Selected files list -->
-        <div class="selected-files" *ngIf="selectedFileNames.length > 0">
-          <h4>Selected Files:</h4>
-          <div class="file-list">
-            <div class="file-item" *ngFor="let fileName of selectedFileNames; let i = index">
-              <span class="file-name">{{ fileName }}</span>
-              <button mat-icon-button color="warn" (click)="removeFile(i)" title="Remove file">
-                <mat-icon>close</mat-icon>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
+  <!-- Upload Section -->
+  <label class="form-label">Add your files here (Optional)</label>
+  <div class="upload-box" (click)="fileInput.click()">
+    Drop your files here, or <span class="upload-link">click to browse</span>
+    <input #fileInput type="file" style="display: none;" multiple (change)="onFileSelected($event)">
   </div>
-  
-  <div mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="onSubmit()">
-      {{ data.mode === 'create' ? 'Create Blog' : 'Save Changes' }}
+
+  <!-- Uploaded File List -->
+  <div *ngFor="let fileName of selectedFileNames; let i = index" class="file-card">
+    <div class="file-icon">
+      <mat-icon>description</mat-icon>
+    </div>
+    <div class="file-info">
+      <div class="file-name">{{ fileName }}</div>
+      <div class="file-size">{{ getFileSize(i) }}</div>
+    </div>
+    <button mat-icon-button (click)="removeFile(i)">
+      <mat-icon>close</mat-icon>
     </button>
+  </div>
+
+  <!-- Buttons -->
+  <div class="dialog-actions">
+    <button mat-flat-button color="primary" (click)="onSubmit()">
+      {{ data.mode === 'create' ? 'Post' : 'Save' }}
+    </button>
+    <button mat-button color="warn" (click)="onCancel()">Cancel</button>
   </div>
 </div>

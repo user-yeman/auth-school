@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, map, tap, throwError } from 'rxjs';
 import { 
   ApiCommentResponse, 
@@ -84,7 +84,8 @@ export class StudentBlogService {
     formData.append('content', blog.content || '');
     
     // Add user identification
-    formData.append('student_id', this.loggedInUserId.toString());
+    const studentId = this.loggedInUserId || this.authService.getUserId();
+    formData.append('student_id', studentId.toString());
     
     // Add tutor_id if available
     if (blog.tutor_id) {
@@ -110,27 +111,50 @@ export class StudentBlogService {
       });
     }
     
-    // Log what we're sending
-    console.log('Sending blog data:', {
+    // Debug information
+    console.log('Creating blog with data:', {
       title: blog.title,
       content: blog.content,
-      student_id: this.loggedInUserId,
+      student_id: studentId,
       tutor_id: blog.tutor_id,
+      author: blog.author || sessionStorage.getItem('userName') || 'Student',
       files: files.map(f => f.name)
     });
     
-    // Send the request
+    // Check API URL
+    console.log('API URL:', `${this.apiUrl}/blogs`);
+    
+    // Add headers if needed (check your API requirements)
+    const headers = new HttpHeaders();
+    // If your API requires authentication:
+    // headers.append('Authorization', `Bearer ${this.authService.getToken()}`);
+    
+    // Send the request with improved error handling
     return this.http.post<ApiResponse<Blog>>(`${this.apiUrl}/blogs`, formData).pipe(
+      tap(response => console.log('Blog creation response:', response)),
       map(response => {
-        console.log('Blog created successfully:', response);
         if (response && response.data) {
           return response.data;
+        } else if (response) {
+          // Return whatever we got if it doesn't match expected format
+          return response as any;
         } else {
-          throw new Error('Invalid response format');
+          throw new Error('Empty response from server');
         }
       }),
       catchError(error => {
-        console.error('Error creating blog:', error);
+        console.error('Error details:', error);
+        
+        // Log more detailed information about the error
+        if (error.error instanceof ErrorEvent) {
+          // Client-side error
+          console.error('Client error:', error.error.message);
+        } else {
+          // Server-side error
+          console.error('Server error status:', error.status);
+          console.error('Server error body:', error.error);
+        }
+        
         this.toast.error('Failed to create blog', 'Error');
         return throwError(() => new Error('Failed to create blog'));
       })

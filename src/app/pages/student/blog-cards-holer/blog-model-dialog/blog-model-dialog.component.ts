@@ -105,6 +105,20 @@ export class BlogModelDialogComponent {
     this.selectedFileNames.splice(index, 1);
   }
 
+  getFileSize(index: number): string {
+    if (index >= 0 && index < this.files.length) {
+      const fileSizeInBytes = this.files[index].size;
+      if (fileSizeInBytes < 1024) {
+        return `${fileSizeInBytes} B`;
+      } else if (fileSizeInBytes < 1024 * 1024) {
+        return `${(fileSizeInBytes / 1024).toFixed(1)} KB`;
+      } else {
+        return `${(fileSizeInBytes / (1024 * 1024)).toFixed(1)} MB`;
+      }
+    }
+    return '';
+  }
+
   onCancel(): void {
     this.dialogRef.close();
   }
