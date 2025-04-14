@@ -1,42 +1,58 @@
 <div class="blog-edit-dialog">
-  <h2 class="dialog-title">{{ data.mode === 'create' ? 'CREATE BLOG POST' : 'EDIT BLOG POST' }}</h2>
+  <h2 class="dialog-title">ADD NEW BLOG POST</h2>
 
-  <!-- Blog Post Title -->
-  <label class="form-label">Blog Post Title:</label>
-  <input class="form-input" type="text" [(ngModel)]="blog.title" placeholder="Enter a title for your blog" />
-  <div *ngIf="formSubmitted && titleError" class="error-message">{{ titleError }}</div>
-
-  <!-- Blog Post Content -->
-  <label class="form-label">Blog Post Content:</label>
-  <textarea class="form-textarea" rows="6" [(ngModel)]="blog.content" placeholder="Write your blog content here"></textarea>
-  <div *ngIf="formSubmitted && contentError" class="error-message">{{ contentError }}</div>
-
-  <!-- Upload Section -->
-  <label class="form-label">Add your files here (Optional)</label>
-  <div class="upload-box" (click)="fileInput.click()">
-    Drop your files here, or <span class="upload-link">click to browse</span>
-    <input #fileInput type="file" style="display: none;" multiple (change)="onFileSelected($event)">
-  </div>
-
-  <!-- Uploaded File List -->
-  <div *ngFor="let fileName of selectedFileNames; let i = index" class="file-card">
-    <div class="file-icon">
-      <mat-icon>description</mat-icon>
+  <div class="form-content">
+    <!-- Blog Post Title -->
+    <div class="form-group">
+      <label class="form-label">Blog Post Title:<span class="required">*</span></label>
+      <input class="form-input" type="text" [(ngModel)]="blog.title" placeholder="Enter the title of the blog post" />
+      <div *ngIf="formSubmitted && titleError" class="error-message">{{ titleError }}</div>
     </div>
-    <div class="file-info">
-      <div class="file-name">{{ fileName }}</div>
-      <div class="file-size">{{ getFileSize(i) }}</div>
-    </div>
-    <button mat-icon-button (click)="removeFile(i)">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
 
-  <!-- Buttons -->
-  <div class="dialog-actions">
-    <button mat-flat-button color="primary" (click)="onSubmit()">
-      {{ data.mode === 'create' ? 'Post' : 'Save' }}
-    </button>
-    <button mat-button color="warn" (click)="onCancel()">Cancel</button>
+    <!-- Blog Post Content -->
+    <div class="form-group">
+      <label class="form-label">Blog Post Content:<span class="required">*</span></label>
+      <textarea class="form-textarea" rows="6" [(ngModel)]="blog.content" placeholder="Enter the content of the blog post"></textarea>
+      <div *ngIf="formSubmitted && contentError" class="error-message">{{ contentError }}</div>
+    </div>
+
+    <!-- Upload Section with Drag & Drop -->
+    <div class="form-group">
+      <label class="form-label">Add your files here (Optional)</label>
+      <div 
+        class="upload-box" 
+        [class.active-dropzone]="isDragging"
+        (dragover)="onDragOver($event)" 
+        (dragleave)="onDragLeave($event)" 
+        (drop)="onDrop($event)">
+        <div class="upload-message">
+          <p>Drop your files here, or <span class="upload-link" (click)="triggerFileInput()">click to browse</span></p>
+        </div>
+        <input #fileInput type="file" style="display: none;" multiple (change)="onFileSelected($event)">
+      </div>
+    </div>
+
+    <!-- Uploaded File List -->
+    <div *ngIf="selectedFileNames.length > 0" class="files-container">
+      <div *ngFor="let fileName of selectedFileNames; let i = index" class="file-card">
+        <div class="file-icon">
+          <mat-icon>description</mat-icon>
+        </div>
+        <div class="file-info">
+          <div class="file-name">{{ fileName }}</div>
+          <div class="file-size">{{ getFileSize(i) }}</div>
+        </div>
+        <div class="file-status">Upload Successful</div>
+        <button class="close-button" (click)="removeFile(i)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="dialog-actions">
+      <button class="cancel-button" (click)="onCancel()">CANCEL</button>
+      <button class="post-button" (click)="onSubmit()">POST</button>
+    </div>
   </div>
 </div>

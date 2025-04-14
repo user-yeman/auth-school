@@ -72,23 +72,47 @@ export class StudentBlogService {
   }
 
   addComment(blogId: number, content: string): Observable<Comment> {
-    const comment: Partial<Comment> = {
+    // Ensure we have valid user ID information before proceeding
+    if (!this.loggedInUserId) {
+      console.error('Cannot add comment: No logged-in user ID');
+      this.toast.error('You must be logged in to comment', 'Error');
+      return throwError(() => new Error('No logged-in user ID'));
+    }
+
+    // Create the comment object with correct properties based on API requirements
+    const comment: any = {
       content: content.trim(),
-      blog_id: blogId,
-      student_id: this.loggedInUserRole === 'student' ? this.loggedInUserId : null,
-      tutor_id: this.loggedInUserRole === 'tutor' ? this.loggedInUserId : null,
+      blog_id: blogId
     };
 
+    // Add the correct ID field based on user role
+    if (this.loggedInUserRole === 'student') {
+      comment.student_id = this.loggedInUserId;
+    } else if (this.loggedInUserRole === 'tutor') {
+      comment.tutor_id = this.loggedInUserId;
+    } else {
+      console.error('Cannot add comment: Unknown user role', this.loggedInUserRole);
+      this.toast.error('Unknown user role', 'Error');
+      return throwError(() => new Error('Unknown user role'));
+    }
+
+    console.log('Sending comment data:', comment);
+
     return this.http.post<ApiCommentResponse<Comment>>(`${this.apiUrl}/comments`, comment).pipe(
-      tap(response => {
+      tap(response => console.log('Comment creation response:', response)),
+      map(response => {
+        // Check if response has the expected structure
+        if (!response || !response.comment) {
+          console.error('Invalid comment response format:', response);
+          throw new Error('Invalid response format');
+        }
+
         // Update the blogs subject with the new comment
         const newComment = response.comment;
         const currentBlogs = this.blogsSubject.getValue();
         
-        // Find the blog to update
         const updatedBlogs = currentBlogs.map(blog => {
           if (blog.id === blogId) {
-            // Create a new blog object with the comment added
             return {
               ...blog,
               comments: blog.comments ? [...blog.comments, newComment] : [newComment]
@@ -97,13 +121,27 @@ export class StudentBlogService {
           return blog;
         });
         
-        // Update the subject with the new blogs array
         this.blogsSubject.next(updatedBlogs);
+        
+        return response.comment;
       }),
-      map(response => response.comment),
       catchError(error => {
-        this.toast.error('Failed to add comment', 'Error');
-        return throwError(() => new Error('Failed to add comment'));
+        console.error('Error adding comment:', error);
+        
+        // Get more detailed error information if available
+        let errorMessage = 'Failed to add comment';
+        if (error.error && error.error.message) {
+          errorMessage += ': ' + error.error.message;
+        } else if (error.error && error.error.errors) {
+          // Laravel validation errors often come in this format
+          const validationErrors = Object.values(error.error.errors).flat();
+          if (validationErrors.length > 0) {
+            errorMessage += ': ' + validationErrors.join(', ');
+          }
+        }
+        
+        this.toast.error(errorMessage, 'Error');
+        return throwError(() => new Error(errorMessage));
       })
     );
   }
@@ -123,6 +161,7 @@ export class StudentBlogService {
   // Update the addBlog method to be more flexible with response formats
   addBlog(blogData: any, files: File[] = []): Observable<Blog> {
     console.log('Adding blog with data:', blogData);
+    console.log('Files to upload:', files);
     
     const formData = new FormData();
     
@@ -139,62 +178,59 @@ export class StudentBlogService {
       });
     }
     
-    // Log form data for debugging
-    console.log('Sending form data:');
-    formData.forEach((value, key) => {
-      if (value instanceof File) {
-        console.log(`${key}: File - ${value.name} (${value.size} bytes)`);
-      } else {
-        console.log(`${key}: ${value}`);
-      }
-    });
-    
     // Accept any response format
     return this.http.post<any>(`${this.apiUrl}/blogs`, formData).pipe(
       tap(response => console.log('Blog creation response:', response)),
       map(response => {
         // Handle different response formats
+        let blog: Blog;
+        
         if (response && response.data) {
-          // Standard ApiResponse format
-          return response.data;
+          blog = response.data;
         } else if (response && response.blog) {
-          // Alternative format with 'blog' property
-          return response.blog;
+          blog = response.blog;
         } else if (response && response.id) {
-          // Direct blog object
-          return response;
+          blog = response;
         } else {
-          // Log the actual response for debugging
-          console.warn('Unexpected response format:', JSON.stringify(response));
-          
-          // Get username from auth service for use as author
+          // Create a basic blog structure if the response doesn't match expected formats
           const username = this.authService.getUserName() || 'Anonymous';
-          
-          // Instead of throwing an error, try to construct a usable blog object
-          return {
+          blog = {
             id: response?.id || -new Date().getTime(),
             title: blogData.title || 'Untitled',
             content: blogData.content || '',
             student_id: blogData.student_id,
             author_role: blogData.author_role || 'student',
-            author: username, // Add the required author property
+            author: username,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
-            comments: []
-          } as unknown as Blog; // Use unknown as intermediary to avoid type check errors
+            comments: [],
+            documents: [] // Initialize empty documents array
+          } as unknown as Blog;
         }
+        
+        // If the API doesn't return documents/files, but we have local files,
+        // add them to the blog object for UI display purposes
+        if (files && files.length > 0 && (!blog.documents || blog.documents.length === 0)) {
+          blog.documents = files.map(file => ({
+            id: Math.random(), // Temporary ID
+            name: file.name,
+            size: file.size,
+            file_path: URL.createObjectURL(file), // Create temporary URL for display
+            mime_type: file.type,
+            created_at: new Date().toISOString()
+          }));
+        }
+        
+        // Update the blogs subject with the new blog
+        const currentBlogs = this.blogsSubject.getValue();
+        this.blogsSubject.next([blog, ...currentBlogs]);
+        
+        return blog;
       }),
       catchError(error => {
         console.error('Error creating blog:', error);
-        
-        // Log more details about the error
-        if (error.error) {
-          console.error('Server error details:', error.error);
-        }
-        
         this.toast.error('Failed to create blog: ' + 
           (error.error?.message || error.message || 'Unknown error'));
-          
         return throwError(() => error);
       })
     );

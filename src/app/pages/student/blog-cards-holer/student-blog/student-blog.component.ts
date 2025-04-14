@@ -213,27 +213,8 @@ export class StudentBlogComponent implements OnInit, OnDestroy {
           next: (createdBlog) => {
             console.log('Blog created successfully:', createdBlog);
             
-            // Even if we don't get a complete blog back, create a usable object
-            const newBlog: Blog = {
-              ...createdBlog,
-              id: createdBlog.id || -new Date().getTime(),
-              title: createdBlog.title || blogData.title || 'Untitled',
-              content: createdBlog.content || blogData.content || '',
-              author_role: createdBlog.author_role || 'student',
-              student_id: createdBlog.student_id || blogData.student_id,
-              created_at: createdBlog.created_at || new Date().toISOString(),
-              updated_at: createdBlog.updated_at || new Date().toISOString(),
-              comments: createdBlog.comments || []
-            };
-            
-            // Add the blog to our array manually (in case the subject update fails)
-            if (!this.blogs) this.blogs = [];
-            this.blogs.unshift(newBlog);
-            
-            // Also update filtered blogs if applicable
-            if (this.filteredBlogs) {
-              this.filteredBlogs.unshift(newBlog);
-            }
+            // The service now handles updating the blogs array via the subject
+            // No need to manually update arrays here
             
             this.toastService.success('Blog created successfully');
             this.isLoading = false;

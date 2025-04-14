@@ -1,15 +1,14 @@
 export interface Blog {
   id: number;
-  author: string;
   title: string;
   content: string;
-  author_role: 'tutor' | 'student';
-  student_id?: number;
-  tutor_id?: number;
-  created_at?: string;
-  updated_at?: string;
-  deleted_at?: string | null;
-  comments?: Comment[];
+  student_id: number;
+  tutor_id?: number; // Add this line
+  author: string;
+  author_role: string;
+  created_at: string;
+  updated_at: string;
+  comments: Comment[];
   documents?: Document[];
 }
 
@@ -25,10 +24,12 @@ export interface Comment {
 
 export interface Document {
   id: number;
-  blog_id: number;
-  BlogDocumentFile: string; // Match exact case as in API
-  created_at: string;
-  updated_at: string;
+  name: string;
+  size?: number;
+  file_path?: string;
+  mime_type?: string;
+  created_at?: string;
+  download_url?: string;
 }
 
 export interface ApiResponse<T> {

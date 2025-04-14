@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -29,7 +29,7 @@ import { EditBlogDialogComponent } from '../edit-blog-dialog/edit-blog-dialog.co
   templateUrl: './blog-card.component.html',
   styleUrls: ['./blog-card.component.css']
 })
-export class BlogCardComponent {
+export class BlogCardComponent implements OnInit {
   @Input() blog!: Blog;
   @Input() isOldBlog: boolean = false;
   @Output() addCommentEvent = new EventEmitter<{ blogId: number, content: string }>();
@@ -40,6 +40,7 @@ export class BlogCardComponent {
   loggedInUserId: number;
   loggedInUserRole: string | null;
   isSubmittingComment = false;
+  apiBaseUrl = 'http://127.0.0.1:8000/api';
 
   constructor(
     private blogService: StudentBlogService,
@@ -50,6 +51,12 @@ export class BlogCardComponent {
     this.loggedInUserRole = this.blogService.getLoggedInUserRole();
   }
 
+  ngOnInit(): void {
+    // This method is required when implementing OnInit interface
+    // You can initialize component data or perform setup here
+    console.log('Blog card initialized for:', this.blog.title);
+  }
+
   addComment(): void {
     if (!this.newComment.trim()) return;
     
@@ -58,18 +65,22 @@ export class BlogCardComponent {
     this.blogService.addComment(this.blog.id, this.newComment).subscribe({
       next: (comment) => {
         console.log('Comment added successfully:', comment);
+        
         // Clear the input field
         this.newComment = '';
         
-        // No need to manually update the blog.comments array
-        // The service has already updated the blogs subject
+        // If we need to manually update the UI (as a fallback)
+        if (!this.blog.comments) {
+          this.blog.comments = [];
+        }
+        this.blog.comments.push(comment);
         
         this.toastService.success('Comment added successfully');
         this.isSubmittingComment = false;
       },
       error: (error) => {
         console.error('Error adding comment:', error);
-        this.toastService.error('Failed to add comment');
+        this.toastService.error('Failed to add comment. Please try again.');
         this.isSubmittingComment = false;
       }
     });
@@ -162,6 +173,21 @@ export class BlogCardComponent {
           this.toastService.error('Failed to delete blog');
         }
       });
+    }
+  }
+
+  // Add a method to handle document downloads or views
+  viewDocument(document: any): void {
+    if (document.file_path) {
+      // If we have a local URL (from newly uploaded files)
+      window.open(document.file_path, '_blank');
+    } else if (document.download_url) {
+      // If we have a download URL from the API
+      window.open(document.download_url, '_blank');
+    } else {
+      // Construct API URL
+      const url = `${this.apiBaseUrl}/documents/${document.id}/download`;
+      window.open(url, '_blank');
     }
   }
 }

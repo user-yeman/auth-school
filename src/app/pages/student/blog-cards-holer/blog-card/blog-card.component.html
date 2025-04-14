@@ -30,17 +30,23 @@
     <!-- Attachments section -->
     <div *ngIf="blog.documents && blog.documents.length > 0" class="attachments">
       <h4>Attachments:</h4>
+      <div class="documents-list">
+        <div *ngFor="let doc of blog.documents" class="document-item" (click)="viewDocument(doc)">
+          <mat-icon>attachment</mat-icon>
+          <span class="document-name">{{ doc.name }}</span>
+        </div>
+      </div>
       <button mat-button color="primary" (click)="downloadFiles()">
-        <mat-icon>download</mat-icon> Download Files
+        <mat-icon>download</mat-icon> Download All Files
       </button>
     </div>
 
     <!-- Comments section -->
     <div class="divider"></div>
     <div class="comments-section">
-      <h4>Comments ({{ blog.comments?.length || 0 }})</h4>
+      <h4>Comments ({{ blog.comments.length || 0 }})</h4>
       
-      <div *ngIf="blog.comments && blog.comments.length > 0" class="comments-list">
+      <div *ngIf="blog.comments.length > 0" class="comments-list">
         <div *ngFor="let comment of blog.comments" class="comment">
           <p class="comment-author">{{ getCommentAuthor(comment) }}</p>
           <p class="comment-content">{{ comment.content }}</p>
