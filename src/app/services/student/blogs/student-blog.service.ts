@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, map, tap, throwError, BehaviorSubject } from 'rxjs';
+import { Observable, catchError, map, tap, throwError, BehaviorSubject, of } from 'rxjs';
 import { 
   ApiCommentResponse, 
   ApiResponse, 
@@ -24,8 +24,8 @@ export class StudentBlogService {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private authService: AuthService // Add this
   ) {
     this.loggedInUserId = this.authService.getUserId();
     this.loggedInUserRole = this.authService.getUserRole();
@@ -71,72 +71,65 @@ export class StudentBlogService {
     return this.blogs$;
   }
 
+  // Update the addComment method in student-blog.service.ts
   addComment(blogId: number, content: string): Observable<Comment> {
-    // Ensure we have valid user ID information before proceeding
-    if (!this.loggedInUserId) {
-      console.error('Cannot add comment: No logged-in user ID');
-      this.toast.error('You must be logged in to comment', 'Error');
-      return throwError(() => new Error('No logged-in user ID'));
+    console.log('Adding comment - blog ID type:', typeof blogId, 'Value:', blogId);
+    
+    // Make sure blogId is actually a number
+    if (!blogId || isNaN(Number(blogId))) {
+      this.toast.error('Invalid blog ID', 'Error');
+      return throwError(() => new Error('Invalid blog ID'));
     }
-
-    // Create the comment object with correct properties based on API requirements
+    
+    // Ensure blog ID exists in our current blogs
+    const currentBlogs = this.blogsSubject.getValue();
+    const blogExists = currentBlogs.some(blog => Number(blog.id) === Number(blogId));
+    
+    console.log('Blog exists in local state:', blogExists);
+    if (!blogExists) {
+      console.warn('Attempting to comment on blog that may not exist in database yet');
+      // This could be the issue - the blog might not be properly synchronized with the backend
+    }
+    
     const comment: any = {
       content: content.trim(),
-      blog_id: blogId
+      blog_id: Number(blogId) // Ensure it's a number
     };
-
-    // Add the correct ID field based on user role
+    
     if (this.loggedInUserRole === 'student') {
       comment.student_id = this.loggedInUserId;
     } else if (this.loggedInUserRole === 'tutor') {
       comment.tutor_id = this.loggedInUserId;
-    } else {
-      console.error('Cannot add comment: Unknown user role', this.loggedInUserRole);
-      this.toast.error('Unknown user role', 'Error');
-      return throwError(() => new Error('Unknown user role'));
     }
-
+    
     console.log('Sending comment data:', comment);
-
+    
     return this.http.post<ApiCommentResponse<Comment>>(`${this.apiUrl}/comments`, comment).pipe(
       tap(response => console.log('Comment creation response:', response)),
       map(response => {
-        // Check if response has the expected structure
         if (!response || !response.comment) {
-          console.error('Invalid comment response format:', response);
           throw new Error('Invalid response format');
         }
-
-        // Update the blogs subject with the new comment
-        const newComment = response.comment;
-        const currentBlogs = this.blogsSubject.getValue();
         
-        const updatedBlogs = currentBlogs.map(blog => {
-          if (blog.id === blogId) {
-            return {
-              ...blog,
-              comments: blog.comments ? [...blog.comments, newComment] : [newComment]
-            };
-          }
-          return blog;
-        });
-        
-        this.blogsSubject.next(updatedBlogs);
+        this.updateBlogsWithNewComment(blogId, response.comment);
         
         return response.comment;
       }),
       catchError(error => {
         console.error('Error adding comment:', error);
         
-        // Get more detailed error information if available
         let errorMessage = 'Failed to add comment';
         if (error.error && error.error.message) {
           errorMessage += ': ' + error.error.message;
-        } else if (error.error && error.error.errors) {
-          // Laravel validation errors often come in this format
-          const validationErrors = Object.values(error.error.errors).flat();
-          if (validationErrors.length > 0) {
-            errorMessage += ': ' + validationErrors.join(', ');
+        } else if (error.error && typeof error.error === 'object') {
+          const errorMessages = [];
+          for (const key in error.error.errors || {}) {
+            if (error.error.errors[key]) {
+              errorMessages.push(...error.error.errors[key]);
+            }
+          }
+          if (errorMessages.length > 0) {
+            errorMessage += ': ' + errorMessages.join(', ');
           }
         }
         
@@ -144,6 +137,23 @@ export class StudentBlogService {
         return throwError(() => new Error(errorMessage));
       })
     );
+  }
+
+  // Add this helper method
+  private updateBlogsWithNewComment(blogId: number, newComment: Comment): void {
+    const currentBlogs = this.blogsSubject.getValue();
+    
+    const updatedBlogs = currentBlogs.map(blog => {
+      if (blog.id === blogId) {
+        return {
+          ...blog,
+          comments: blog.comments ? [...blog.comments, newComment] : [newComment]
+        };
+      }
+      return blog;
+    });
+    
+    this.blogsSubject.next(updatedBlogs);
   }
 
   downloadBlogFiles(blogId: number): Observable<HttpResponse<Blob>> {
@@ -158,10 +168,9 @@ export class StudentBlogService {
     );
   }
 
-  // Update the addBlog method to be more flexible with response formats
+  // Update the addBlog method in student-blog.service.ts
   addBlog(blogData: any, files: File[] = []): Observable<Blog> {
     console.log('Adding blog with data:', blogData);
-    console.log('Files to upload:', files);
     
     const formData = new FormData();
     
@@ -178,50 +187,60 @@ export class StudentBlogService {
       });
     }
     
-    // Accept any response format
+    // Make the request
     return this.http.post<any>(`${this.apiUrl}/blogs`, formData).pipe(
-      tap(response => console.log('Blog creation response:', response)),
+      tap(response => {
+        console.log('Blog creation raw response:', response);
+      }),
       map(response => {
-        // Handle different response formats
+        // Extract the blog from the response
         let blog: Blog;
         
+        // Try to extract the blog data based on different response formats
         if (response && response.data) {
           blog = response.data;
         } else if (response && response.blog) {
           blog = response.blog;
-        } else if (response && response.id) {
-          blog = response;
         } else {
-          // Create a basic blog structure if the response doesn't match expected formats
-          const username = this.authService.getUserName() || 'Anonymous';
+          // If no structured data, try to build a blog object
           blog = {
-            id: response?.id || -new Date().getTime(),
+            id: response?.id || response?.data?.id || response?.blog?.id,
             title: blogData.title || 'Untitled',
             content: blogData.content || '',
-            student_id: blogData.student_id,
+            student_id: Number(blogData.student_id),
+            author: this.authService.getUserName() || 'Anonymous',
             author_role: blogData.author_role || 'student',
-            author: username,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
-            comments: [],
-            documents: [] // Initialize empty documents array
-          } as unknown as Blog;
+            comments: []
+          } as Blog;
         }
         
-        // If the API doesn't return documents/files, but we have local files,
-        // add them to the blog object for UI display purposes
+        // CRITICAL: Make sure we have a numeric ID from the server
+        if (typeof blog.id === 'string') {
+          blog.id = Number(blog.id);
+        }
+        
+        // IMPORTANT: Wait for a refresh from the server before allowing comments
+        // This ensures that the blog ID exists in the database
+        this.loadBlogs();
+        
+        console.log('Final processed blog:', blog);
+        console.log('Blog ID for commenting:', blog.id, 'Type:', typeof blog.id);
+        
+        // Add documents to the UI representation if they're not returned from the server
         if (files && files.length > 0 && (!blog.documents || blog.documents.length === 0)) {
           blog.documents = files.map(file => ({
-            id: Math.random(), // Temporary ID
+            id: Math.random(),
             name: file.name,
             size: file.size,
-            file_path: URL.createObjectURL(file), // Create temporary URL for display
+            file_path: URL.createObjectURL(file),
             mime_type: file.type,
             created_at: new Date().toISOString()
           }));
         }
         
-        // Update the blogs subject with the new blog
+        // Update local state with the new blog
         const currentBlogs = this.blogsSubject.getValue();
         this.blogsSubject.next([blog, ...currentBlogs]);
         
@@ -229,9 +248,12 @@ export class StudentBlogService {
       }),
       catchError(error => {
         console.error('Error creating blog:', error);
-        this.toast.error('Failed to create blog: ' + 
-          (error.error?.message || error.message || 'Unknown error'));
-        return throwError(() => error);
+        let errorMessage = 'Failed to create blog';
+        if (error.error && error.error.message) {
+          errorMessage += ': ' + error.error.message;
+        }
+        this.toast.error(errorMessage);
+        return throwError(() => new Error(errorMessage));
       })
     );
   }
@@ -287,5 +309,47 @@ export class StudentBlogService {
 
   getLoggedInUserRole(): string | null {
     return this.loggedInUserRole;
+  }
+
+  // Add this to student-blog.service.ts
+  ensureBlogExists(blogId: number): Observable<boolean> {
+    // First check if it exists in our local state
+    const currentBlogs = this.blogsSubject.getValue();
+    const blogExists = currentBlogs.some(blog => Number(blog.id) === Number(blogId));
+    
+    if (blogExists) {
+      return of(true);
+    }
+    
+    // If not in local state, force a refresh from the server
+    console.log('Blog not found in local state, refreshing from server...');
+    return this.loadBlogsAsync().pipe(
+      map(blogs => {
+        const exists = blogs.some(blog => Number(blog.id) === Number(blogId));
+        console.log(`After refresh, blog ${blogId} exists: ${exists}`);
+        return exists;
+      })
+    );
+  }
+
+  // Add this async version of loadBlogs
+  loadBlogsAsync(): Observable<Blog[]> {
+    const studentId = this.loggedInUserId;
+    return this.http.get<ApiResponse<Blog[]>>(`${this.apiUrl}/blogs/${studentId}`).pipe(
+      map(response => {
+        if (response && response.data) {
+          // Update our subject
+          this.blogsSubject.next(response.data);
+          return response.data;
+        } else {
+          console.error('Invalid getBlogs response:', response);
+          return [];
+        }
+      }),
+      catchError(error => {
+        console.error('Error in loadBlogsAsync:', error);
+        return throwError(() => new Error('Failed to fetch blogs'));
+      })
+    );
   }
 }

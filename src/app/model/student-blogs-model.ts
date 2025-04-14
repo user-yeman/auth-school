@@ -3,7 +3,7 @@ export interface Blog {
   title: string;
   content: string;
   student_id: number;
-  tutor_id?: number; // Add this line
+  tutor_id?: number; // Add this optional property
   author: string;
   author_role: string;
   created_at: string;

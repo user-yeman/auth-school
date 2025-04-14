@@ -12,6 +12,7 @@ import { Blog, Comment } from '../../../../model/student-blogs-model';
 import { StudentBlogService } from '../../../../services/student/blogs/student-blog.service';
 import { ToastrService } from 'ngx-toastr';
 import { EditBlogDialogComponent } from '../edit-blog-dialog/edit-blog-dialog.component';
+import { of, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-blog-card',
@@ -62,25 +63,38 @@ export class BlogCardComponent implements OnInit {
     
     this.isSubmittingComment = true;
     
-    this.blogService.addComment(this.blog.id, this.newComment).subscribe({
-      next: (comment) => {
-        console.log('Comment added successfully:', comment);
-        
-        // Clear the input field
-        this.newComment = '';
-        
-        // If we need to manually update the UI (as a fallback)
-        if (!this.blog.comments) {
-          this.blog.comments = [];
+    // Convert blog ID to a number
+    const blogId = Number(this.blog.id);
+    
+    console.log('Attempting to add comment to blog ID:', blogId);
+    
+    // First ensure the blog exists in the backend
+    this.blogService.ensureBlogExists(blogId).subscribe({
+      next: (exists) => {
+        if (!exists) {
+          this.toastService.error('Cannot add comment: Blog not found in database');
+          this.isSubmittingComment = false;
+          return;
         }
-        this.blog.comments.push(comment);
         
-        this.toastService.success('Comment added successfully');
-        this.isSubmittingComment = false;
+        // Now that we know the blog exists, add the comment
+        this.blogService.addComment(blogId, this.newComment).subscribe({
+          next: (comment) => {
+            console.log('Comment added successfully:', comment);
+            this.newComment = '';
+            this.toastService.success('Comment added successfully');
+            this.isSubmittingComment = false;
+          },
+          error: (error) => {
+            console.error('Error adding comment:', error);
+            this.toastService.error(error.message || 'Failed to add comment');
+            this.isSubmittingComment = false;
+          }
+        });
       },
       error: (error) => {
-        console.error('Error adding comment:', error);
-        this.toastService.error('Failed to add comment. Please try again.');
+        console.error('Error checking if blog exists:', error);
+        this.toastService.error('Failed to verify blog exists');
         this.isSubmittingComment = false;
       }
     });
