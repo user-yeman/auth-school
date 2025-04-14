@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, map, tap, throwError, BehaviorSubject, of } from 'rxjs';
+import { Observable, catchError, map, tap, throwError, BehaviorSubject, of, Subscription } from 'rxjs';
 import { 
   ApiCommentResponse, 
   ApiResponse, 
@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 @Injectable({
   providedIn: 'root',
 })
-export class StudentBlogService {
+export class StudentBlogService implements OnDestroy {
   private apiUrl = 'http://127.0.0.1:8000/api';
   private loggedInUserId: number = 0;
   private loggedInUserRole: string | null = null;
@@ -22,16 +22,23 @@ export class StudentBlogService {
   private blogsSubject = new BehaviorSubject<Blog[]>([]);
   public blogs$ = this.blogsSubject.asObservable();
 
+  // Add to class properties
+  private pollingInterval: any;
+  private subscription: Subscription = new Subscription();
+
   constructor(
     private http: HttpClient,
     private toast: ToastrService,
-    private authService: AuthService // Add this
+    private authService: AuthService
   ) {
     this.loggedInUserId = this.authService.getUserId();
     this.loggedInUserRole = this.authService.getUserRole();
     
     // Load blogs initially
     this.loadBlogs();
+    
+    // Start polling for updates
+    this.startPolling();
   }
   
   // Method to load blogs and update the subject
@@ -351,5 +358,28 @@ export class StudentBlogService {
         return throwError(() => new Error('Failed to fetch blogs'));
       })
     );
+  }
+
+  // Add these methods
+  startPolling(): void {
+    // Poll every 30 seconds for updates
+    this.pollingInterval = setInterval(() => {
+      console.log('Polling for updates...');
+      this.loadBlogsAsync().subscribe({
+        next: () => console.log('Blogs refreshed through polling'),
+        error: (error) => console.error('Error polling blogs:', error)
+      });
+    }, 30000); // 30 seconds
+  }
+
+  stopPolling(): void {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.stopPolling();
   }
 }
