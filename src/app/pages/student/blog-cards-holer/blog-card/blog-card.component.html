@@ -1,67 +1,64 @@
 <mat-card class="blog-card">
-  <mat-card-header>
-    <mat-card-title>{{ blog.title }}</mat-card-title>
-    <mat-card-subtitle>
-      By {{ blog.author }} ({{ blog.author_role === 'tutor' ? 'Tutor' : 'Student' }})
+  <div class="blog-header">
+    <h2 class="blog-title">{{ blog.title }}</h2>
+    <div class="blog-meta">
+      <span>Author: {{ blog.author }} ({{ blog.author_role === 'tutor' ? 'Tutor' : 'Student' }})</span>
       <span class="date">{{ formatDate(blog.created_at) }}</span>
-    </mat-card-subtitle>
-    
-    <!-- Action menu for student blogs (when the current user is the author) -->
-    <div class="menu-container" *ngIf="blog.author_role === 'student' && blog.student_id === loggedInUserId">
-      <button mat-icon-button [matMenuTriggerFor]="blogMenu" aria-label="Blog options">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #blogMenu="matMenu">
-        <button mat-menu-item (click)="editBlog()">
-          <mat-icon>edit</mat-icon>
-          <span>Edit</span>
-        </button>
-        <button mat-menu-item (click)="deleteBlog()">
-          <mat-icon>delete</mat-icon>
-          <span>Delete</span>
-        </button>
-      </mat-menu>
     </div>
-  </mat-card-header>
+  </div>
 
-  <mat-card-content>
+  <div class="blog-content">
     <p>{{ blog.content }}</p>
+  </div>
 
-    <!-- Attachments section -->
-    <div *ngIf="blog.documents && blog.documents.length > 0" class="attachments">
-      <h4>Attachments:</h4>
-      <div class="documents-list">
-        <div *ngFor="let doc of blog.documents" class="document-item" (click)="viewDocument(doc)">
-          <!-- <mat-icon>attachment</mat-icon> -->
-          <span class="document-name">{{ doc.name }}</span>
-        </div>
-      </div>
-      <button mat-button color="primary" (click)="downloadFiles()">
-        <mat-icon>download</mat-icon> Download All Files
+  <!-- Attachments section - with label and download button both on left side -->
+  <div *ngIf="blog.documents && blog.documents.length > 0" class="attachments-section">
+    <div class="attachments-container">
+      <div class="attachments-label">Attachments:</div>
+      <button class="download-all-button" (click)="downloadFiles()">
+        <mat-icon class="download-icon">download</mat-icon>
+        Download All Files
       </button>
     </div>
+  </div>
 
-    <!-- Comments section -->
-    <div class="divider"></div>
-    <div class="comments-section">
-      <h4>Comments ({{ blog.comments.length || 0 }})</h4>
-      
-      <div *ngIf="blog.comments.length > 0" class="comments-list">
-        <div *ngFor="let comment of blog.comments" class="comment">
-          <p class="comment-author">{{ getCommentAuthor(comment) }}</p>
-          <p class="comment-content">{{ comment.content }}</p>
-          <p class="comment-date">{{ formatDate(comment.created_at) }}</p>
-        </div>
-      </div>
-      
-      <div *ngIf="!isOldBlog" class="add-comment">
-        <mat-form-field appearance="outline" class="full-width">
-          <input matInput [(ngModel)]="newComment" placeholder="Add a comment..." (keyup.enter)="addComment()">
-          <button mat-icon-button matSuffix (click)="addComment()" [disabled]="!newComment.trim()">
-            <mat-icon>send</mat-icon>
-          </button>
-        </mat-form-field>
+  <!-- Menu for actions (only visible to authors) -->
+  <div class="menu-container" *ngIf="blog.author_role === 'student' && blog.student_id === loggedInUserId">
+    <button mat-icon-button [matMenuTriggerFor]="blogMenu" aria-label="Blog options">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #blogMenu="matMenu">
+      <button mat-menu-item (click)="editBlog()">
+        <mat-icon>edit</mat-icon>
+        <span>Edit</span>
+      </button>
+      <button mat-menu-item (click)="deleteBlog()">
+        <mat-icon>delete</mat-icon>
+        <span>Delete</span>
+      </button>
+    </mat-menu>
+  </div>
+
+  <!-- Comments section -->
+  <div class="divider"></div>
+  <div class="comments-section">
+    <h4>Comments ({{ blog.comments.length || 0 }})</h4>
+
+    <div *ngIf="blog.comments.length > 0" class="comments-list">
+      <div *ngFor="let comment of blog.comments" class="comment">
+        <p class="comment-author">{{ getCommentAuthor(comment) }}</p>
+        <p class="comment-content">{{ comment.content }}</p>
+        <p class="comment-date">{{ formatDate(comment.created_at) }}</p>
       </div>
     </div>
-  </mat-card-content>
+
+    <div *ngIf="!isOldBlog" class="add-comment">
+      <mat-form-field appearance="outline" class="full-width">
+        <input matInput [(ngModel)]="newComment" placeholder="Add a comment..." (keyup.enter)="addComment()">
+        <button mat-icon-button matSuffix (click)="addComment()" [disabled]="!newComment.trim()">
+          <mat-icon>send</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
 </mat-card>
