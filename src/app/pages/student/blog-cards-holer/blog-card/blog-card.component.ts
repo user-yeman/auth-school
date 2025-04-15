@@ -140,11 +140,19 @@ export class BlogCardComponent implements OnInit {
   }
 
   getCommentAuthor(comment: Comment): string {
-    if (comment.student_id) {
-      return 'Student';
+    if (comment.student_id && comment.student) {
+      return comment.student.name || `Student ${comment.student_id}`;
+    } else if (comment.tutor_id && comment.tutor) {
+      return comment.tutor.name || `Tutor ${comment.tutor_id}`;
+    } else if (comment.student_id) {
+      // Fallback if student object isn't included
+      return `Student ${comment.student_id}`;
     } else if (comment.tutor_id) {
-      return 'Tutor';
+      // Fallback if tutor object isn't included
+      return `Tutor ${comment.tutor_id}`;
     }
+    
+    // Ultimate fallback
     return 'Unknown';
   }
 

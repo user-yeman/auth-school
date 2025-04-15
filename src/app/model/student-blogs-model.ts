@@ -20,6 +20,26 @@ export interface Comment {
   blog_id: number;
   created_at: string;
   updated_at: string;
+  student?: {
+    id: number;
+    StudentID: string;
+    name: string;
+    email: string;
+    phone_number: string;
+    last_login_at: string;
+    created_at: string;
+    updated_at: string;
+  } | null;
+  tutor?: {
+    id: number;
+    name: string;
+    email: string;
+    phone_number: string;
+    specialization: string;
+    last_login_at: string;
+    created_at: string;
+    updated_at: string;
+  } | null;
 }
 
 export interface Document {
