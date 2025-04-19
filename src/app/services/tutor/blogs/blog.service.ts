@@ -24,13 +24,14 @@ export class BlogService {
   ) {
     this.loggedInUserId = this.authService.getUserId();
     console.log('loggedInUserId', this.loggedInUserId);
-
     this.loggedInUserRole = this.authService.getUserRole();
     console.log('loggedInUserRole', this.loggedInUserRole);
   }
 
   getBlogs(studentId: number): Observable<Blog[]> {
-    return this.http.get<any>(`${this.apiUrl}/blogs/${studentId}`).pipe(
+    // Add cache-busting query parameter
+    const url = `${this.apiUrl}/blogs/${studentId}?t=${new Date().getTime()}`;
+    return this.http.get<any>(url).pipe(
       tap((response) => console.log('Raw getBlogs response:', response)),
       map((response) => {
         if (response && response.data) {
@@ -69,7 +70,7 @@ export class BlogService {
       tap((response) => console.log('Raw addBlog response:', response)),
       map((response) => {
         if (response && (response.status === 201 || response.status === 200)) {
-          return; // Success, return void
+          return;
         } else {
           console.error('Unexpected addBlog response:', response);
           throw new Error('Failed to add blog');
@@ -98,22 +99,24 @@ export class BlogService {
       formData.append(`documents[${index}]`, file, file.name);
     });
 
-    return this.http.put<any>(`${this.apiUrl}/blogs/${blog.id}`, formData).pipe(
-      tap((response) => console.log('Raw updateBlog response:', response)),
-      map((response) => {
-        if (response && response.status === 200) {
-          return; // Success, return void
-        } else {
-          console.error('Unexpected updateBlog response:', response);
-          throw new Error('Failed to update blog');
-        }
-      }),
-      catchError((error) => {
-        console.error('Error in updateBlog:', error);
-        this.toast.error('Failed to update blog', 'Error');
-        return throwError(() => new Error('Failed to update blog'));
-      })
-    );
+    return this.http
+      .post<any>(`${this.apiUrl}/blogs/${blog.id}`, formData)
+      .pipe(
+        tap((response) => console.log('Raw updateBlog response:', response)),
+        map((response) => {
+          if (response && response.status === 200) {
+            return;
+          } else {
+            console.error('Unexpected updateBlog response:', response);
+            throw new Error('Failed to update blog');
+          }
+        }),
+        catchError((error) => {
+          console.error('Error in updateBlog:', error);
+          this.toast.error('Failed to update blog', 'Error');
+          return throwError(() => new Error('Failed to update blog'));
+        })
+      );
   }
 
   deleteBlog(blogId: number): Observable<void> {
@@ -137,7 +140,40 @@ export class BlogService {
     return this.http
       .post<ApiCommentResponse<Comment>>(`${this.apiUrl}/comments`, comment)
       .pipe(
-        map((response) => response.comment),
+        map((response) => {
+          const newComment = response.comment;
+          // Add student/tutor object with name for optimistic UI update
+          if (
+            this.loggedInUserRole === 'student' &&
+            newComment.student_id === this.loggedInUserId
+          ) {
+            newComment.student = {
+              id: this.loggedInUserId,
+              name: this.authService.getUserName() || 'Unknown Student',
+              StudentID: '',
+              email: '',
+              phone_number: '',
+              last_login_at: '',
+              created_at: '',
+              updated_at: '',
+            };
+          } else if (
+            this.loggedInUserRole === 'tutor' &&
+            newComment.tutor_id === this.loggedInUserId
+          ) {
+            newComment.tutor = {
+              id: this.loggedInUserId,
+              name: this.authService.getUserName() || 'Unknown Tutor',
+              email: '',
+              phone_number: '',
+              specialization: '',
+              last_login_at: '',
+              created_at: '',
+              updated_at: '',
+            };
+          }
+          return newComment;
+        }),
         catchError((error) => {
           this.toast.error('Failed to add comment', 'Error');
           return throwError(() => new Error('Failed to add comment'));
@@ -168,10 +204,10 @@ export class BlogService {
       })
     );
   }
-  // Download blog files
+
   downloadBlogFiles(blogId: number): Observable<HttpResponse<Blob>> {
     return this.http
-      .get(`${this.apiUrl}/download/blog/${blogId}`, {
+      .get(`${this.apiUrl}/download/blog/all/${blogId}`, {
         responseType: 'blob',
         observe: 'response',
       })
@@ -182,6 +218,7 @@ export class BlogService {
         })
       );
   }
+
   getLoggedInUserId(): number {
     return this.loggedInUserId;
   }

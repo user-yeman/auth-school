@@ -1,9 +1,22 @@
 <div class="layout_Container container-fluid">
-  <div class="layout_SideBar">
-    <app-sidebar></app-sidebar>
+  <div
+    class="hamburger-menu"
+    [ngClass]="{ 'hamburger-menu-collapsed': isSidenavCollapsed }"
+  >
+    <button mat-icon-button (click)="toggleSidebar()" class="toggle-button">
+      <mat-icon>{{ isSidenavCollapsed ? "menu" : "menu_open" }}</mat-icon>
+    </button>
+  </div>
+  <div
+    class="layout_SideBar"
+    [ngClass]="{ 'layout_SideBar-collapsed': isSidenavCollapsed }"
+  >
+    <app-sidebar
+      [isSidenavCollapsed]="isSidenavCollapsed"
+      (toggleSidebar)="toggleSidebar()"
+    ></app-sidebar>
   </div>
   <div class="layout_Body">
     <router-outlet></router-outlet>
-    <!-- Renders child routes of /admin -->
   </div>
 </div>

@@ -1,14 +1,33 @@
-<mat-sidenav-container class="sidenav-contianer">
-  <mat-sidenav mode="side" opened class="sidenav">
-    <div class="sidenav-header d-flex justify-content-center mt-3">
-      <h2 class="sidenav-title logo">{{ logo }}</h2>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #sidenav
+    mode="side"
+    [opened]="!isSidenavCollapsed"
+    class="sidenav"
+    [ngClass]="{ 'sidenav-collapsed': isSidenavCollapsed }"
+  >
+    <div
+      class="sidenav-header mt-3 px-3 d-flex justify-content-between align-items-center"
+    >
+      <h2
+        class="sidenav-title logo"
+        [ngClass]="{ 'd-none': isSidenavCollapsed }"
+      >
+        {{ logo }}
+      </h2>
+      <button
+        *ngIf="!isSidenavCollapsed"
+        mat-icon-button
+        (click)="toggleSidenav()"
+        class="close-button"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
 
     <mat-nav-list>
-      <!-- Loop through nav list -->
       <ng-container *ngFor="let item of navItems">
         <mat-divider></mat-divider>
-        <!-- Regular link (no children) -->
         <a
           *ngIf="!item.children && item.route"
           mat-list-item
@@ -16,16 +35,28 @@
           (click)="logNavigation(item.route)"
           routerLinkActive="active-link"
           [routerLinkActiveOptions]="{ exact: true }"
+          [ngClass]="{ 'collapsed-item': isSidenavCollapsed }"
         >
           <mat-icon>{{ item.icon }}</mat-icon>
-          <span class="menu-text">{{ item.label }}</span>
+          <span
+            class="menu-text"
+            [ngClass]="{ 'd-none': isSidenavCollapsed }"
+            >{{ item.label }}</span
+          >
         </a>
 
-        <!-- Links inside expandable sections -->
-        <mat-expansion-panel *ngIf="item.children" class="menu-panel">
+        <mat-expansion-panel
+          *ngIf="item.children"
+          class="menu-panel"
+          [disabled]="isSidenavCollapsed"
+        >
           <mat-expansion-panel-header>
             <mat-icon>{{ item.icon }}</mat-icon>
-            <span class="menu-text">{{ item.label }}</span>
+            <span
+              class="menu-text"
+              [ngClass]="{ 'd-none': isSidenavCollapsed }"
+              >{{ item.label }}</span
+            >
           </mat-expansion-panel-header>
           <mat-nav-list>
             <a
@@ -34,24 +65,30 @@
               [routerLink]="child.route"
               routerLinkActive="active-link"
               [routerLinkActiveOptions]="{ exact: true }"
+              [ngClass]="{ 'collapsed-item': isSidenavCollapsed }"
             >
               <mat-icon>{{ child.icon }}</mat-icon>
-              <span>{{ child.label }}</span>
+              <span [ngClass]="{ 'd-none': isSidenavCollapsed }">{{
+                child.label
+              }}</span>
             </a>
           </mat-nav-list>
         </mat-expansion-panel>
       </ng-container>
     </mat-nav-list>
-    <!-- Divider -->
+
     <mat-divider></mat-divider>
-    <!-- sidebar footer -->
     <div
       class="sidebar-footer d-flex align-items-center justify-content-center flex-column"
+      [ngClass]="{ 'collapsed-item': isSidenavCollapsed }"
     >
       <button class="logout-button" (click)="logout()">
         <mat-icon>exit_to_app</mat-icon>
-        <span>Logout</span>
+        <span [ngClass]="{ 'd-none': isSidenavCollapsed }">Logout</span>
       </button>
     </div>
   </mat-sidenav>
+  <mat-sidenav-content>
+    <ng-content></ng-content>
+  </mat-sidenav-content>
 </mat-sidenav-container>

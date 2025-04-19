@@ -14,9 +14,8 @@
     <span class="date">{{ formatDate(blog.created_at || "") }}</span>
   </p>
   <p class="content">{{ blog.content }}</p>
-  <!-- Show attachments section only if documents array is not empty -->
   <div class="attachments" *ngIf="blog.documents && blog.documents.length > 0">
-    <h5>Attachments :</h5>
+    <h5>Attachments:</h5>
     <button class="download-btn" (click)="downloadFiles()">
       <span class="icon">⭳</span> Download All Files
     </button>
@@ -25,10 +24,32 @@
     <p>Comments ({{ blog.comments?.length || 0 }})</p>
     <div class="comments">
       <div *ngFor="let comment of blog.comments" class="comment">
-        <p>{{ comment.content }}</p>
+        <div class="comment-header">
+          <p class="comment-author">{{ getCommentAuthor(comment) }}</p>
+          <div class="comment-settings" *ngIf="canDeleteComment(comment)">
+            <button (click)="toggleCommentSettings(comment.id)">⋮</button>
+            <div class="dropdown" *ngIf="commentSettingsMap[comment.id]">
+              <button (click)="startEditComment(comment)">Edit</button>
+              <button (click)="deleteComment(comment.id)">Delete</button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="editCommentMap[comment.id]?.isEditing; else showComment">
+          <input
+            [(ngModel)]="editCommentMap[comment.id].content"
+            placeholder="Edit comment..."
+            (keyup.enter)="saveEditComment(comment)"
+          />
+          <div class="edit-actions">
+            <button (click)="saveEditComment(comment)">Save</button>
+            <button (click)="cancelEditComment(comment.id)">Cancel</button>
+          </div>
+        </div>
+        <ng-template #showComment>
+          <p>{{ comment.content }}</p>
+        </ng-template>
       </div>
     </div>
-    <!-- Show "Add a comment" only for new blogs -->
     <div class="add-comment" *ngIf="!isOldBlog">
       <input
         [(ngModel)]="newComment"

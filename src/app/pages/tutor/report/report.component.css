@@ -1,12 +1,8 @@
-.chart-container {
-  background-color: #fff;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.report-container {
+  padding: 1.5rem;
+  max-width: 100%;
+  overflow-x: hidden;
 }
-
 .chart-container {
   position: relative;
   width: 100%;
@@ -25,11 +21,12 @@ canvas#messagesChart {
 }
 
 .filter-container {
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
-
 .filter-wrapper {
   position: relative;
   display: inline-block;
@@ -45,6 +42,7 @@ canvas#messagesChart {
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
+  font-size: clamp(0.875rem, 3vw, 1rem);
 }
 
 .filter-btn:hover {
@@ -88,10 +86,15 @@ canvas#messagesChart {
 .filter-panel a:hover {
   background-color: #f8f9fa;
 }
-
+.table_wrapper {
+  overflow-x: auto;
+  padding: 10px;
+  min-width: 80vw;
+}
 .table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 700px;
 }
 
 .table th {
@@ -101,6 +104,7 @@ canvas#messagesChart {
   padding: 10px;
   text-align: left;
   position: relative;
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
 }
 
 .table th:hover {
@@ -110,6 +114,7 @@ canvas#messagesChart {
 .table td {
   padding: 10px;
   border-bottom: 1px solid #dee2e6;
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
 }
 
 .sort-icon {
@@ -211,4 +216,127 @@ canvas#messagesChart {
   align-items: center;
   margin-bottom: 20px;
   width: 80%;
+}
+/* Media Queries for Responsiveness */
+@media (max-width: 1024px) {
+  .report-container {
+    padding: 1rem;
+  }
+
+  .chart-container {
+    min-height: 200px;
+  }
+
+  canvas#messagesChart {
+    height: 180px !important;
+  }
+
+  .search-bar {
+    max-width: 100%;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .filter-btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .pagination .page-link {
+    padding: 0.375rem 0.625rem;
+    font-size: 0.875rem;
+    min-width: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .report-container {
+    padding: 0.75rem;
+  }
+
+  .chart-container {
+    min-height: 180px;
+  }
+
+  canvas#messagesChart {
+    height: 160px !important;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  .filter-panel {
+    min-width: 100px;
+    font-size: 0.75rem;
+  }
+
+  .table th,
+  .table td {
+    font-size: 0.75rem;
+    padding: 0.375rem;
+  }
+
+  .sort-icon {
+    right: 0.375rem;
+    width: 8px;
+    height: 8px;
+  }
+
+  .sort-icon::before,
+  .sort-icon::after {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+  }
+
+  .sort-icon::before {
+    border-bottom: 4px solid white;
+  }
+
+  .sort-icon::after {
+    border-top: 4px solid white;
+  }
+
+  .pagination .page-link {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    min-width: 1.75rem;
+  }
+  .search-bar input {
+    width: 100%;
+    margin: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .report-container {
+    padding: 0.5rem;
+  }
+
+  .chart-container {
+    min-height: 150px;
+  }
+
+  canvas#messagesChart {
+    height: 140px !important;
+  }
+
+  .search-bar input {
+    font-size: 0.875rem;
+    padding: 0.375rem;
+  }
+
+  .filter-btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .filter-panel a {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
 }

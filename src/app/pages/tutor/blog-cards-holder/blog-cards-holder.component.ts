@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { BlogComponent } from './blogs/blog.component';
 import { BlogService } from '../../../services/tutor/blogs/blog.service';
-import { Blog } from '../../../model/tutor-blogs-model';
+import { Blog, Comment } from '../../../model/tutor-blogs-model';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AuthService } from '../../../services/auth.service';
@@ -27,7 +27,6 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
   loggedInUserRole: string | null = null;
   loading: boolean = false;
 
-  private userSubscription: Subscription | undefined;
   private routeSubscription: Subscription | undefined;
 
   constructor(
@@ -44,7 +43,7 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
       const studentId = params.get('id');
       if (studentId) {
         this.studentId = +studentId;
-        console.log('Student ID from route:', this.studentId);
+
         this.fetchBlogs();
       } else {
         console.error('Student ID not found in route');
@@ -53,13 +52,9 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
     });
     this.loggedInUserId = this.authService.getUserId();
     this.loggedInUserRole = this.authService.getUserRole();
-    console.log('Logged in user:', this.loggedInUserId, this.loggedInUserRole);
   }
 
   ngOnDestroy() {
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
@@ -73,18 +68,16 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
       );
       return;
     }
-    console.log('Fetching blogs for student ID:', studentId);
+
     this.loading = true;
-    console.log('Loading set to true:', this.loading);
-    this.cdr.detectChanges(); // Force UI update to show skeleton
+    this.cdr.markForCheck();
     this.blogService.getBlogs(studentId).subscribe({
       next: (blogs) => {
-        console.log('Fetched blogs:', blogs);
-        this.blogs = blogs || [];
+        this.blogs = [...(blogs || [])];
         this.applyFilter();
         this.loading = false;
-        console.log('Loading set to false:', this.loading);
-        this.cdr.detectChanges(); // Force UI update after fetching
+        this.cdr.markForCheck();
+        console.log('Blogs updated:', this.blogs);
       },
       error: (error) => {
         console.error('Error fetching blogs:', error);
@@ -92,8 +85,7 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
         this.blogs = [];
         this.applyFilter();
         this.loading = false;
-        console.log('Loading set to false (error):', this.loading);
-        this.cdr.detectChanges(); // Force UI update on error
+        this.cdr.markForCheck();
       },
     });
   }
@@ -107,28 +99,23 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
   applyFilter() {
     const thresholdDate = new Date();
     thresholdDate.setDate(thresholdDate.getDate() - 30);
+    this.filteredBlogs = [
+      ...this.blogs.filter((blog) => {
+        if (!blog || !blog.created_at) {
+          console.warn('Blog missing created_at:', blog);
+          return false;
+        }
+        const createdAt = new Date(blog.created_at);
+        return (
+          !isNaN(createdAt.getTime()) &&
+          (this.filter === 'new'
+            ? createdAt > thresholdDate
+            : createdAt <= thresholdDate)
+        );
+      }),
+    ];
 
-    if (this.filter === 'new') {
-      this.filteredBlogs = this.blogs.filter((blog) => {
-        if (!blog || !blog.created_at) {
-          console.warn('Blog missing created_at:', blog);
-          return false;
-        }
-        const createdAt = new Date(blog.created_at);
-        return !isNaN(createdAt.getTime()) && createdAt > thresholdDate;
-      });
-    } else {
-      this.filteredBlogs = this.blogs.filter((blog) => {
-        if (!blog || !blog.created_at) {
-          console.warn('Blog missing created_at:', blog);
-          return false;
-        }
-        const createdAt = new Date(blog.created_at);
-        return !isNaN(createdAt.getTime()) && createdAt <= thresholdDate;
-      });
-    }
-    console.log('Filtered blogs:', this.filteredBlogs);
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   canEdit(blog: Blog): boolean {
@@ -159,17 +146,13 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
           next: () => {
             console.log('Blog added successfully');
             this.toastService.success('Blog added successfully', 'Success');
-            this.fetchBlogs(); // Refresh the blog list
-            this.cdr.detectChanges();
+            this.fetchBlogs();
           },
           error: (error) => {
             console.error('Error adding blog:', error);
             this.toastService.error('Failed to add blog', 'Error');
-            this.cdr.detectChanges();
           },
         });
-      } else {
-        console.log('Dialog closed without adding a blog');
       }
     });
   }
@@ -181,26 +164,22 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result || !result.blog) {
-        console.error('Invalid result from dialog:', result);
-        this.toastService.error('Failed to update blog: Invalid data', 'Error');
-        this.cdr.detectChanges();
-        return;
-      }
+      // if (!result || !result.blog) {
+      //   console.error('Invalid result from dialog:', result);
+      //   this.toastService.error('Failed to update blog: Invalid data', 'Error');
+      //   return;
+      // }
 
       result.blog.student_id = this.studentId;
-
       this.blogService.updateBlog(result.blog, result.files).subscribe({
         next: () => {
           console.log('Blog updated successfully');
-          this.fetchBlogs();
           this.toastService.success('Blog updated successfully', 'Success');
-          this.cdr.detectChanges();
+          this.fetchBlogs();
         },
         error: (error) => {
           console.error('Error updating blog:', error);
           this.toastService.error('Failed to update blog', 'Error');
-          this.cdr.detectChanges();
         },
       });
     });
@@ -209,14 +188,12 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
   onDeleteBlog(blogId: number) {
     this.blogService.deleteBlog(blogId).subscribe({
       next: () => {
-        this.fetchBlogs();
         this.toastService.success('Blog deleted successfully', 'Success');
-        this.cdr.detectChanges();
+        this.fetchBlogs();
       },
       error: (error) => {
         console.error('Error deleting blog:', error);
         this.toastService.error('Failed to delete blog', 'Error');
-        this.cdr.detectChanges();
       },
     });
   }
@@ -224,15 +201,31 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
   onAddComment(blogId: number, content: string) {
     this.blogService.addComment(blogId, content).subscribe({
       next: (newComment) => {
-        this.fetchBlogs();
         this.toastService.success('Comment added successfully', 'Success');
-        this.cdr.detectChanges();
+        // Optimistically update the blog with the new comment
+        this.blogs = this.blogs.map((blog) => {
+          if (blog.id === blogId) {
+            return {
+              ...blog,
+              comments: [...(blog.comments || []), newComment],
+            };
+          }
+          return blog;
+        });
+        this.applyFilter();
+        this.cdr.markForCheck();
+        // Still fetch blogs to ensure consistency
+        this.fetchBlogs();
       },
       error: (error) => {
         console.error('Error adding comment:', error);
         this.toastService.error('Failed to add comment', 'Error');
-        this.cdr.detectChanges();
       },
     });
+  }
+
+  onRefreshBlog() {
+    console.log('Refresh blog event received');
+    this.fetchBlogs();
   }
 }
