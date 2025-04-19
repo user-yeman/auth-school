@@ -1,4 +1,3 @@
-// card-model.ts
 export interface Student {
   id: number;
   StudentID: string;
@@ -11,6 +10,7 @@ export interface ApiDashboardResponse {
   status: string;
   message: string;
   data: {
+    userInfo: userInfoDashboard;
     groups?: GroupsCardData; // Optional since missing in API response
     total_students: TotalStudentsCardData;
     blogging_insights: BloggingInsightsCardData;
@@ -56,4 +56,9 @@ export interface CardData {
   title: string;
   total: number;
   items: CardItem[];
+}
+export interface userInfoDashboard {
+  name: string;
+  email: string;
+  last_login_at: string;
 }

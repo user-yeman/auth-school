@@ -6,7 +6,7 @@
       <div class="filter-wrapper">
         <button class="filter-btn" (click)="toggleFilterPanel()">
           <span class="funnel-icon">
-            <mat-icon class="mat-18">ligature</mat-icon>
+            <mat-icon class="mat-18">filter_list</mat-icon>
           </span>
           Filter by
           <span class="filter-status">{{ filterStatus }}</span>
@@ -21,68 +21,69 @@
       </div>
     </div>
   </div>
-
-  <table class="table table-bordered table-hover">
-    <thead class="thead-dark">
-      <tr>
-        <th (click)="sort('StudentID')">
-          Student ID
-          <span
-            class="sort-icon"
+  <div class="table_wrapper">
+    <table class="table table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th (click)="sort('StudentID')">
+            Student ID
+            <span
+              class="sort-icon"
+              [ngClass]="{
+                asc: sortColumn === 'StudentID' && sortDirection === 'asc',
+                desc: sortColumn === 'StudentID' && sortDirection === 'desc'
+              }"
+            ></span>
+          </th>
+          <th (click)="sort('name')">
+            Name
+            <span
+              class="sort-icon"
+              [ngClass]="{
+                asc: sortColumn === 'name' && sortDirection === 'asc',
+                desc: sortColumn === 'name' && sortDirection === 'desc'
+              }"
+            ></span>
+          </th>
+          <th (click)="sort('email')">
+            Email
+            <span
+              class="sort-icon"
+              [ngClass]="{
+                asc: sortColumn === 'email' && sortDirection === 'asc',
+                desc: sortColumn === 'email' && sortDirection === 'desc'
+              }"
+            ></span>
+          </th>
+          <th (click)="sort('status')">
+            Status
+            <span
+              class="sort-icon"
+              [ngClass]="{
+                asc: sortColumn === 'status' && sortDirection === 'asc',
+                desc: sortColumn === 'status' && sortDirection === 'desc'
+              }"
+            ></span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of paginatedStudents">
+          <td>{{ student.StudentID }}</td>
+          <td>{{ student.name }}</td>
+          <td>{{ student.email }}</td>
+          <td
             [ngClass]="{
-              asc: sortColumn === 'StudentID' && sortDirection === 'asc',
-              desc: sortColumn === 'StudentID' && sortDirection === 'desc'
+              'text-success': student.status === 'Active',
+              'text-danger': student.status === 'Inactive'
             }"
-          ></span>
-        </th>
-        <th (click)="sort('name')">
-          Name
-          <span
-            class="sort-icon"
-            [ngClass]="{
-              asc: sortColumn === 'name' && sortDirection === 'asc',
-              desc: sortColumn === 'name' && sortDirection === 'desc'
-            }"
-          ></span>
-        </th>
-        <th (click)="sort('email')">
-          Email
-          <span
-            class="sort-icon"
-            [ngClass]="{
-              asc: sortColumn === 'email' && sortDirection === 'asc',
-              desc: sortColumn === 'email' && sortDirection === 'desc'
-            }"
-          ></span>
-        </th>
-        <th (click)="sort('status')">
-          Status
-          <span
-            class="sort-icon"
-            [ngClass]="{
-              asc: sortColumn === 'status' && sortDirection === 'asc',
-              desc: sortColumn === 'status' && sortDirection === 'desc'
-            }"
-          ></span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let student of paginatedStudents">
-        <td>{{ student.StudentID }}</td>
-        <td>{{ student.name }}</td>
-        <td>{{ student.email }}</td>
-        <td
-          [ngClass]="{
-            'text-success': student.status === 'Active',
-            'text-danger': student.status === 'Inactive'
-          }"
-        >
-          {{ student.status }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          >
+            {{ student.status }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <!-- Pagination -->
   <nav aria-label="Page navigation">

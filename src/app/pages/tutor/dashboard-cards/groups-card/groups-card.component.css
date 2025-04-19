@@ -41,3 +41,8 @@ mat-card-content p span {
 .count_number {
   margin-left: 11rem;
 }
+@media (min-width: 1024px) {
+  .groups-card {
+    right: 0;
+  }
+}

@@ -88,9 +88,9 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (this.pieChartCanvas && !this.isLoading) {
-      this.createPieChart();
-    }
+    // if (this.pieChartCanvas && !this.isLoading) {
+    //   this.createPieChart();
+    // }
   }
 
   ngOnDestroy(): void {
