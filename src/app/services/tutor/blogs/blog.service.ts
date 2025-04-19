@@ -149,7 +149,7 @@ export class BlogService {
           ) {
             newComment.student = {
               id: this.loggedInUserId,
-              name: this.authService.getUserName() || 'Unknown Student',
+              name: '',
               StudentID: '',
               email: '',
               phone_number: '',
@@ -163,7 +163,7 @@ export class BlogService {
           ) {
             newComment.tutor = {
               id: this.loggedInUserId,
-              name: this.authService.getUserName() || 'Unknown Tutor',
+              name: '',
               email: '',
               phone_number: '',
               specialization: '',

@@ -1,6 +1,7 @@
 <div class="tutor_switch_container">
   <!-- Dashboard Content -->
   <div class="row g-0" *ngIf="dashboardData && !loading">
+    <h2>Tutor, {{ userName }}</h2>
     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
       <app-total-students-card
         [students]="dashboardData.data.total_students"

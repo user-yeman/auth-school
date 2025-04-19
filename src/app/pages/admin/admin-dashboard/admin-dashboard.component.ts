@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
@@ -78,7 +79,8 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -88,9 +90,20 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // if (this.pieChartCanvas && !this.isLoading) {
-    //   this.createPieChart();
-    // }
+    if (this.pieChartCanvas && !this.isLoading) {
+      // Observe the canvas element for size changes
+      const resizeObserver = new ResizeObserver(() => {
+        if (
+          this.pieChartCanvas.nativeElement.offsetWidth > 0 &&
+          this.pieChartCanvas.nativeElement.offsetHeight > 0
+        ) {
+          this.createPieChart();
+          resizeObserver.disconnect(); // Stop observing after the chart is created
+        }
+      });
+
+      resizeObserver.observe(this.pieChartCanvas.nativeElement);
+    }
   }
 
   ngOnDestroy(): void {
@@ -121,9 +134,15 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
           email: tutor.email || '',
           assignments: tutor.allocations_count || 0,
         }));
+
+        // Ensure data is ready before creating the chart
         this.dashboardData.tutors = this.tutors;
         this.isLoading = false;
-        if (this.pieChartCanvas) {
+
+        this.cdr.detectChanges();
+
+        // Check if the view is initialized and create the chart
+        if (this.pieChartCanvas && !this.chartInstance) {
           this.createPieChart();
         }
       },
@@ -164,6 +183,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
   }
 
   fetchTutorDashboardData(tutorId: string | number) {
+    console.log('tutorId', tutorId);
     this.isLoading = true;
     this.http
       .get(`http://127.0.0.1:8000/api/admin/tutor/dashboard/${tutorId}`)
@@ -185,6 +205,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
 
   fetchStudentDashboardData(studentId: string | number) {
     this.isLoading = true;
+    this.tutorDashboardData = null; // Clear previous data
     this.http
       .get(`http://127.0.0.1:8000/api/admin/student/dashboard/${studentId}`)
       .subscribe({
@@ -192,6 +213,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
           this.studentDashboardData = response.data || response;
           this.selectedDashboard = 'student';
           this.isLoading = false;
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Error fetching student dashboard data:', error);
@@ -201,6 +223,12 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
           this.fetchDashboardData();
         },
       });
+  }
+  private destroyChart(): void {
+    if (this.chartInstance) {
+      this.chartInstance.destroy();
+      this.chartInstance = null;
+    }
   }
 
   private createPieChart(): void {
@@ -245,13 +273,6 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
     this.chartError = null;
   }
 
-  private destroyChart(): void {
-    if (this.chartInstance) {
-      this.chartInstance.destroy();
-      this.chartInstance = null;
-    }
-  }
-
   onDashboardChange() {
     // Don’t change selectedDashboard yet, just open the modal if needed
     if (this.selectedDashboard === 'tutor') {
@@ -275,6 +296,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
       this.isLoading = false;
       this.fetchDashboardData();
     }
+    this.cdr.detectChanges();
   }
 
   openModal(

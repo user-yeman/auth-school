@@ -1,11 +1,12 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   Router,
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -14,16 +15,37 @@ import { AuthService } from './auth.service';
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> {
     const expectedRole = route.data['expectedRole'];
 
-    const userRole = this.authService.getUserRole();
+    return this.authService.isAuthenticated().pipe(
+      map((isAuthenticated) => {
+        if (!isAuthenticated) {
+          this.router.navigate(['/login'], {
+            queryParams: { returnUrl: state.url }, // Preserve intended URL
+          });
+          return false;
+        }
 
-    if (!this.authService.isAuthenticated() || userRole !== expectedRole) {
-      this.router.navigate(['/login']);
-      return false;
-    }
-    console.log('AuthGuard - Access granted');
-    return true;
+        const userRole = this.authService.getUserRole();
+        console.log(
+          `AuthGuard - User Role: ${userRole}, Expected Role: ${expectedRole}`
+        );
+
+        if (expectedRole && userRole !== expectedRole) {
+          console.log(
+            `Role mismatch: expected ${expectedRole}, got ${userRole}`
+          );
+          this.authService.redirectToDashboard(userRole);
+          return false;
+        }
+
+        console.log('AuthGuard - Access granted');
+        return true;
+      })
+    );
   }
 }
