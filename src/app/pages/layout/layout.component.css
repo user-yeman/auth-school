@@ -1,15 +1,52 @@
 .layout_Container {
   display: flex;
-  height: 100vh; /* Ensure the layout takes the full screen height */
+  height: 100vh;
+  position: relative; /* Make layout_Container the positioning context for hamburger-menu */
 }
 
 .layout_SideBar {
-  width: 250px; /* Define a width for the sidebar */
+  width: 250px;
   padding: 20px;
-  height: 100%; /* Ensure it takes full height */
+  height: 100%;
+  background: transparent;
+  transition: width 0.3s ease;
+}
+
+.layout_SideBar-collapsed {
+  width: 60px;
+}
+
+.hamburger-menu {
+  position: fixed;
+  top: 3rem;
+  left: 0;
+  z-index: 8 !important;
+  background: black;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  transition: left 0.3s ease;
+}
+
+.hamburger-menu-collapsed {
+  left: 0; /* Collapsed state: stick to left edge of screen */
+}
+
+.toggle-button {
+  color: white;
+  background: #3a3a3a;
+  border-radius: 50%;
+}
+
+.toggle-button mat-icon {
+  font-size: 24px;
 }
 
 .layout_Body {
   flex: 1;
   padding: 20px;
+  transition: all 0.3s ease;
 }
+
+/* .layout_SideBar-collapsed + .layout_Body {
+  margin-left: 60px;
+} */

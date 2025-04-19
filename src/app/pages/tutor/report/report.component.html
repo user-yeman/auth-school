@@ -44,71 +44,76 @@
     />
   </div>
   <!-- Table -->
-  <table class="table table-bordered table-hover" *ngIf="!isLoading">
-    <thead class="thead-dark">
-      <tr>
-        <th (click)="sort('student_id')">
-          Student ID
-          <span
-            class="sort-icon"
-            [ngClass]="{
-              asc: sortColumn === 'student_id' && sortDirection === 'asc',
-              desc: sortColumn === 'student_id' && sortDirection === 'desc'
-            }"
-          ></span>
-        </th>
-        <th (click)="sort('name')">
-          Student Name
-          <span
-            class="sort-icon"
-            [ngClass]="{
-              asc: sortColumn === 'name' && sortDirection === 'asc',
-              desc: sortColumn === 'name' && sortDirection === 'desc'
-            }"
-          ></span>
-        </th>
-        <th (click)="sort('email')">
-          Student Email
-          <span
-            class="sort-icon"
-            [ngClass]="{
-              asc: sortColumn === 'email' && sortDirection === 'asc',
-              desc: sortColumn === 'email' && sortDirection === 'desc'
-            }"
-          ></span>
-        </th>
-        <th (click)="sort('last_active')">
-          Last Active
-          <span
-            class="sort-icon"
-            [ngClass]="{
-              asc: sortColumn === 'last_active' && sortDirection === 'asc',
-              desc: sortColumn === 'last_active' && sortDirection === 'desc'
-            }"
-          ></span>
-        </th>
-        <th (click)="sort('inactive_days')">
-          Inactive Days
-          <span
-            class="sort-icon"
-            [ngClass]="{
-              asc: sortColumn === 'inactive_days' && sortDirection === 'asc',
-              desc: sortColumn === 'inactive_days' && sortDirection === 'desc'
-            }"
-          ></span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let student of paginatedStudents">
-        <td>{{ student.student_id }}</td>
-        <td>{{ student.name }}</td>
-        <td>{{ student.email }}</td>
-        <td>{{ student.last_active }}</td>
-        <td>{{ student.inactive_days | number : "1.0-0" }} Days</td>
-      </tr>
-    </tbody>
-  </table>
+
+  <div class="table_wrapper">
+    <table class="table table-bordered table-hover" *ngIf="!isLoading">
+      <thead class="thead-dark">
+        <tr>
+          <th (click)="sort('student_id')">
+            Student ID
+            <span
+              class="sort-icon"
+              [ngClass]="{
+                asc: sortColumn === 'student_id' && sortDirection === 'asc',
+                desc: sortColumn === 'student_id' && sortDirection === 'desc'
+              }"
+            ></span>
+          </th>
+          <th (click)="sort('name')">
+            Student Name
+            <span
+              class="sort-icon"
+              [ngClass]="{
+                asc: sortColumn === 'name' && sortDirection === 'asc',
+                desc: sortColumn === 'name' && sortDirection === 'desc'
+              }"
+            ></span>
+          </th>
+          <th (click)="sort('email')">
+            Student Email
+            <span
+              class="sort-icon"
+              [ngClass]="{
+                asc: sortColumn === 'email' && sortDirection === 'asc',
+                desc: sortColumn === 'email' && sortDirection === 'desc'
+              }"
+            ></span>
+          </th>
+          <th (click)="sort('last_active')">
+            Last Active
+            <span
+              class="sort-icon"
+              [ngClass]="{
+                asc: sortColumn === 'last_active' && sortDirection === 'asc',
+                desc: sortColumn === 'last_active' && sortDirection === 'desc'
+              }"
+            ></span>
+          </th>
+          <th (click)="sort('inactive_days')">
+            Inactive Days
+            <span
+              class="sort-icon"
+              [ngClass]="{
+                asc: sortColumn === 'inactive_days' && sortDirection === 'asc',
+                desc: sortColumn === 'inactive_days' && sortDirection === 'desc'
+              }"
+            ></span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of paginatedStudents">
+          <td data-label="Student ID">{{ student.student_id }}</td>
+          <td data-label="Student Name">{{ student.name }}</td>
+          <td data-label="Student Email">{{ student.email }}</td>
+          <td data-label="Last Active">{{ student.last_active }}</td>
+          <td data-label="Inactive Days">
+            {{ student.inactive_days | number : "1.0-0" }} Days
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <!-- Skeleton Loader for Table -->
   <app-skeleton

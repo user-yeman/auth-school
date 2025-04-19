@@ -111,23 +111,28 @@ export class MeetingComponent implements OnInit {
   onConfirm(): void {
     if (this.scheduleForm.valid) {
       const formValue = this.scheduleForm.value;
+      const localDate = new Date(formValue.date); // Local date for reference
+      const [hours, minutes] = formValue.time.split(':').map(Number);
+      localDate.setHours(hours, minutes, 0, 0);
+
       const meetingData = {
         ...(this.mode === 'update' && this.data.meeting
           ? { id: this.data.meeting.id }
-          : {}), // Include ID for update
+          : {}),
         student_id: this.data.studentId,
-        arrange_date: this.formatDate(formValue.date, formValue.time),
+        arrange_date: this.formatDate(formValue.date, formValue.time), // UTC date
+        arrange_time: formValue.time, // Local time string (HH:mm)
         meeting_type:
           formValue.meetingType === 'Physical' ? 'offline' : 'online',
-
         location:
-          formValue.meetingType === 'Offline' ? formValue.location : null,
+          formValue.meetingType === 'Physical' ? formValue.location : null,
         meeting_link:
           formValue.meetingType === 'Online' ? formValue.meetingLink : null,
         meeting_app:
           formValue.meetingType === 'Online' ? formValue.meetingApp : null,
         topic: formValue.meetingName,
         description: formValue.description || '',
+        local_date: localDate.toISOString(), // Optional: Include local date for debugging
       };
       this.dialogRef.close(meetingData);
     }
@@ -138,9 +143,15 @@ export class MeetingComponent implements OnInit {
   }
 
   private formatDate(date: Date, time: string): string {
+    if (!date || !time) {
+      throw new Error('Invalid date or time provided');
+    }
     const d = new Date(date);
-    const [hours, minutes] = time.split(':');
-    d.setHours(parseInt(hours), parseInt(minutes));
-    return d.toISOString().split('.')[0]; // Returns "YYYY-MM-DDTHH:mm:ss"
+    const [hours, minutes] = time.split(':').map(Number);
+    if (isNaN(hours) || isNaN(minutes)) {
+      throw new Error('Invalid time format');
+    }
+    d.setHours(hours, minutes, 0, 0); // Set hours, minutes, seconds, and milliseconds
+    return d.toISOString().split('.')[0] + 'Z'; // Ensure UTC format: YYYY-MM-DDTHH:mm:ssZ
   }
 }
