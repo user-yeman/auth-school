@@ -9,7 +9,9 @@ import {
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class HttpCacheInterceptor implements HttpInterceptor {
   private cache = new Map<
     string,

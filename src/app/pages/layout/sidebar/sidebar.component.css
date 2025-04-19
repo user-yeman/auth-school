@@ -79,8 +79,8 @@
   color: var(--white, white);
 }
 
-.mat-expansion-panel .mat-nav-list span {
-  color: var(--white, white);
+.drop_down span {
+  color: white !important;
 }
 
 .mat-divider {

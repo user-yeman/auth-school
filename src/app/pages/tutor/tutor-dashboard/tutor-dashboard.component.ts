@@ -47,10 +47,10 @@ export class TutorDashboardComponent implements OnInit {
     this.fetchDashboardData();
   }
 
-  fetchDashboardData(forceRefresh: boolean = false) {
+  fetchDashboardData() {
     this.loading = true; // Ensure loading is true at the start
 
-    this.apiService.getDashboardData(forceRefresh).subscribe({
+    this.apiService.getDashboardData().subscribe({
       next: (data) => {
         this.dashboardData = data;
         console.log('date', data.data.userInfo.last_login_at);
@@ -73,6 +73,6 @@ export class TutorDashboardComponent implements OnInit {
   }
 
   refreshData() {
-    this.fetchDashboardData(true); // Force refresh, bypassing cache
+    this.fetchDashboardData(); // Force refresh, bypassing cache
   }
 }

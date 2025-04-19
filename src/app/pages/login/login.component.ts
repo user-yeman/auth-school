@@ -24,17 +24,8 @@ export class LoginComponent {
   onLogin() {
     this.authService.login(this.email, this.password).subscribe(
       (res: any) => {
-        // Assuming the API response includes user name and last login
-        const userName = res.name || res.username || 'User'; // Adjust based on your API response
-        const lastLogin = res.last_login || new Date().toISOString(); // Use current time if last_login isn't provided
         const id = res.user_id || 0; // Default to 0 if not provided
-        this.authService.storeUserData(
-          res.token,
-          res.role,
-          userName,
-          lastLogin,
-          id
-        );
+        this.authService.storeUserData(res.token, res.role, id);
 
         if (res.first_login) {
           this.snackBar.open(`Welcome to the first login!`, 'Close', {

@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import * as _ from 'lodash';
 import { MatSortModule, MatSort } from '@angular/material/sort';
+import { SkeletonComponent } from '../../../common/loading/skeleton/skeleton/skeleton.component';
 export interface Student {
   id: number;
   StudentID: string;
@@ -35,6 +36,7 @@ export interface Student {
     MatCheckboxModule,
     FormsModule,
     MatSortModule,
+    SkeletonComponent,
   ],
   templateUrl: './create-allocation.component.html',
   styleUrls: ['./create-allocation.component.css'],
@@ -46,6 +48,7 @@ export class CreateAllocationComponent implements OnInit {
   allData: Student[] = []; // Store all fetched data
   @ViewChild(MatSort) sort!: MatSort;
   title = 'Personal Tutor Allocation';
+  isLoading: boolean = false;
 
   // Pagination
   totalItems = 0;
@@ -70,6 +73,7 @@ export class CreateAllocationComponent implements OnInit {
   }
   // Fetch students from the API
   fetchStudents() {
+    this.isLoading = true;
     const url = 'http://127.0.0.1:8000/api/students/unallocationlists';
     this.http.get<any>(url).subscribe({
       next: (response) => {
@@ -91,6 +95,7 @@ export class CreateAllocationComponent implements OnInit {
 
         // Apply initial filtering, sorting, and pagination
         this.applyFilterAndSort();
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error fetching students:', err);
