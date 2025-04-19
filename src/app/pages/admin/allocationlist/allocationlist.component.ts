@@ -14,6 +14,7 @@ import * as _ from 'lodash';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { ReallocationFormComponent } from './reallocation/reallocationform/reallocationform.component';
+import { SkeletonComponent } from '../../../common/loading/skeleton/skeleton/skeleton.component';
 
 export interface Student {
   id: number;
@@ -80,6 +81,7 @@ export interface Allocation {
     MatCheckboxModule,
     FormsModule,
     MatSortModule,
+    SkeletonComponent,
   ],
   templateUrl: './allocationlist.component.html',
   styleUrls: ['./allocationlist.component.css'],
@@ -99,6 +101,7 @@ export class AllocationlistComponent implements OnInit {
   allData: Student[] = []; // Store all fetched data
   @ViewChild(MatSort) sort!: MatSort;
   title = 'Allocation List';
+  isLoading: boolean = false;
 
   // Pagination
   totalItems = 0;
@@ -130,6 +133,7 @@ export class AllocationlistComponent implements OnInit {
 
   // Fetch allocations from the API
   fetchAllocations() {
+    this.isLoading = true;
     const url = 'http://127.0.0.1:8000/api/allocations';
     this.http.get<any>(url).subscribe({
       next: (response) => {
@@ -161,6 +165,7 @@ export class AllocationlistComponent implements OnInit {
 
         // Apply initial filtering, sorting, and pagination
         this.applyFilterAndSort();
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error fetching allocations:', err);
