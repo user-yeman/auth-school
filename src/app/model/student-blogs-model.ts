@@ -2,14 +2,15 @@ export interface Blog {
   id: number;
   title: string;
   content: string;
-  student_id: number;
-  tutor_id?: number; // Add this optional property
-  author: string;
-  author_role: string;
-  created_at: string;
-  updated_at: string;
+  author?: string;
+  author_role?: string; // Add this property
+  student_id?: number;
+  tutor_id?: number;
+  created_at?: string;
+  updated_at?: string;
   comments: Comment[];
-  documents?: Document[];
+  documents?: any[]; // Documents/attachments
+  categories?: string; // Add this property for blog categories
 }
 
 export interface Comment {

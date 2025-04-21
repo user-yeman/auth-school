@@ -162,18 +162,51 @@ export class BlogCardComponent implements OnInit {
       width: '600px',
       data: {
         title: this.blog.title,
-        content: this.blog.content
+        content: this.blog.content,
+        attachments: this.blog.documents || [], // Pass existing documents
+        categories: this.blog.categories || '' // Now properly typed
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.blogService.updateBlog(this.blog.id, result).subscribe({
-          next: () => {
-            this.toastService.success('Blog updated successfully');
-            this.blogUpdated.emit();
+        // Create FormData for the request
+        const formData = new FormData();
+        
+        // Add blog data to FormData
+        formData.append('title', result.title);
+        formData.append('content', result.content);
+        
+        if (result.categories) {
+          formData.append('categories', result.categories);
+        }
+        
+        // Add files to FormData - match the API's expected format
+        if (result.newFiles && result.newFiles.length > 0) {
+          // Use 'documents[]' based on the API documentation
+          for (let i = 0; i < result.newFiles.length; i++) {
+            formData.append('documents[]', result.newFiles[i]);
+          }
+        }
+        
+        // Add IDs of attachments to keep (if API supports this)
+        if (result.attachments && result.attachments.length > 0) {
+          // If the API expects an array of IDs, adjust accordingly
+          const keepIds = result.attachments.map((a: any) => a.id);
+          formData.append('keep_attachments', JSON.stringify(keepIds));
+        }
+        
+        this.blogService.updateBlogWithFiles(this.blog.id, formData).subscribe({
+          next: (updatedBlog) => {
+            // Check if we received a valid response
+            if (updatedBlog) {
+              // Update the local blog data with the response
+              Object.assign(this.blog, updatedBlog);
+              this.toastService.success('Blog updated successfully');
+              this.blogUpdated.emit();
+            }
           },
-          error: (error) => {
+          error: (error: Error) => {
             console.error('Error updating blog:', error);
             this.toastService.error('Failed to update blog');
           }
@@ -190,7 +223,7 @@ export class BlogCardComponent implements OnInit {
           this.toastService.success('Blog deleted successfully');
           this.blogDeleted.emit(this.blog.id);
         },
-        error: (error) => {
+        error: (error: Error) => { // Add explicit type for error parameter
           console.error('Error deleting blog:', error);
           this.toastService.error('Failed to delete blog');
         }

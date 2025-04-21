@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, map, tap, throwError, BehaviorSubject, of, Subscription } from 'rxjs';
+import { HttpClient, HttpResponse, HttpHeaders, HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import { Observable, catchError, map, tap, throwError, BehaviorSubject, of, Subscription, filter } from 'rxjs';
 import { 
   ApiCommentResponse, 
   ApiResponse, 
@@ -287,6 +287,40 @@ export class StudentBlogService implements OnDestroy {
         console.error('Error updating blog:', error);
         this.toast.error('Failed to update blog', 'Error');
         return throwError(() => new Error('Failed to update blog'));
+      })
+    );
+  }
+
+  /**
+   * Updates a blog with text content and optional file uploads
+   * @param blogId The ID of the blog to update
+   * @param formData FormData containing blog data and files
+   * @returns Observable of the updated blog
+   */
+  updateBlogWithFiles(blogId: number, formData: FormData): Observable<any> {
+    // Update to use the correct API endpoint
+    const url = `${this.apiUrl}/blogs/${blogId}`;
+    
+    // Use PUT method for updates instead of POST, and set correct headers
+    return this.http.post<any>(url, formData, {
+      headers: new HttpHeaders({
+        // Don't set Content-Type header when using FormData - browser will set it automatically with boundary
+        'Accept': 'application/json'
+      }),
+      reportProgress: true,
+      observe: 'events'
+    }).pipe(
+      // Filter for response events
+      filter(event => event.type === HttpEventType.Response),
+      map(event => {
+        if (event.type === HttpEventType.Response) {
+          return event.body;
+        }
+        return null;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error updating blog with files:', error);
+        return throwError(() => new Error('Failed to update blog with files. Please try again later.'));
       })
     );
   }
