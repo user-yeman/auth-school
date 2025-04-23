@@ -166,7 +166,10 @@ export class BlogCardComponent implements OnInit {
       if (comment.student && comment.student.name) {
         return comment.student.name; // Return the student name from nested object
       }
-      return `Student #${comment.student_id}`;
+      
+      // Extract only the numeric part for the student ID
+      const studentId = String(comment.student_id).match(/^\d+/);
+      return `Student #${studentId ? studentId[0] : comment.student_id}`;
     }
     
     // Check for tutor comment (when student_id is null)
@@ -174,7 +177,10 @@ export class BlogCardComponent implements OnInit {
       if (comment.tutor && comment.tutor.name) {
         return comment.tutor.name; // Return the tutor name from nested object
       }
-      return `Tutor #${comment.tutor_id}`;
+      
+      // Extract only the numeric part for the tutor ID
+      const tutorId = String(comment.tutor_id).match(/^\d+/);
+      return `Tutor #${tutorId ? tutorId[0] : comment.tutor_id}`;
     }
     
     // Fallback: if both or neither IDs are set, try to determine from objects
