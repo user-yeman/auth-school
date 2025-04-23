@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MeetingService } from '../../../../services/API/tutor/meetings/meeting.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -40,6 +40,7 @@ import { BlogCardsHolderComponent } from '../../blog-cards-holder/blog-cards-hol
     SkeletonComponent,
     BlogCardsHolderComponent,
   ],
+  providers: [DatePipe],
   templateUrl: './meeting-schedule.component.html',
   styleUrl: './meeting-schedule.component.css',
 })
@@ -63,7 +64,8 @@ export class MeetingScheduleComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
     private toastService: ToastrService,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private datePipe: DatePipe
   ) {
     this.breakpointObserver
       .observe([Breakpoints.Handset])
@@ -150,14 +152,18 @@ export class MeetingScheduleComponent implements OnInit {
     }
 
     if (this.searchTerm) {
-      meetings = meetings.filter(
-        (meeting: any) =>
-          meeting.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-          (this.data?.email &&
-            this.data.email
-              .toLowerCase()
-              .includes(this.searchTerm.toLowerCase()))
-      );
+      const searchLower = this.searchTerm.toLowerCase();
+      meetings = meetings.filter((meeting: any) => {
+        const titleMatch = meeting.title?.toLowerCase().includes(searchLower);
+        const emailMatch =
+          this.data?.email &&
+          this.data.email.toLowerCase().includes(searchLower);
+        const dateMatch = this.datePipe
+          .transform(meeting.date, 'MM/dd/yyyy')
+          ?.toLowerCase()
+          .includes(searchLower);
+        return titleMatch || emailMatch || dateMatch;
+      });
     }
 
     meetings.sort(

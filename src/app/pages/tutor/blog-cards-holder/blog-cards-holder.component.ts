@@ -1,8 +1,16 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  OnChanges,
+  Input,
+  SimpleChanges,
+} from '@angular/core';
 import { BlogComponent } from './blogs/blog.component';
 import { BlogService } from '../../../services/tutor/blogs/blog.service';
 import { Blog, Comment } from '../../../model/tutor-blogs-model';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AuthService } from '../../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
@@ -15,10 +23,12 @@ import { SkeletonComponent } from '../../../common/loading/skeleton/skeleton/ske
   selector: 'app-blog-cards-holder',
   standalone: true,
   imports: [BlogComponent, CommonModule, MatDialogModule, SkeletonComponent],
+  providers: [DatePipe],
   templateUrl: './blog-cards-holder.component.html',
   styleUrls: ['./blog-cards-holder.component.css'],
 })
-export class BlogCardsHolderComponent implements OnInit, OnDestroy {
+export class BlogCardsHolderComponent implements OnInit, OnDestroy, OnChanges {
+  @Input() searchTerm: string = '';
   blogs: Blog[] = [];
   filteredBlogs: Blog[] = [];
   filter: 'new' | 'old' = 'new';
@@ -35,7 +45,8 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private toastService: ToastrService,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private datePipe: DatePipe
   ) {}
 
   ngOnInit() {
@@ -52,6 +63,11 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
     });
     this.loggedInUserId = this.authService.getUserId();
     this.loggedInUserRole = this.authService.getUserRole();
+  }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['searchTerm']) {
+      this.applyFilter();
+    }
   }
 
   ngOnDestroy() {
@@ -99,22 +115,34 @@ export class BlogCardsHolderComponent implements OnInit, OnDestroy {
   applyFilter() {
     const thresholdDate = new Date();
     thresholdDate.setDate(thresholdDate.getDate() - 30);
-    this.filteredBlogs = [
-      ...this.blogs.filter((blog) => {
-        if (!blog || !blog.created_at) {
-          console.warn('Blog missing created_at:', blog);
-          return false;
-        }
-        const createdAt = new Date(blog.created_at);
-        return (
-          !isNaN(createdAt.getTime()) &&
-          (this.filter === 'new'
-            ? createdAt > thresholdDate
-            : createdAt <= thresholdDate)
-        );
-      }),
-    ];
+    let filtered = this.blogs.filter((blog) => {
+      if (!blog || !blog.created_at) {
+        console.warn('Blog missing created_at:', blog);
+        return false;
+      }
+      const createdAt = new Date(blog.created_at);
+      return (
+        !isNaN(createdAt.getTime()) &&
+        (this.filter === 'new'
+          ? createdAt > thresholdDate
+          : createdAt <= thresholdDate)
+      );
+    });
 
+    if (this.searchTerm) {
+      const searchLower = this.searchTerm.toLowerCase();
+      filtered = filtered.filter((blog) => {
+        const titleMatch = blog.title?.toLowerCase().includes(searchLower);
+        const authorMatch = blog.author?.toLowerCase().includes(searchLower);
+        const dateMatch = this.datePipe
+          .transform(blog.created_at, 'MM/dd/yyyy')
+          ?.toLowerCase()
+          .includes(searchLower);
+        return titleMatch || authorMatch || dateMatch;
+      });
+    }
+
+    this.filteredBlogs = [...filtered];
     this.cdr.markForCheck();
   }
 

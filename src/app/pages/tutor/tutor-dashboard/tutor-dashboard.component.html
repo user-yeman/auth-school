@@ -67,14 +67,18 @@
       <div>
         <h1>Welcome Back, {{ dashboardData?.data?.userInfo?.name }}!</h1>
       </div>
-      <!-- <img
-        src="/../../../user-avatar.png"
-        alt="User Avatar"
-        class="user-avatar rounded-circle mr-2"
-      /> -->
-      <span class="username fw-bolder fst-italic">{{
-        dashboardData?.data?.userInfo?.name
-      }}</span>
+
+      <div class="profile_contaienr">
+        <img
+          src="assets/user_icon.png"
+          alt="User Avatar"
+          class="user-avatar rounded-circle mr-2"
+        />
+        <span class="username fw-bolder fst-italic p-2">{{
+          dashboardData?.data?.userInfo?.name
+        }}</span>
+      </div>
+
       <!-- <div class="user-menu dropdown">
         <button
           class="btn btn-light dropdown-toggle d-flex align-items-center"
