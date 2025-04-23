@@ -14,6 +14,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { HttpCacheInterceptor } from './services/interceptor/http-cache/http-cache.interceptor';
 import { HttpErrorInterceptor } from './interceptors/http-error.interceptor';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,6 +23,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(withFetch()),
     importProvidersFrom(
+      CommonModule,
       ToastrModule.forRoot({
         timeOut: 5000,
         closeButton: true,

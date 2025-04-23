@@ -1,26 +1,26 @@
 import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CommonModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
   title = 'auth-school';
-  
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
-  
+
   ngOnInit(): void {
     // Only run storage operations in browser environment
     if (isPlatformBrowser(this.platformId)) {
       this.migrateStorageItems();
     }
   }
-  
+
   private migrateStorageItems(): void {
     // This function only runs in browser context now
     try {
@@ -30,26 +30,30 @@ export class AppComponent implements OnInit {
         'studentName',
         // Add other items if needed
       ];
-      
+
       // Migrate each item from localStorage to sessionStorage
-      itemsToMigrate.forEach(itemKey => {
+      itemsToMigrate.forEach((itemKey) => {
         const localValue = localStorage.getItem(itemKey);
-        
+
         if (localValue) {
-          console.log(`Found ${itemKey} in localStorage, moving to sessionStorage`);
-          
+          console.log(
+            `Found ${itemKey} in localStorage, moving to sessionStorage`
+          );
+
           // Copy to sessionStorage first (if not already there)
           if (!sessionStorage.getItem(itemKey)) {
             sessionStorage.setItem(itemKey, localValue);
           }
-          
+
           // Then remove from localStorage
           localStorage.removeItem(itemKey);
-          
-          console.log(`Successfully migrated ${itemKey} from localStorage to sessionStorage`);
+
+          console.log(
+            `Successfully migrated ${itemKey} from localStorage to sessionStorage`
+          );
         }
       });
-      
+
       // Check for remaining localStorage items (for debugging)
       if (localStorage.length > 0) {
         console.log('Remaining localStorage items:', Object.keys(localStorage));

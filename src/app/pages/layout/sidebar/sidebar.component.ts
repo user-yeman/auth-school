@@ -79,11 +79,11 @@ export class SidebarComponent implements OnInit {
               },
             ],
           },
-          {
-            label: 'Settings',
-            icon: 'settings',
-            route: '/admin/settings',
-          },
+          // {
+          //   label: 'Settings',
+          //   icon: 'settings',
+          //   route: '/admin/settings',
+          // },
         ];
         break;
       case 'tutor':
@@ -108,11 +108,11 @@ export class SidebarComponent implements OnInit {
             icon: 'assessment',
             route: '/tutor/report',
           },
-          {
-            label: 'Settings',
-            icon: 'settings',
-            route: '/tutor/settings',
-          },
+          // {
+          //   label: 'Settings',
+          //   icon: 'settings',
+          //   route: '/tutor/settings',
+          // },
         ];
         break;
       case 'student':
@@ -137,11 +137,11 @@ export class SidebarComponent implements OnInit {
             icon: 'event',
             route: '/student/student-meetings',
           },
-          {
-            label: 'Settings',
-            icon: 'settings',
-            route: '/student/settings',
-          },
+          // {
+          //   label: 'Settings',
+          //   icon: 'settings',
+          //   route: '/student/settings',
+          // },
         ];
         break;
       default:
