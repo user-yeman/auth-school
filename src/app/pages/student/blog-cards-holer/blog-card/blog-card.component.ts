@@ -43,6 +43,11 @@ export class BlogCardComponent implements OnInit {
   isSubmittingComment = false;
   apiBaseUrl = 'http://127.0.0.1:8000/api';
 
+  // Add these properties for comment editing
+  editingCommentId: number | null = null;
+  editCommentText: string = '';
+  isSubmittingEditComment = false;
+
   constructor(
     private blogService: StudentBlogService,
     private toastService: ToastrService,
@@ -81,6 +86,12 @@ export class BlogCardComponent implements OnInit {
         this.blogService.addComment(blogId, this.newComment).subscribe({
           next: (comment) => {
             console.log('Comment added successfully:', comment);
+            // Add the new comment to the local array so it appears immediately
+            if (!this.blog.comments) {
+              this.blog.comments = [];
+            }
+            this.blog.comments.push(comment);
+            
             this.newComment = '';
             this.toastService.success('Comment added successfully');
             this.isSubmittingComment = false;
@@ -106,7 +117,17 @@ export class BlogCardComponent implements OnInit {
       return;
     }
 
-    this.blogService.downloadBlogFiles(this.blog.id).subscribe({
+    // Check if there are documents to download
+    if (!this.blog.documents || this.blog.documents.length === 0) {
+      this.toastService.warning('No documents attached to this blog', 'Warning');
+      return;
+    }
+
+    // Use the first document ID or the blog ID as needed
+    const documentId = this.blog.documents[0].id;
+    
+    // Use the correct API endpoint format as shown in your documentation
+    this.blogService.downloadBlogFiles(documentId).subscribe({
       next: (response) => {
         const contentDisposition = response.headers.get('content-disposition');
         let filename = 'blog-files.zip'; // Default filename
@@ -140,20 +161,60 @@ export class BlogCardComponent implements OnInit {
   }
 
   getCommentAuthor(comment: Comment): string {
-    if (comment.student_id && comment.student) {
-      return comment.student.name || `Student ${comment.student_id}`;
-    } else if (comment.tutor_id && comment.tutor) {
-      return comment.tutor.name || `Tutor ${comment.tutor_id}`;
-    } else if (comment.student_id) {
-      // Fallback if student object isn't included
-      return `Student ${comment.student_id}`;
-    } else if (comment.tutor_id) {
-      // Fallback if tutor object isn't included
-      return `Tutor ${comment.tutor_id}`;
+    // Check for student comment (when tutor_id is null)
+    if (comment.tutor_id === null && comment.student_id !== null) {
+      if (comment.student && comment.student.name) {
+        return comment.student.name; // Return the student name from nested object
+      }
+      return `Student #${comment.student_id}`;
     }
     
-    // Ultimate fallback
-    return 'Unknown';
+    // Check for tutor comment (when student_id is null)
+    if (comment.student_id === null && comment.tutor_id !== null) {
+      if (comment.tutor && comment.tutor.name) {
+        return comment.tutor.name; // Return the tutor name from nested object
+      }
+      return `Tutor #${comment.tutor_id}`;
+    }
+    
+    // Fallback: if both or neither IDs are set, try to determine from objects
+    if (comment.tutor && comment.tutor.name) {
+      return comment.tutor.name;
+    }
+    
+    if (comment.student && comment.student.name) {
+      return comment.student.name;
+    }
+    
+    return 'Unknown User';
+  }
+
+  // Add this method to check if the current user is the author of a comment
+  isCommentAuthor(comment: Comment): boolean {
+    if (!comment) return false;
+    
+    const currentUserId = Number(this.loggedInUserId);
+    const currentUserRole = this.loggedInUserRole;
+    
+    console.log('Checking comment author:', {
+      commentId: comment.id,
+      commentTutorId: comment.tutor_id,
+      commentStudentId: comment.student_id,
+      currentUserId,
+      currentUserRole
+    });
+    
+    // For tutor comments (when student_id is null)
+    if (currentUserRole === 'tutor' && comment.student_id === null && comment.tutor_id !== null) {
+      return Number(comment.tutor_id) === currentUserId;
+    }
+    
+    // For student comments (when tutor_id is null)
+    if (currentUserRole === 'student' && comment.tutor_id === null && comment.student_id !== null) {
+      return Number(comment.student_id) === currentUserId;
+    }
+    
+    return false;
   }
 
   // Edit blog functionality - similar to tutor implementation
@@ -243,6 +304,69 @@ export class BlogCardComponent implements OnInit {
       // Construct API URL
       const url = `${this.apiBaseUrl}/documents/${document.id}/download`;
       window.open(url, '_blank');
+    }
+  }
+
+  // Start editing a comment
+  editComment(comment: Comment): void {
+    this.editingCommentId = comment.id;
+    this.editCommentText = comment.content;
+  }
+
+  // Cancel editing
+  cancelEditComment(): void {
+    this.editingCommentId = null;
+    this.editCommentText = '';
+  }
+
+  // Save the edited comment
+  saveEditedComment(): void {
+    if (!this.editingCommentId || !this.editCommentText.trim() || this.isSubmittingEditComment) return;
+    
+    this.isSubmittingEditComment = true;
+    
+    this.blogService.updateComment(this.blog.id, this.editingCommentId, this.editCommentText)
+      .subscribe({
+        next: (updatedComment) => {
+          // Find and update the comment in the local array
+          const commentIndex = this.blog.comments.findIndex(c => c.id === this.editingCommentId);
+          if (commentIndex !== -1) {
+            this.blog.comments[commentIndex].content = this.editCommentText;
+            if (updatedComment && updatedComment.updated_at) {
+              this.blog.comments[commentIndex].updated_at = updatedComment.updated_at;
+            }
+          }
+          
+          this.toastService.success('Comment updated successfully');
+          this.editingCommentId = null;
+          this.editCommentText = '';
+          this.isSubmittingEditComment = false;
+        },
+        error: (error) => {
+          console.error('Error updating comment:', error);
+          this.toastService.error('Failed to update comment');
+          this.isSubmittingEditComment = false;
+        }
+      });
+  }
+
+  // Delete a comment
+  deleteComment(comment: Comment): void {
+    if (!comment.id) return;
+    
+    if (confirm('Are you sure you want to delete this comment?')) {
+      this.blogService.deleteComment(this.blog.id, comment.id)
+        .subscribe({
+          next: () => {
+            // Remove the deleted comment from the local array
+            this.blog.comments = this.blog.comments.filter(c => c.id !== comment.id);
+            this.toastService.success('Comment deleted successfully');
+          },
+          error: (error) => {
+            console.error('Error deleting comment:', error);
+            this.toastService.error('Failed to delete comment');
+          }
+        });
     }
   }
 }

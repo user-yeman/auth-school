@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpResponse, HttpHeaders, HttpErrorResponse, HttpEventType } from '@angular/common/http';
-import { Observable, catchError, map, tap, throwError, BehaviorSubject, of, Subscription, filter } from 'rxjs';
+import { Observable, catchError, map, tap, throwError, BehaviorSubject, of, Subscription, filter, interval, EMPTY, switchMap } from 'rxjs';
 import { 
   ApiCommentResponse, 
   ApiResponse, 
@@ -163,14 +163,22 @@ export class StudentBlogService implements OnDestroy {
     this.blogsSubject.next(updatedBlogs);
   }
 
-  downloadBlogFiles(blogId: number): Observable<HttpResponse<Blob>> {
-    return this.http.get(`${this.apiUrl}/download/blog/${blogId}`, {
-      responseType: 'blob',
+  downloadBlogFiles(docId: number): Observable<any> {
+    // Use the correct endpoint format from your documentation
+    const url = `${this.apiUrl}/download/blog/${docId}`;
+    
+    console.log('Making download request to:', url);
+    
+    return this.http.get(url, {
       observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        'Accept': 'application/octet-stream'
+      })
     }).pipe(
       catchError(error => {
-        this.toast.error('Failed to download files', 'Error');
-        return throwError(() => new Error('Failed to download files'));
+        console.error('Error downloading file:', error);
+        return throwError(() => new Error('Failed to download file'));
       })
     );
   }
@@ -344,6 +352,54 @@ export class StudentBlogService implements OnDestroy {
     );
   }
 
+  /**
+   * Updates a comment
+   * @param blogId The ID of the blog
+   * @param commentId The ID of the comment to update
+   * @param content The updated comment content
+   * @returns Observable of the updated comment
+   */
+  updateComment(blogId: number, commentId: number, content: string): Observable<Comment> {
+    const url = `${this.apiUrl}/comments/${commentId}`;
+    
+    return this.http.put<any>(url, { content }).pipe(
+      map(response => {
+        // Extract the updated comment from the response
+        let updatedComment;
+        if (response && response.data) {
+          updatedComment = response.data;
+        } else if (response && response.comment) {
+          updatedComment = response.comment;
+        } else {
+          updatedComment = response;
+        }
+        
+        return updatedComment;
+      }),
+      catchError(error => {
+        console.error('Error updating comment:', error);
+        return throwError(() => new Error('Failed to update comment'));
+      })
+    );
+  }
+
+  /**
+   * Deletes a comment
+   * @param blogId The ID of the blog
+   * @param commentId The ID of the comment to delete
+   * @returns Observable of the delete operation result
+   */
+  deleteComment(blogId: number, commentId: number): Observable<any> {
+    const url = `${this.apiUrl}/comments/${commentId}`;
+    
+    return this.http.delete(url).pipe(
+      catchError(error => {
+        console.error('Error deleting comment:', error);
+        return throwError(() => new Error('Failed to delete comment'));
+      })
+    );
+  }
+
   getLoggedInUserId(): number {
     return this.loggedInUserId;
   }
@@ -414,6 +470,31 @@ export class StudentBlogService implements OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    this.stopPolling();
+    this.stopPolling(); // Only need to call this once
+    // Other cleanup code...
+  }
+
+  getCommentAuthor(comment: Comment): string {
+    // For tutor comments
+    if (comment.tutor_id && comment.tutor && comment.tutor.name) {
+      return comment.tutor.name; // Just return the tutor's name
+    }
+    
+    // For student comments
+    if (comment.student_id && comment.student && comment.student.name) {
+      return comment.student.name; // Just return the student's name
+    }
+    
+    // Fallback if objects aren't included but we know the role
+    if (comment.tutor_id) {
+      return `User #${comment.tutor_id}`;
+    }
+    
+    if (comment.student_id) {
+      return `User #${comment.student_id}`;
+    }
+    
+    // Ultimate fallback
+    return 'Anonymous User';
   }
 }

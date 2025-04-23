@@ -3,7 +3,6 @@
     <h2 class="blog-title">{{ blog.title }}</h2>
     <div class="blog-meta">
       <span>Author: {{ blog.author }} ({{ blog.author_role === 'tutor' ? 'Tutor' : 'Student' }})</span>
-      <div class="blog-author-role" *ngIf="blog.author_role">{{ blog.author_role }}</div>
       <span class="date">{{ formatDate(blog.created_at) }}</span>
     </div>
   </div>
@@ -47,9 +46,49 @@
 
     <div *ngIf="blog.comments.length > 0" class="comments-list">
       <div *ngFor="let comment of blog.comments" class="comment">
-        <p class="comment-author">{{ getCommentAuthor(comment) }}</p>
-        <p class="comment-content">{{ comment.content }}</p>
-        <p class="comment-date">{{ formatDate(comment.created_at) }}</p>
+        <div class="comment-header">
+          <div class="comment-author-info">
+            <span class="comment-author">{{ getCommentAuthor(comment) }}</span>
+            <span class="comment-date">{{ formatDate(comment.created_at) }}</span>
+          </div>
+          
+          <!-- Show edit/delete options only for the comment author -->
+          <div *ngIf="isCommentAuthor(comment)" class="comment-actions">
+            <button mat-icon-button [matMenuTriggerFor]="commentMenu" aria-label="Comment options">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #commentMenu="matMenu">
+              <button mat-menu-item (click)="editComment(comment)">
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              <button mat-menu-item (click)="deleteComment(comment)">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </div>
+        </div>
+        
+        <!-- Regular comment content view -->
+        <div *ngIf="editingCommentId !== comment.id" class="comment-content">
+          {{ comment.content }}
+        </div>
+        
+        <!-- Comment edit form -->
+        <div *ngIf="editingCommentId === comment.id" class="comment-edit-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <textarea matInput [(ngModel)]="editCommentText" placeholder="Edit your comment"></textarea>
+          </mat-form-field>
+          <div class="comment-edit-actions">
+            <button mat-button (click)="cancelEditComment()">Cancel</button>
+            <button mat-raised-button color="primary" 
+                    [disabled]="!editCommentText.trim() || isSubmittingEditComment"
+                    (click)="saveEditedComment()">
+              {{ isSubmittingEditComment ? 'Saving...' : 'Save' }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
