@@ -15,9 +15,11 @@ import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-das
 import { ReportComponent } from './pages/tutor/report/report.component';
 import { StudentBlogComponent } from './pages/student/student-blog/student-blog.component';
 import { StudentMeetingsComponent } from './pages/student/student-meetings/student-meetings.component';
+import { UnautorizedComponent } from './pages/common/unautorized/unautorized.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'notfound', component: UnautorizedComponent },
   {
     path: '',
     component: LayoutComponent,
@@ -100,5 +102,5 @@ export const routes: Routes = [
       { path: '', redirectTo: '/login', pathMatch: 'full' },
     ],
   },
-  { path: '**', redirectTo: '/login' },
+  { path: '**', redirectTo: '/notfound' },
 ];

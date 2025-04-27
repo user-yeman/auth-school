@@ -1,19 +1,32 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, MatSnackBarModule], // Add MatSnackBarModule
+  imports: [
+    FormsModule,
+    MatSnackBarModule,
+    MatIconModule,
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ], // Add MatSnackBarModule
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  email = '';
-  password = '';
+  email: string = '';
+  password: string = '';
+  hidePassword: boolean = true;
 
   constructor(
     private authService: AuthService,
@@ -77,7 +90,7 @@ export class LoginComponent {
         break;
       default:
         console.log('Unknown role, redirecting to login');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/notfound']);
         break;
     }
   }
