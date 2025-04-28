@@ -228,6 +228,77 @@ body {
         margin-top: -140px; /* Move up 5 lines (approximately 100px) */
     }
 }
+
+/* Additional media query for iPhone SE and similar small devices */
+@media only screen and (max-width: 375px) {
+    .login-container {
+        flex-direction: column;
+    }
+    
+    .left {
+        width: 100%;
+        max-height: 20vh; /* Reduce top section height for small screens */
+    }
+    
+    .right {
+        width: 100%;
+        max-height: 80vh;
+        padding: 0 15px; /* Add horizontal padding */
+    }
+    
+    .login-form-container {
+        width: 90%; /* Wider form container for small screens */
+        margin-top: -100px; /* Adjust for small screen */
+    }
+    
+    .welcome-text {
+        font-size: 32px; /* Smaller welcome text */
+        margin-top: -20px;
+        text-align: center; /* Center text on small screens */
+    }
+    
+    .login-subtext {
+        margin-bottom: 40px; /* Less space between subtext and form */
+        text-align: center; /* Center text on small screens */
+    }
+    
+    .login-button {
+        padding: 10px 20px; /* Slightly smaller padding */
+    }
+    
+    .info {
+        top: 20px;
+        left: 20px;
+        font-size: 1.2rem;
+    }
+    
+    .bottom-wave {
+        display: none; /* Consider removing decorative elements on small screens */
+    }
+}
+
+/* Additional optimization for very small heights */
+@media only screen and (max-height: 700px) {
+    .welcome-text {
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+    
+    .login-subtext {
+        margin-bottom: 30px;
+        margin-top: 10px;
+    }
+    
+    .login-form-container {
+        margin-top: -80px;
+    }
+    
+    .login-container input {
+        padding: 8px;
+        margin: 8px 0;
+    }
+}
+
 .background-container {
     background: url('/assets/books.jpg') no-repeat center center;
     background-size: cover;

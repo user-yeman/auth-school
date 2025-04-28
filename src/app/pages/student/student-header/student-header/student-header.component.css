@@ -140,3 +140,131 @@
     gap: 5px;
   }
 }
+
+/* Enhanced responsive styles for iPhone SE and similar small devices */
+@media (max-width: 375px) {
+  .user-header-container {
+    padding: 10px 0;
+    margin-bottom: 15px;
+  }
+  
+  .header-top-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+  
+  .welcome-section {
+    text-align: center;
+    margin-bottom: 8px;
+    width: 100%;
+  }
+  
+  .welcome-text {
+    font-size: 18px;
+    word-break: break-word;
+    text-align: center;
+  }
+  
+  .user-profile-section {
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    justify-content: center;
+    margin-left: 0;
+  }
+  
+  .user-name {
+    font-size: 15px;
+    text-align: center;
+    margin: 3px 0;
+  }
+  
+  .user-icon-group {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .user-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .header-bottom-row {
+    justify-content: center;
+    margin-top: 2px;
+    width: 100%;
+  }
+  
+  .last-login-info {
+    text-align: center;
+    font-size: 11px;
+    width: 100%;
+  }
+  
+  /* Fixed position adjustments for iPhone SE */
+  .fixed-position-header .user-profile-section {
+    position: static;
+    margin-top: 5px;
+  }
+  
+  .fixed-position-header .header-bottom-row {
+    position: static;
+    margin-top: 3px;
+  }
+  
+  /* Meetings layout specific adjustments */
+  .meetings-layout .header-top-row {
+    justify-content: center;
+  }
+}
+
+/* Specific height-based media query for iPhone SE */
+@media (max-height: 667px) and (max-width: 375px) {
+  .user-header-container {
+    padding: 8px 0;
+    margin-bottom: 10px;
+  }
+  
+  .header-top-row {
+    gap: 5px;
+    margin-bottom: 3px;
+  }
+  
+  .welcome-section {
+    margin-bottom: 5px;
+  }
+  
+  .welcome-text {
+    font-size: 17px;
+  }
+  
+  /* Make everything more compact for height-constrained view */
+  .user-profile-section {
+    gap: 3px;
+  }
+  
+  .user-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  /* Even more compact when in fixed position mode */
+  .fixed-position-header {
+    margin-bottom: 5px;
+  }
+}
+
+/* Portrait orientation specific optimizations */
+@media (max-height: 667px) and (max-width: 375px) and (orientation: portrait) {
+  .welcome-text {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+  
+  /* Further optimize space in portrait mode */
+  .user-header-container {
+    margin-bottom: 8px;
+  }
+}

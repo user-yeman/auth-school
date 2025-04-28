@@ -449,3 +449,250 @@ mat-card-content {
     margin-bottom: 10px;
   }
 }
+
+/* Enhanced responsive styles specifically for iPhone SE */
+@media (max-width: 375px) {
+  /* Meeting card adjustments */
+  .meeting-card {
+    padding: 12px;
+    margin: 0 auto 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  mat-card-content {
+    padding: 16px;
+  }
+  
+  /* Date-Time-Type row spacing */
+  .date-time-type-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+  }
+  
+  /* Ensure all sections are full width and properly aligned */
+  .date-section, 
+  .time-section, 
+  .type-section {
+    width: 100%;
+    justify-content: flex-start;
+    margin-bottom: 5px;
+  }
+  
+  /* Adjust label width for small screens */
+  .info-label {
+    min-width: 80px;
+    margin-right: 5px;
+    font-size: 13px;
+  }
+  
+  .info-value {
+    font-size: 13px;
+    max-width: calc(100% - 85px);
+    word-break: break-word;
+  }
+  
+  /* Meeting info rows */
+  .meeting-info-row {
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  
+  /* More space for action buttons */
+  .meeting-actions {
+    margin-top: 20px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  /* Reschedule button adjustments */
+  .reschedule-button {
+    position: static;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .reschedule-button button {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  /* Header adjustments */
+  .meeting-header {
+    margin-bottom: 12px;
+  }
+  
+  .meeting-title {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  
+  .meeting-header-row {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+  
+  .meeting-header-row div {
+    flex: unset;
+    width: 100%;
+    margin-right: 0;
+    white-space: normal;
+  }
+  
+  /* Fix for meeting details */
+  .meeting-details {
+    font-size: 13px;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Filter section container adjustments */
+  .filter-section-container {
+    height: auto;
+    margin-bottom: 20px;
+  }
+  
+  .filter-section-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .filter-title-container {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .filter-title {
+    font-size: 16px;
+  }
+  
+  .filter-dropdown {
+    width: 100%;
+    margin-left: 0;
+  }
+  
+  .filter-select {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+  
+  /* No meetings container */
+  .no-meetings-container {
+    padding: 30px 15px;
+  }
+  
+  .no-meetings-container mat-icon {
+    font-size: 36px;
+    height: 36px;
+    width: 36px;
+    margin-bottom: 12px;
+  }
+  
+  .no-meetings-container p {
+    font-size: 14px;
+  }
+  
+  /* Ensure overflow handling on all containers */
+  .meeting-card,
+  mat-card-content,
+  .date-time-type-row,
+  .meeting-info-row,
+  .meeting-header,
+  .meeting-header-row,
+  .meeting-details,
+  .meeting-actions,
+  .filter-section-container,
+  .filter-section-inner,
+  .filter-title-container,
+  .filter-dropdown,
+  .no-meetings-container {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    box-sizing: border-box;
+  }
+  
+  /* Handle text overflow */
+  .meeting-title,
+  .info-label,
+  .info-value,
+  .meeting-type-text,
+  .filter-title,
+  .no-meetings-container p {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  /* Ensure body doesn't scroll horizontally */
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* Additional optimizations for even smaller screens */
+@media (max-width: 320px) {
+  .meeting-card {
+    padding: 10px;
+  }
+  
+  mat-card-content {
+    padding: 12px;
+  }
+  
+  .info-label {
+    min-width: 70px;
+    font-size: 12px;
+  }
+  
+  .info-value {
+    font-size: 12px;
+  }
+  
+  .meeting-title {
+    font-size: 15px;
+  }
+  
+  .filter-title {
+    font-size: 15px;
+  }
+}
+
+/* Height considerations for iPhone SE */
+@media (max-height: 667px) and (max-width: 375px) {
+  .meeting-card {
+    margin-bottom: 12px;
+  }
+  
+  .filter-section-container {
+    margin-bottom: 16px;
+  }
+  
+  .date-time-type-row {
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+  }
+  
+  .meeting-actions {
+    padding-top: 12px;
+    margin-top: 16px;
+  }
+  
+  /* Vertical spacing reduction */
+  .meeting-info-row {
+    margin-bottom: 8px;
+  }
+}
