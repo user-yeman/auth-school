@@ -1,10 +1,10 @@
 <div class="edit-blog-dialog">
-  <h2 mat-dialog-title>Edit Blog</h2>
+  <h2 mat-dialog-title class="black-header">EDIT BLOG POST</h2>
   
   <mat-dialog-content>
     <form>
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Title</mat-label>
+        <mat-label>Blog Post Title</mat-label>
         <input matInput [(ngModel)]="data.title" name="title" required 
                placeholder="Enter a descriptive title for your blog">
         <mat-hint>A clear title helps others find your blog</mat-hint>
@@ -58,12 +58,7 @@
       </div>
       
       <!-- Tags/Categories section - like tutors often have -->
-      <mat-form-field appearance="outline" class="full-width" *ngIf="data.categories !== undefined">
-        <mat-label>Categories</mat-label>
-        <input matInput [(ngModel)]="data.categories" name="categories" 
-               placeholder="E.g., Homework, Question, Announcement (comma separated)">
-        <mat-hint>Help categorize your blog post</mat-hint>
-      </mat-form-field>
+      
     </form>
   </mat-dialog-content>
   
@@ -77,7 +72,7 @@
     <button mat-button [mat-dialog-close]="undefined" [disabled]="isUploading">Cancel</button>
     <button mat-raised-button color="primary" [mat-dialog-close]="getSubmitData()" 
             [disabled]="!isFormValid() || isUploading">
-      <mat-icon>save</mat-icon> Save Changes
+       Post
     </button>
   </mat-dialog-actions>
 </div>

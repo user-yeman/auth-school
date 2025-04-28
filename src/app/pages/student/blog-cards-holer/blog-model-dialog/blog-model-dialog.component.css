@@ -333,7 +333,7 @@ mat-dialog-actions button {
   color: white;
   margin: 0;
   padding: 20px;
-  text-align: left;
+  text-align: center;
   font-size: 24px;
   font-weight: normal;
 }
@@ -349,8 +349,8 @@ mat-dialog-actions button {
 .form-label {
   display: block;
   margin-bottom: 8px;
-  font-weight: 500;
-  font-size: 16px;
+  font-weight: normal;
+  font-size: 14px;
   color: #333;
 }
 
@@ -363,7 +363,7 @@ mat-dialog-actions button {
 .form-textarea {
   width: 100%;
   padding: 12px;
-  font-size: 16px;
+  font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
@@ -384,7 +384,7 @@ mat-dialog-actions button {
 .upload-box {
   border: 1px dashed #ccc;
   border-radius: 4px;
-  padding: 40px 20px;
+  padding: 30px 20px;
   text-align: center;
   background-color: #fff;
   cursor: pointer;
@@ -398,7 +398,7 @@ mat-dialog-actions button {
 .upload-message p {
   margin: 0;
   color: #666;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .upload-link {
@@ -488,22 +488,53 @@ mat-dialog-actions button {
 }
 
 .post-button {
-  background-color: #0088ff;
-  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border: none;
+  cursor: pointer;
+  text-transform: none;
+  background-color: white;
+  color: #0088ff;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
 }
 
 .post-button:hover {
-  background-color: #0077e6;
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.post-button:active {
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  transform: translateY(1px);
 }
 
 .cancel-button {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border: none;
+  cursor: pointer;
+  text-transform: none;
   background-color: white;
-  color: #333;
-  border: 1px solid #ccc;
+  color: #0088ff;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
 }
 
 .cancel-button:hover {
-  background-color: #f5f5f5;
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cancel-button:active {
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  transform: translateY(1px);
 }
 
 button {

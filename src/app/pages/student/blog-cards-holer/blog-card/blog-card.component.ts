@@ -223,10 +223,11 @@ export class BlogCardComponent implements OnInit {
     return false;
   }
 
-  // Edit blog functionality - similar to tutor implementation
+  // Edit blog functionality 
   editBlog(): void {
     const dialogRef = this.dialog.open(EditBlogDialogComponent, {
-      width: '600px',
+      width: 'auto',
+    
       data: {
         title: this.blog.title,
         content: this.blog.content,

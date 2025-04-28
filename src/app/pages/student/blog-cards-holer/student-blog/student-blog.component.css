@@ -436,8 +436,27 @@
   }
 
   .new-blog-btn {
-    top: -45px;
-  }
+  background-color: #5c4bef;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+
+.new-blog-btn:hover {
+  background-color: #4a3bd8;
+}
+
+.new-blog-btn mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
 }
 
 @media (max-width: 576px) {
