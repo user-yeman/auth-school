@@ -15,6 +15,7 @@ import { BlogModelDialogComponent } from '../blog-model-dialog/blog-model-dialog
 import { AuthService } from '../../../../services/auth.service';
 import { HttpClientModule } from '@angular/common/http';
 import { Subscription } from 'rxjs';
+import { BlogSearchComponent } from '../blog-search/blog-search.component';
 
 @Component({
   selector: 'app-student-blog',
@@ -29,7 +30,8 @@ import { Subscription } from 'rxjs';
     MatDialogModule,
     BlogCardComponent,
     StudentHeaderComponent,
-    HttpClientModule
+    HttpClientModule,
+    BlogSearchComponent
   ],
   templateUrl: './student-blog.component.html',
   styleUrls: ['./student-blog.component.css']
@@ -43,6 +45,7 @@ export class StudentBlogComponent implements OnInit, OnDestroy {
   filter: 'new' | 'old' = 'new';
   loggedInUserId: number = 0;
   loggedInUserRole: string | null = null;
+  searchQuery: string = '';
 
   private subscription = new Subscription();
 
@@ -115,6 +118,7 @@ export class StudentBlogComponent implements OnInit, OnDestroy {
           this.blogs = blogs;
           this.filteredBlogs = [...blogs]; // Copy the array
           this.isLoading = false;
+          this.filterBlogs(); // Apply search and filter after loading
         },
         error: (error) => {
           console.error('Error fetching blogs:', error);
@@ -131,23 +135,49 @@ export class StudentBlogComponent implements OnInit, OnDestroy {
   onFilterChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
     this.filter = target.value as 'new' | 'old';
-    this.applyFilter();
+    this.filterBlogs();
   }
 
-  applyFilter(): void {
+  handleSearch(query: string): void {
+    this.searchQuery = query;
+    this.filterBlogs();
+  }
+
+  handleClearSearch(): void {
+    this.searchQuery = '';
+    this.filterBlogs();
+  }
+
+  filterBlogs(): void {
+    // Start with all blogs
+    let filtered = this.blogs;
+
+    // Apply search filter if there's a query
+    if (this.searchQuery.trim()) {
+      const query = this.searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(blog =>
+        blog.title.toLowerCase().includes(query) ||
+        blog.content.toLowerCase().includes(query) ||
+        // Check if blog has tags property before accessing it
+        (blog.hasOwnProperty('tags') && Array.isArray((blog as any).tags) && 
+          (blog as any).tags.some((tag: string) => tag.toLowerCase().includes(query)))
+      );
+    }
+
+    // Apply your existing filter ('new' or 'old')
     const thresholdDate = new Date();
     thresholdDate.setDate(thresholdDate.getDate() - 30);
 
     if (this.filter === 'new') {
-      this.filteredBlogs = this.blogs.filter(blog => {
+      filtered = filtered.filter(blog => {
         if (!blog || !blog.created_at) {
           return false;
         }
         const createdAt = new Date(blog.created_at);
         return !isNaN(createdAt.getTime()) && createdAt > thresholdDate;
       });
-    } else {
-      this.filteredBlogs = this.blogs.filter(blog => {
+    } else if (this.filter === 'old') {
+      filtered = filtered.filter(blog => {
         if (!blog || !blog.created_at) {
           return false;
         }
@@ -155,6 +185,8 @@ export class StudentBlogComponent implements OnInit, OnDestroy {
         return !isNaN(createdAt.getTime()) && createdAt <= thresholdDate;
       });
     }
+
+    this.filteredBlogs = filtered;
   }
 
   onAddComment(blogId: number, content: string): void {

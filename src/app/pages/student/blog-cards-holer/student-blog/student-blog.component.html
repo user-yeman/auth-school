@@ -31,6 +31,13 @@
       </div>
     </div>
 
+    <!-- Blog search component -->
+    <app-blog-search 
+      [initialQuery]="searchQuery"
+      (searchQuery)="handleSearch($event)"
+      (clearSearch)="handleClearSearch()">
+    </app-blog-search>
+
     <!-- Loading indicator -->
     <div *ngIf="isLoading" class="loading-container">
       <mat-spinner diameter="40"></mat-spinner>
@@ -39,7 +46,13 @@
 
     <!-- Blog cards list -->
     <div *ngIf="!isLoading" class="blog-list">
-      <div *ngIf="filteredBlogs.length === 0" class="no-blogs-message">
+      <div *ngIf="filteredBlogs.length === 0 && !isLoading && searchQuery" class="no-results">
+        <mat-icon>search_off</mat-icon>
+        <p>No blogs found matching "{{ searchQuery }}"</p>
+        <button mat-button color="primary" (click)="handleClearSearch()">Clear search</button>
+      </div>
+      
+      <div *ngIf="filteredBlogs.length === 0 && !searchQuery" class="no-blogs-message">
         No {{ filter === "new" ? "new" : "old" }} blogs to display.
       </div>
       
