@@ -9,8 +9,13 @@ import { MatCardModule } from '@angular/material/card';
   styleUrl: './skeleton.component.css',
 })
 export class SkeletonComponent {
-  @Input() type: 'table' | 'card' | 'list' | 'pie-chart' | 'bar-chart' =
-    'table';
+  @Input() type:
+    | 'text'
+    | 'table'
+    | 'card'
+    | 'list'
+    | 'pie-chart'
+    | 'bar-chart' = 'table';
   @Input() rows: number = 5; // Number of rows for table/list/bar-chart
   @Input() columns: number = 5; // Number of columns for table/bar-chart
   @Input() width: string = '100%'; // Custom width

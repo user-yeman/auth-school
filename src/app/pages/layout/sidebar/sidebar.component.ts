@@ -79,11 +79,11 @@ export class SidebarComponent implements OnInit {
               },
             ],
           },
-          // {
-          //   label: 'Settings',
-          //   icon: 'settings',
-          //   route: '/admin/settings',
-          // },
+          {
+            label: 'Reports',
+            icon: 'assessment',
+            route: '/admin/report',
+          },
         ];
         break;
       case 'tutor':

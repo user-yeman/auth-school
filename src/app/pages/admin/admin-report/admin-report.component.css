@@ -1,0 +1,88 @@
+.admin-report-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure the container takes full viewport height */
+}
+
+.nav-links {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  justify-content: flex-start; /* Align buttons to the left */
+  order: 2; /* Ensure nav-links appear at the bottom */
+}
+
+.nav-button {
+  padding: 10px 20px;
+  border: 2px solid #fff;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.nav-button:hover {
+  background-color: #3381cf;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.chart-container {
+  margin-bottom: 40px;
+  height: 400px;
+  position: relative;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+.top-search-bar {
+  margin-bottom: 20px;
+}
+
+.top-search-bar input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.top-search-bar input::placeholder {
+  color: #999;
+}
+@media (max-width: 768px) {
+  .admin-report-container {
+    padding: 10px;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .nav-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .chart-container {
+    height: 300px;
+  }
+}

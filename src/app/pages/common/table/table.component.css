@@ -1,0 +1,250 @@
+.filter-container {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  padding: 5px 15px;
+  border: 2px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: clamp(0.875rem, 3vw, 1rem);
+}
+
+.filter-btn:hover:not(:disabled) {
+  background-color: #e9ecef;
+  color: #0056b3;
+  border-color: #0056b3;
+}
+
+.filter-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.funnel-icon img {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.filter-status {
+  margin-left: 8px;
+}
+
+.filter-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px 0;
+  margin-top: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  min-width: 120px;
+}
+
+.filter-panel a {
+  display: block;
+  padding: 5px 15px;
+  color: #000;
+  text-decoration: none;
+}
+
+.filter-panel a:hover {
+  background-color: #f8f9fa;
+}
+
+.table_wrapper {
+  overflow-x: auto;
+  padding: 10px;
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.table th {
+  cursor: pointer;
+  background-color: #343a40;
+  color: white;
+  padding: 10px;
+  text-align: left;
+  position: relative;
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+}
+
+.table th.sortable:hover:not(:disabled) {
+  background-color: #495057;
+}
+
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid #dee2e6;
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+}
+
+.sort-icon {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.7;
+}
+
+.sort-icon::before,
+.sort-icon::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.sort-icon::before {
+  border-bottom: 5px solid white;
+  top: -2px;
+}
+
+.sort-icon::after {
+  border-top: 5px solid white;
+  bottom: -2px;
+}
+
+.sort-icon.asc::after {
+  display: none;
+}
+
+.sort-icon.desc::before {
+  display: none;
+}
+
+.pagination {
+  padding: 10px;
+  background-color: #f4f3f6;
+  border-radius: 10px;
+}
+
+.pagination .page-item {
+  margin: 0 2px;
+}
+
+.pagination .page-link {
+  padding: 6px 12px;
+  border: 1px solid #dee2e6;
+  color: #007bff;
+  background-color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #343a40;
+  color: #fff;
+  border-color: #343a40;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #6c757d;
+  cursor: not-allowed;
+  background-color: #fff;
+  border-color: #dee2e6;
+}
+
+.pagination .page-link:hover:not(.disabled) {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+.pagination .page-item span.page-link {
+  background-color: transparent;
+  border: none;
+  color: #000;
+  cursor: default;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+}
+
+.search-bar input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .table_wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 600px;
+  }
+
+  .header_wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+
+  .filter-container {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .filter-btn {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pagination .page-item {
+    margin: 2px;
+  }
+}

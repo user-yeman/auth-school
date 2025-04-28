@@ -16,6 +16,7 @@ import { ReportComponent } from './pages/tutor/report/report.component';
 import { StudentBlogComponent } from './pages/student/student-blog/student-blog.component';
 import { StudentMeetingsComponent } from './pages/student/student-meetings/student-meetings.component';
 import { UnautorizedComponent } from './pages/common/unautorized/unautorized.component';
+import { AdminReportComponent } from './pages/admin/admin-report/admin-report.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -28,19 +29,17 @@ export const routes: Routes = [
       // Admin Routes
       {
         path: 'admin',
+        canActivate: [AuthGuard],
+        data: { expectedRole: 'admin' },
         children: [
           { path: '', redirectTo: 'admin-dashboard', pathMatch: 'full' },
           {
             path: 'admin-dashboard',
             component: AdminDashboardComponent,
-            canActivate: [AuthGuard],
-            data: { expectedRole: 'admin' },
           },
           {
             path: 'allocation',
             component: AllocationComponent,
-            canActivate: [AuthGuard],
-            data: { expectedRole: 'admin' },
             children: [
               {
                 path: 'create-allocation',
@@ -53,6 +52,7 @@ export const routes: Routes = [
               },
             ],
           },
+          { path: 'report', component: AdminReportComponent },
         ],
       },
       // Tutor Routes

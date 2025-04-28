@@ -110,7 +110,10 @@
   padding: 10px;
   background: var(--background);
 }
-
+.active-link {
+  background: #a09b9b;
+  border-radius: 5px;
+}
 .mdc-list-item:hover .mdc-list-item__primary-text {
   color: #f3f4f9 !important;
 }

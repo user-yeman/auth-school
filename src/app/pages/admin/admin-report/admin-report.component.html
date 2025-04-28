@@ -1,0 +1,98 @@
+<div class="admin-report-container">
+  <!-- Statistics Reports View -->
+  <div *ngIf="currentView === 'statistics'">
+    <h2 #title *ngIf="!isLoading">
+      <app-skeleton
+        *ngIf="isLoading"
+        type="text"
+        [rows]="1"
+        width="100%"
+      ></app-skeleton
+      >Statistics Reports
+    </h2>
+    <!-- Bar Chart -->
+    <div class="chart-container">
+      <app-skeleton
+        *ngIf="isLoading"
+        type="bar-chart"
+        [rows]="10"
+        [columns]="10"
+        width="100%"
+        height="400px"
+      ></app-skeleton>
+      <canvas #messagesChart *ngIf="!isLoading"></canvas>
+    </div>
+  </div>
+
+  <!-- Exception Reports View -->
+  <div *ngIf="currentView === 'exception'">
+    <div class="top-search-bar">
+      <input
+        type="text"
+        placeholder="Search by ID or Name"
+        [(ngModel)]="exceptionSearchTerm"
+        (input)="onExceptionSearch()"
+      />
+    </div>
+    <h2>Exception Reports</h2>
+    <!-- Error Message -->
+    <div class="error-message" *ngIf="error">{{ error }}</div>
+
+    <!-- Students with No Interaction -->
+    <app-table
+      title="Students with No Interaction"
+      [columns]="studentColumns"
+      [data]="studentsWithTutor"
+      [showSearch]="false"
+      [showFilter]="false"
+      [useExternalSearch]="true"
+      [externalSearchTerm]="exceptionSearchTerm"
+      [filterOptions]="studentFilterOptions"
+      [pageSize]="pageSizeWithTutor"
+      [currentPage]="currentPageWithTutor"
+      [totalPages]="totalPagesWithTutor"
+      [isLoading]="isLoading"
+      (pageChange)="onPageChangeWithTutor($event)"
+    ></app-table>
+
+    <!-- Students without Personal Tutor -->
+    <app-table
+      title="Students without Personal Tutor"
+      [columns]="studentsWithoutTutorColumns"
+      [data]="studentsWithoutTutor"
+      [showSearch]="false"
+      [showFilter]="false"
+      [useExternalSearch]="true"
+      [pageSize]="pageSizeWithoutTutor"
+      [externalSearchTerm]="exceptionSearchTerm"
+      [currentPage]="currentPageWithoutTutor"
+      [totalPages]="totalPagesWithoutTutor"
+      [isLoading]="isLoading"
+      (pageChange)="onPageChangeWithoutTutor($event)"
+    ></app-table>
+  </div>
+  <!-- Navigation Links -->
+  <div class="nav-links">
+    <app-skeleton
+      *ngIf="isLoading"
+      type="text"
+      [rows]="1"
+      width="100%"
+    ></app-skeleton>
+    <button
+      *ngIf="!isLoading"
+      #title
+      class="nav-button"
+      (click)="
+        switchView(currentView === 'statistics' ? 'exception' : 'statistics')
+      "
+    >
+      Go to
+      {{
+        currentView === "statistics"
+          ? "Exception Reports"
+          : "Statistics Reports"
+      }}
+    </button>
+  </div>
+</div>
