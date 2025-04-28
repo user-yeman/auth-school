@@ -1,3 +1,7 @@
+.exc_title {
+  font-size: 2rem;
+  margin-bottom: 3rem;
+}
 .admin-report-container {
   padding: 20px;
   max-width: 1200px;
