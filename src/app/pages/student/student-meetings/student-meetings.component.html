@@ -95,13 +95,15 @@
           
           <!-- Positioned at the bottom-right with custom styling -->
           <div class="reschedule-button">
+            <!-- Show Reschedule button for both 'upcomming' and 'rescheduled' status -->
             <button mat-button 
-                    *ngIf="meeting.status === 'upcomming'" 
+                    *ngIf="meeting.status === 'upcomming' || meeting.status === 'rescheduled'" 
                     (click)="rescheduleMeeting(meeting); $event.stopPropagation()">
               <mat-icon>event</mat-icon>
               Reschedule
             </button>
             
+            <!-- Show Join Meeting button for online meetings with a link, regardless of status -->
             <button mat-button 
                     color="primary"
                     *ngIf="meeting.meeting_type === 'online' && meeting.meeting_link && meeting.filter_status === 'upcoming'"
