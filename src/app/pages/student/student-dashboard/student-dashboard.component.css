@@ -440,7 +440,7 @@ mat-cell {
 }
 
 .status-canceled {
-  color: #6B7280;
+  color: #F59E0B;
   font-weight: 600;
 }
 
@@ -598,19 +598,34 @@ mat-paginator {
   font-weight: 500;
 }
 
-/* Status color schemes */
+/* Status color schemes - updated */
 .approved .status-label {
-  color: #2e7d32;
+  color: #2e7d32; /* Keep green for approved */
 }
 
-/* Yellow color for pending status */
+/* Yellow color for pending and cancelled status */
 .pending .status-label {
-  color: #f57c00;
+  color: #f57c00; /* Orange/amber for pending */
 }
 
-/* Red color for rejected (and cancelled) status */
+.cancelled .status-label {
+  color: #f57c00; /* Change to yellow/amber for cancelled */
+}
+
+/* Red color for rejected status */
 .rejected .status-label {
-  color: #c62828;
+  color: #c62828; /* Keep red for rejected */
+}
+
+/* Make sure we also handle the status-* classes for consistency */
+.status-canceled, .status-cancelled {
+  color: #F59E0B; /* Yellow for cancelled - matches f57c00 but slightly different shade */
+  font-weight: 600;
+}
+
+.status-rejected, .status-reject {
+  color: #EF4444; /* Red for rejected - matches c62828 but slightly different shade */
+  font-weight: 600;
 }
 
 .reschedule-request {
@@ -999,4 +1014,49 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
-*/
+
+/* Status colors - updated to handle all variations */
+.approved .status-label {
+  color: #2e7d32; /* Green for approved */
+}
+
+.pending .status-label {
+  color: #f57c00; /* Orange/amber for pending */
+}
+
+.cancelled .status-label,
+.canceled .status-label {
+  color: #dde01a; /* Yellow/amber for cancelled */
+}
+
+.rejected .status-label,
+.reject .status-label {
+  color: #c62828; /* Red for rejected */
+}
+
+.rescheduled .status-label {
+  color: #1976d2; /* Blue for rescheduled */
+}
+
+/* Status as border colors for cards */
+/* .wider-notification-card.approved {
+  border-left: 4px solid #2e7d32;
+}
+
+.wider-notification-card.pending {
+  border-left: 4px solid #f57c00;
+}
+
+.wider-notification-card.cancelled,
+.wider-notification-card.canceled {
+  border-left: 4px solid #f57c00;
+}
+
+.wider-notification-card.rejected,
+.wider-notification-card.reject {
+  border-left: 4px solid #c62828;
+}
+
+.wider-notification-card.rescheduled {
+  border-left: 4px solid #1976d2;
+} */

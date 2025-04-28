@@ -403,13 +403,17 @@ export class StudentDashboardComponent implements OnInit, AfterViewInit {
    * Get display status for the UI
    */
   getDisplayStatus(status: string): string {
-    if (!status) return '';
+    // Map API status values to display values
+    const statusMap: {[key: string]: string} = {
+      'pending': 'Pending',
+      'approved': 'Approved',
+      'reject': 'Rejected',
+      'rejected': 'Rejected',
+      'cancelled': 'Cancelled',
+      'canceled': 'Cancelled',
+      'rescheduled': 'Rescheduled'
+    };
     
-    if (status === 'cancelled' || status === 'canceled') {
-      return 'Rejected';
-    }
-    
-    // Capitalize first letter
-    return status.charAt(0).toUpperCase() + status.slice(1);
+    return statusMap[status] || status;
   }
 }

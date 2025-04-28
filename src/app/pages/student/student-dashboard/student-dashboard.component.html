@@ -86,10 +86,12 @@
     <h3 class="section-title">Meeting Reschedule Notifications</h3>
 
     <div class="notification-cards-wrapper">
-      <mat-card *ngFor="let meeting of upcomingMeetings" class="reschedule-card wider-notification-card" [ngClass]="{
+      <mat-card *ngFor="let meeting of upcomingMeetings" class="reschedule-card wider-notification-card" 
+        [ngClass]="{
           'approved': meeting.status === 'approved',
           'pending': meeting.status === 'pending',
-          'rejected': meeting.status === 'rejected' || meeting.status === 'cancelled' || meeting.status === 'canceled'
+          'rejected': meeting.status === 'reject',
+          'cancelled': meeting.status === 'cancelled'
         }">
         <div class="reschedule-topic">
           <strong>Topic: {{ meeting.topic }}</strong>
