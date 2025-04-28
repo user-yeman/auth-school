@@ -315,7 +315,7 @@ export class StudentBlogService implements OnDestroy {
                   observer.complete();
                 }
               });
-          }, 1000); // Short delay to ensure server has processed
+          }, 300); // Reduced from 1000ms to 300ms for faster response
         });
       }),
       catchError(error => {
@@ -369,16 +369,12 @@ export class StudentBlogService implements OnDestroy {
           this.toast.success('Blog updated successfully');
         }
         
-        // Only request the specific blog we just updated to minimize data transfer
+        // Immediately trigger refresh - no delay
         this.refreshSingleBlog(blogId).subscribe({
           next: updatedBlog => {
             if (updatedBlog) {
-              // Update this one blog in our local collection
-              const currentBlogs = this.blogsSubject.getValue();
-              const updatedBlogs = currentBlogs.map(blog => 
-                blog.id === blogId ? updatedBlog : blog
-              );
-              this.forceUiRefresh(updatedBlogs);
+              // Update was already handled in refreshSingleBlog
+              console.log('Blog refreshed successfully from server');
             }
           },
           error: err => console.error('Error refreshing single blog:', err)
@@ -403,7 +399,9 @@ export class StudentBlogService implements OnDestroy {
 
   // Add a method to refresh a single blog instead of the whole list
   private refreshSingleBlog(blogId: number): Observable<Blog | null> {
+    console.log(`Refreshing single blog: ${blogId}`);
     return this.http.get<ApiResponse<Blog>>(`${this.apiUrl}/blogs/${blogId}`).pipe(
+      tap(response => console.log('Single blog refresh response:', response)),
       map(response => {
         if (response && response.data) {
           // Got single blog data
@@ -413,12 +411,19 @@ export class StudentBlogService implements OnDestroy {
           const currentBlogs = this.blogsSubject.getValue();
           const localBlog = currentBlogs.find(blog => blog.id === blogId);
           
+          // Update local collection immediately
           if (localBlog) {
             // If server doesn't provide author but we have it locally, preserve it
             if (!serverBlog.author && localBlog.author) {
               serverBlog.author = localBlog.author;
               serverBlog.author_role = localBlog.author_role;
             }
+            
+            // Update this one blog immediately
+            const updatedBlogs = currentBlogs.map(blog => 
+              blog.id === blogId ? serverBlog : blog
+            );
+            this.blogsSubject.next(updatedBlogs);
           }
           
           return serverBlog;
@@ -453,17 +458,11 @@ export class StudentBlogService implements OnDestroy {
             this.toast.success('Blog updated successfully');
           }
           
-          // Refresh just this blog
+          // Refresh just this blog - immediately, no delay
           this.refreshSingleBlog(blogId).subscribe({
             next: updatedBlog => {
-              if (updatedBlog) {
-                // Update this one blog in our collection
-                const currentBlogs = this.blogsSubject.getValue();
-                const updatedBlogs = currentBlogs.map(blog => 
-                  blog.id === blogId ? updatedBlog : blog
-                );
-                this.forceUiRefresh(updatedBlogs);
-              }
+              // Already handled in refreshSingleBlog
+              console.log('Blog with files refreshed successfully');
             }
           });
         }
@@ -515,7 +514,7 @@ export class StudentBlogService implements OnDestroy {
               },
               error: (error) => console.error('Error fetching updated blogs after deletion:', error)
             });
-        }, 1000);
+        }, 300); // Reduced from 1000ms to 300ms
       }),
       catchError(error => {
         console.error('Error deleting blog:', error);
@@ -833,5 +832,35 @@ export class StudentBlogService implements OnDestroy {
   private forceUiRefresh(updatedBlogs: Blog[]): void {
     // This creates a new array reference, which forces Angular change detection
     this.blogsSubject.next([...updatedBlogs]);
+  }
+
+  // Add a new utility method to handle quick refresh when needed
+  quickRefreshBlog(blogId: number): void {
+    console.log(`Quick refreshing blog ${blogId}`);
+    this.http.get<ApiResponse<Blog>>(`${this.apiUrl}/blogs/${blogId}`)
+      .subscribe({
+        next: response => {
+          if (response && response.data) {
+            const serverBlog = response.data;
+            const currentBlogs = this.blogsSubject.getValue();
+            const localBlog = currentBlogs.find(blog => blog.id === blogId);
+            
+            if (localBlog) {
+              // Preserve author if needed
+              if (!serverBlog.author && localBlog.author) {
+                serverBlog.author = localBlog.author;
+                serverBlog.author_role = localBlog.author_role;
+              }
+              
+              // Update immediately
+              const updatedBlogs = currentBlogs.map(blog => 
+                blog.id === blogId ? serverBlog : blog
+              );
+              this.forceUiRefresh(updatedBlogs);
+            }
+          }
+        },
+        error: error => console.error(`Error in quick refresh: ${error}`)
+      });
   }
 }
