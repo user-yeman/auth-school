@@ -1,0 +1,70 @@
+<div class="dashboard-container">
+  <!-- Header bar with search and student icon -->
+  <div class="top-header-bar">
+    <!-- Blog search component on left -->
+    <app-blog-search 
+      class="search-container"
+      [initialQuery]="searchQuery"
+      (searchQuery)="handleSearch($event)"
+      (clearSearch)="handleClearSearch()">
+    </app-blog-search>
+
+    <!-- Student header (with icon) on right -->
+    <app-student-header [userName]="studentData?.name || ''" 
+      [lastLoginRaw]="lastLoginFromSession" 
+      [showWelcome]="false"
+      [isMeetingsMode]="false" 
+      [fixedPosition]="false"
+      class="student-header-container">
+    </app-student-header>
+  </div>
+
+  <!-- Title row to keep title and button together -->
+  <div class="title-row">
+    <h1 class="main-title">Blogs</h1>
+    <button mat-raised-button class="action-btn" (click)="openAddDialog()">
+      <mat-icon>add</mat-icon> New Blog
+    </button>
+  </div>
+
+  <div class="container">
+    <div class="header-row">
+      <div class="header">
+        <h2>{{ filter === "new" ? "New Blogs" : "Old Blogs" }}</h2>
+      </div>
+
+      <div class="filter">
+        <label for="filter">Filter Blogs:</label>
+        <select id="filter" (change)="onFilterChange($event)">
+          <option value="new">New (Last 30 Days)</option>
+          <option value="old">Old (Older than 30 Days)</option>
+        </select>
+      </div>
+    </div>
+
+
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading blogs...</p>
+    </div>
+
+    <!-- Blog cards list -->
+    <div *ngIf="!isLoading" class="blog-list">
+      <div *ngIf="filteredBlogs.length === 0 && !isLoading && searchQuery" class="no-results">
+        <mat-icon>search_off</mat-icon>
+        <p>No blogs found matching "{{ searchQuery }}"</p>
+        <button mat-button color="primary" (click)="handleClearSearch()">Clear search</button>
+      </div>
+
+      <div *ngIf="filteredBlogs.length === 0 && !searchQuery" class="no-blogs-message">
+        No {{ filter === "new" ? "new" : "old" }} blogs to display.
+      </div>
+
+      <app-blog-card *ngFor="let blog of filteredBlogs" [blog]="blog" [isOldBlog]="filter === 'old'"
+        (addCommentEvent)="onAddComment($event.blogId, $event.content)" (blogUpdated)="onBlogUpdated()"
+        (blogDeleted)="onBlogDeleted($event)">
+      </app-blog-card>
+    </div>
+  </div>
+</div>

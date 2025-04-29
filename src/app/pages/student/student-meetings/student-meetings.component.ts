@@ -82,7 +82,7 @@ export class StudentMeetingsComponent implements OnInit {
   activeFilter: 'all' | 'upcoming' | 'pastdue' = 'upcoming'; // Default to upcoming
   lastLoginFromSession: string = '';
   
-  private useMockData = true; // Set to false when backend is stable
+  private useMockData = false ; // Set to false when backend is stable
   private mockApiResponse: ApiResponse = {
     "status": "success",
     "data": {
@@ -90,7 +90,7 @@ export class StudentMeetingsComponent implements OnInit {
       "name": "Maximillian Fahey MD",
       "email": "dbarrows@example.net",
       "student_id": "STD001",
-      "last_login_at": "2025-03-25T14:30:00.000000Z", // Add this field
+      "last_login_at": "2025-03-25T14:30:00.000000Z",
       "meetings": {
         "pastdue": [
           {
@@ -185,6 +185,32 @@ export class StudentMeetingsComponent implements OnInit {
             "status": "upcomming",
             "filter_status": "upcoming",
             "tutor_id": 102
+          },
+          {
+            "id": 8,
+            "title": "Final Project Revision",
+            "date": "2025-05-05T00:00:00.000000Z",
+            "time": "2025-05-05T15:00:00.000000Z",
+            "meeting_type": "online",
+            "description": "Review final project changes",
+            "meeting_link": "https://teams.microsoft.com/meeting/123456",
+            "location": null,
+            "status": "rescheduled",
+            "filter_status": "upcoming",
+            "tutor_id": 103
+          },
+          {
+            "id": 9,
+            "title": "Dissertation Planning",
+            "date": "2025-05-10T00:00:00.000000Z",
+            "time": "2025-05-10T11:30:00.000000Z",
+            "meeting_type": "offline",
+            "description": "Plan dissertation structure and timeline",
+            "meeting_link": null,
+            "location": "Conference Room A",
+            "status": "rescheduled",
+            "filter_status": "upcoming",
+            "tutor_id": 104
           }
         ]
       }
