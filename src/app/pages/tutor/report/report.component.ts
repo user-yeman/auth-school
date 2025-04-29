@@ -47,8 +47,10 @@ export class ReportComponent implements OnInit, AfterViewInit {
   ];
   studentFilterOptions = [
     { label: 'All', value: 'All' },
-    { label: 'Active', value: 'Active' },
-    { label: 'Inactive', value: 'Inactive' },
+    { label: '>7 days', value: '7' },
+    { label: '>14 days', value: '14' },
+    { label: '>28 days', value: '28' },
+    { label: '>60 days', value: '60' },
   ];
   isLoading: boolean = true;
   messagesLast7Days: { [key: string]: number } = {};

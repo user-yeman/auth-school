@@ -78,7 +78,6 @@ export class TableComponent implements OnChanges {
     const activeSearchTerm = this.useExternalSearch
       ? this.externalSearchTerm
       : this.searchTerm;
-    // console.log('Active search term:', activeSearchTerm);
 
     // Allow search to execute if either showSearch is true (for internal search) or useExternalSearch is true (for external search)
     if (activeSearchTerm && (this.showSearch || this.useExternalSearch)) {
@@ -87,10 +86,6 @@ export class TableComponent implements OnChanges {
         const matches = this.columns.some((column) => {
           const value = item[column.field];
           if (value === null || value === undefined) {
-            // console.log(
-            //   `Field ${column.field} is null/undefined for item:`,
-            //   item
-            // );
             return false;
           }
           const stringValue = value.toString().toLowerCase().trim();
@@ -102,7 +97,10 @@ export class TableComponent implements OnChanges {
     }
 
     if (this.filterStatus !== 'All' && this.showFilter) {
-      tempData = tempData.filter((item) => item.status === this.filterStatus);
+      const inactiveDaysThreshold = parseInt(this.filterStatus, 10);
+      tempData = tempData.filter(
+        (item) => item.inactive_days > inactiveDaysThreshold
+      );
     }
 
     if (this.sortColumn) {

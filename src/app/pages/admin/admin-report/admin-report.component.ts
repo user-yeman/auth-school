@@ -21,7 +21,6 @@ interface StudentWithTutor {
   last_active: string;
   inactive_days: number;
   tutor_name: string;
-  status?: string;
 }
 
 interface StudentWithoutTutor {
@@ -68,8 +67,10 @@ export class AdminReportComponent implements OnInit, AfterViewInit {
   ];
   studentFilterOptions = [
     { label: 'All', value: 'All' },
-    { label: 'Active', value: 'Active' },
-    { label: 'Inactive', value: 'Inactive' },
+    { label: '>7 days', value: '7' },
+    { label: '>14 days', value: '14' },
+    { label: '>28 days', value: '28' },
+    { label: '>60 days', value: '60' },
   ];
   pageSizeWithTutor: number = 5;
   currentPageWithTutor: number = 1;
@@ -119,7 +120,6 @@ export class AdminReportComponent implements OnInit, AfterViewInit {
           this.studentsWithTutor = response.group_login_calculated.map(
             (student) => ({
               ...student,
-              status: student.inactive_days <= 7 ? 'Active' : 'Inactive',
               inactive_days: Math.round(student.inactive_days),
             })
           );
@@ -236,6 +236,5 @@ export class AdminReportComponent implements OnInit, AfterViewInit {
   onExceptionSearch(): void {
     this.currentPageWithTutor = 1;
     this.currentPageWithoutTutor = 1;
-    // No need for cdr.detectChanges() here; the child components will handle updates
   }
 }
