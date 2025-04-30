@@ -38,7 +38,12 @@ export class LoginComponent {
     this.authService.login(this.email, this.password).subscribe(
       (res: any) => {
         const id = res.user_id || 0; // Default to 0 if not provided
-        this.authService.storeUserData(res.token, res.role, id);
+        this.authService.storeUserData(
+          res.token,
+          res.role,
+          id,
+          res.first_login
+        );
 
         if (res.first_login) {
           this.snackBar.open(`Welcome to the first login!`, 'Close', {

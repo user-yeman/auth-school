@@ -181,7 +181,16 @@ export class RescheduleDialogComponent implements OnInit {
 
   onMeetingTypeChange() {
     const meetingType = this.form.get('meetingType')?.value;
+    
     // Update available locations based on meeting type
+    if (meetingType === 'Online') {
+      this.availableLocations = ['Zoom', 'Microsoft Teams', 'Google Meet', 'Skype'];
+    } else if (meetingType === 'Campus') {
+      this.availableLocations = ['Room 101', 'Room 102', 'Conference Hall', 'Library'];
+    }
+    
+    // Reset the current location selection when type changes
+    this.form.get('location')?.setValue('');
   }
 
   onConfirm() {
