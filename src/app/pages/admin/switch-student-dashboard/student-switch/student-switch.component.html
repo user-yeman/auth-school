@@ -30,7 +30,7 @@
   </mat-card>
 
   <!-- Documents Card -->
-  <mat-card class="stats-card documents-card">
+  <!-- <mat-card class="stats-card documents-card">
     <mat-card-header>
       <mat-card-title></mat-card-title>
     </mat-card-header>
@@ -72,7 +72,7 @@
         <span class="status-text">Accepted</span>
       </div>
     </mat-card-content>
-  </mat-card>
+  </mat-card> -->
 
   <!-- Blogs Card -->
   <mat-card class="stats-card vlogs-card">
@@ -121,59 +121,25 @@
   </mat-card>
 </div>
 
-<!-- Uploaded Documents Table -->
+<!-- Upcoming Meetings Section -->
 <div class="student_display_container container mt-3">
-  <h2 class="table_title">Uploaded Documents List</h2>
-  <mat-card>
-    <table
-      mat-table
-      [dataSource]="documents"
-      matSort
-      (matSortChange)="applySorting($event)"
-      class="mat-elevation-z8"
-    >
-      <!-- Document Name Column -->
-      <ng-container matColumnDef="file_name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Document Name</th>
-        <td mat-cell *matCellDef="let doc">{{ doc.file_name }}</td>
-      </ng-container>
-
-      <!-- Status Column -->
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-        <td mat-cell *matCellDef="let doc">
+  <h2 class="table_title">Upcoming Meetings</h2>
+  <mat-card class="upcoming-meetings-card">
+    <mat-card-content class="meetings-card-container">
+      <div *ngFor="let meeting of upcomingMeetings" class="meeting-item">
+        <p class="meeting-topic"><strong>Topic:</strong> {{ meeting.topic }}</p>
+        <p class="meeting-details">
+          {{ meeting.date }} at {{ meeting.time }} -
           <span
             [ngClass]="{
-              'status-completed': doc.status === 'finished',
-              'status-draft': doc.status === 'watched',
-              'status-feedback': doc.status === 'accepted',
-              'status-canceled': doc.status === 'canceled'
+              online: meeting.location === 'online',
+              campus: meeting.location === 'campus'
             }"
           >
-            {{ doc.status }}
+            {{ meeting.location }}
           </span>
-        </td>
-      </ng-container>
-
-      <!-- Uploaded Date Column -->
-      <ng-container matColumnDef="uploadedDate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Uploaded Date</th>
-        <td mat-cell *matCellDef="let doc">{{ doc.created_at | date }}</td>
-      </ng-container>
-
-      <!-- Header and Row Declarations -->
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-
-    <!-- Pagination - Centered -->
-    <div class="pagination-wrapper">
-      <mat-paginator
-        [pageSizeOptions]="[10]"
-        [pageSize]="10"
-        showFirstLastButtons
-      >
-      </mat-paginator>
-    </div>
+        </p>
+      </div>
+    </mat-card-content>
   </mat-card>
 </div>

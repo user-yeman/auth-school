@@ -21,7 +21,12 @@ export class AuthService {
     return this.http.post<any>(this.apiUrl, { email, password });
   }
 
-  storeUserData(token: string, role: string, user_id: number): void {
+  storeUserData(
+    token: string,
+    role: string,
+    user_id: number,
+    first_login: boolean
+  ): void {
     const expires = new Date();
     expires.setDate(expires.getDate() + 1);
     this.cookieService.set(
@@ -36,12 +41,16 @@ export class AuthService {
 
     this.cookieService.set('userRole', role, expires, '/');
     this.cookieService.set('user_id', user_id.toString(), expires, '/');
+    this.cookieService.set('first_login', String(first_login), expires, '/');
   }
   getUserRole(): string {
     return this.cookieService.get('userRole') || '';
   }
   getUserId(): number {
     return parseInt(this.cookieService.get('user_id') || '0', 10);
+  }
+  getFirstLogin(): boolean {
+    return this.cookieService.get('first_login') === 'true';
   }
 
   isAuthenticated(): Observable<boolean> {
