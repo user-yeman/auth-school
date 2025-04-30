@@ -6,7 +6,8 @@
     [lastLoginRaw]="user.lastLogin || ''"
     [showWelcome]="true"
     [isMeetingsMode]="false"
-    [fixedPosition]="false">
+    [fixedPosition]="false"
+  >
   </app-student-header>
 
   <!-- Main page title -->
@@ -16,97 +17,6 @@
   <div class="wider-cards-container">
     <!-- User Card -->
     <mat-card class="stats-card user-card wider-card">
-      <mat-card-header>
-        <mat-card-title></mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="card-title">
-          <img src="assets/user_icon.png" alt="User Icon" class="user-icon">
-          <span class="status-value"></span>
-          <span class="highlight-value">{{ tutor.name }}</span>
-        </p>
-        
-        <div class="card-detail">
-          <img src="assets/tutor_email_icon.png" alt="User Icon" class="detail-icon">
-          <span class="status-value"></span>
-          <span class="status-text">{{ tutor.email }}</span>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Blogs Card -->
-    <mat-card class="stats-card vlogs-card wider-card">
-      <mat-card-header>
-        <mat-card-title></mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="card-title">
-          Blogging Insights
-          <span class="highlight-value">{{ vlogs.totalBlog }}</span>
-        </p>
-        
-        <div class="card-detail">
-          <span class="status-value">{{ vlogs.tutor }}</span>
-          <span class="status-text">Posts by Tutor</span>
-        </div>
-        
-        <div class="card-detail">
-          <span class="status-value">{{ vlogs.student }}</span>
-          <span class="status-text">Posts by You</span>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Meetings Card -->
-    <mat-card class="stats-card meetings-card wider-card">
-      <mat-card-header>
-        <mat-card-title></mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="card-title">
-          Scheduled Meetings
-          <span class="highlight-value">{{ meetings.totalMeeting }}</span>
-        </p>
-        
-        <div class="card-detail">
-          <span class="status-value">{{ meetings.count_online }}</span>
-          <span class="status-text">Online</span>
-        </div>
-        
-        <div class="card-detail">
-          <span class="status-value">{{ meetings.count_campus }}</span>
-          <span class="status-text">Campus</span>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <!-- Reschedule Notifications Section -->
-  <div class="notifications-container">
-    <h3 class="section-title">Meeting Reschedule Notifications</h3>
-
-    <div class="notification-cards-wrapper">
-      <mat-card *ngFor="let notification of scheduleNotifications" class="reschedule-card wider-notification-card" [ngClass]="{
-          'approved': notification.status === 'approved',
-          'rejected': notification.status === 'rejected'
-        }">
-        <div class="reschedule-topic">
-          <strong>Topic: {{ notification.topic }}</strong>
-        </div>
-        <div class="reschedule-details">
-          <div class="reschedule-info">
-            Request to reschedule meeting to {{ notification.date }} 
-            <span class="meeting-time">at {{ notification.time }}</span>
-            <span class="status-label">{{ notification.status }}</span>
-          </div>
-        </div>
-      </mat-card>
-    </div>
-  </div>
-  <!-- Cards Row -->
-  <div class="cards-container">
-    <!-- User Card - now shows tutor info -->
-    <mat-card class="stats-card user-card">
       <mat-card-header>
         <mat-card-title></mat-card-title>
       </mat-card-header>
@@ -126,66 +36,11 @@
           <span class="status-value"></span>
           <span class="status-text">{{ tutor.email }}</span>
         </div>
-
-        <!-- <div class="card-detail">
-          <img src="assets/office_hours_icon.png" alt="Clock Icon" class="detail-icon">
-          <span class="status-value">Your Email:</span>
-          <span class="status-text">{{ user.email }}</span>
-        </div> -->
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Documents Card -->
-    <mat-card class="stats-card documents-card">
-      <mat-card-header>
-        <mat-card-title></mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="card-title">
-          Total Documents
-          <span class="highlight-value">{{ documentsTotal.total }}</span>
-        </p>
-
-        <div class="card-detail">
-          <img
-            src="assets/Ellipse1.svg"
-            alt="Finished Icon"
-            class="detail-icon"
-          />
-          <span class="status-value status-value-finished">{{
-            documentsTotal.status.finished
-          }}</span>
-          <span class="status-text">Finished</span>
-        </div>
-
-        <div class="card-detail">
-          <img
-            src="assets/Ellipse2.svg"
-            alt="Watched Icon"
-            class="detail-icon"
-          />
-          <span class="status-value status-value-watched">{{
-            documentsTotal.status.watched
-          }}</span>
-          <span class="status-text">Watched</span>
-        </div>
-
-        <div class="card-detail">
-          <img
-            src="assets/Ellipse3.svg"
-            alt="Accepted Icon"
-            class="detail-icon"
-          />
-          <span class="status-value status-value-accepted">{{
-            documentsTotal.status.accepted
-          }}</span>
-          <span class="status-text">Accepted</span>
-        </div>
       </mat-card-content>
     </mat-card>
 
     <!-- Blogs Card -->
-    <mat-card class="stats-card vlogs-card">
+    <mat-card class="stats-card vlogs-card wider-card">
       <mat-card-header>
         <mat-card-title></mat-card-title>
       </mat-card-header>
@@ -208,7 +63,7 @@
     </mat-card>
 
     <!-- Meetings Card -->
-    <mat-card class="stats-card meetings-card">
+    <mat-card class="stats-card meetings-card wider-card">
       <mat-card-header>
         <mat-card-title></mat-card-title>
       </mat-card-header>
@@ -231,72 +86,45 @@
     </mat-card>
   </div>
 
-  <!-- Uploaded Documents Table -->
-  <div class="student_display_container container mt-3">
-    <h2 class="table_title">Uploaded Documents List</h2>
-    <mat-card>
-      <!--       <div class="search-bar mb-3">
-        <input type="text" placeholder="Search by Document Name or Status" (input)="applyFilter($event)"
-               [(ngModel)]="filterValue" class="form-control" />
-      </div>
-      <!-- Table -->
-      <table
-        mat-table
-        [dataSource]="documents"
-        matSort
-        (matSortChange)="applySorting($event)"
-        class="mat-elevation-z8"
+  <!-- Reschedule Notifications Section -->
+  <div class="notifications-container">
+    <h3 class="section-title">Meeting Reschedule Notifications</h3>
+
+    <div class="notification-cards-wrapper">
+      <mat-card
+        *ngFor="let meeting of upcomingMeetings"
+        class="reschedule-card wider-notification-card"
+        [ngClass]="{
+          approved: meeting.status === 'approved',
+          pending: meeting.status === 'pending',
+          rejected: meeting.status === 'reject',
+          cancelled: meeting.status === 'cancelled'
+        }"
       >
-        <!-- Document Name Column -->
-        <ng-container matColumnDef="file_name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>
-            Document Name
-          </th>
-          <td mat-cell *matCellDef="let doc">{{ doc.file_name }}</td>
-        </ng-container>
-
-        <!-- Status Column -->
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-          <td mat-cell *matCellDef="let doc">
-            <span
-              [ngClass]="{
-                'status-completed': doc.status === 'finished',
-                'status-draft': doc.status === 'watched',
-                'status-feedback': doc.status === 'accepted',
-                'status-canceled': doc.status === 'canceled'
-              }"
-            >
-              {{ doc.status }}
+        <div class="reschedule-topic">
+          <strong>Topic: {{ meeting.topic }}</strong>
+        </div>
+        <div class="reschedule-details">
+          <div class="reschedule-info">
+            <span class="reschedule-request">
+              Request the meeting schedule time to
+              {{ formatDate(meeting.arrange_date) }} at
+              {{ formatTime(meeting.arrange_date) }}
+              <span class="status-label">
+                - {{ getDisplayStatus(meeting.status) }}</span
+              >
             </span>
-          </td>
-        </ng-container>
+          </div>
+        </div>
+      </mat-card>
+    </div>
 
-        <!-- Uploaded Date Column -->
-        <ng-container matColumnDef="uploadedDate">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>
-            Uploaded Date
-          </th>
-          <td mat-cell *matCellDef="let doc">{{ doc.created_at | date }}</td>
-        </ng-container>
-
-        <!-- Header and Row Declarations -->
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-
-      <!-- Pagination - Centered -->
-      <div class="pagination-wrapper">
-        <mat-paginator
-          [pageSizeOptions]="[10]"
-          [pageSize]="10"
-          showFirstLastButtons
-        >
-        </mat-paginator>
-      </div>
-
-      <!-- Pagination -->
-    </mat-card>
+    <!-- Show message when no meetings are available -->
+    <div
+      *ngIf="!upcomingMeetings || upcomingMeetings.length === 0"
+      class="empty-state"
+    >
+      <p>No upcoming meetings found</p>
+    </div>
   </div>
 </div>
-

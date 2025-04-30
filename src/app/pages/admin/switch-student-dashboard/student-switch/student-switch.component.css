@@ -156,8 +156,7 @@
 /* Highlight Value */
 .highlight-value {
   color: #333;
-  font-family: Inter, sans-serif;
-  font-size: 24px;
+  font-size: 1.3rem;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -181,13 +180,15 @@
   text-transform: uppercase;
 }
 
-.meetings-card-container {
+.upcoming-meetings-card {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   position: relative;
   border-style: solid;
   border-width: 0;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .meeting-item {
@@ -198,7 +199,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  gap: 5px;
+  gap: 1.5rem;
 }
 
 .meeting-item:last-child {

@@ -1,0 +1,104 @@
+.edit-blog-dialog {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  width: 100%;
+  overflow: hidden; /* Prevent overflow from causing scrollbars */
+  padding: 0 10px;
+}
+
+mat-dialog-content {
+  max-height: 65vh; /* Limit the height to prevent overflowing */
+  overflow-y: auto; /* Allow vertical scrolling within the content area */
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+  padding: 24px 24px 16px 24px;
+}
+
+.full-width {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+}
+
+textarea {
+  min-height: 150px;
+}
+
+.form-textarea {
+  overflow-y: auto; /* Allow scrolling inside textarea only */
+  resize: none; /* Prevent textarea resizing which can cause layout issues */
+  max-height: 200px; /* Limit textarea height */
+}
+
+.attachment-section {
+  margin: 15px 0;
+  padding: 10px;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.attachments-list, .selected-files {
+  margin-top: 10px;
+}
+
+.selected-files h4 {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.progress-section {
+  padding: 10px 0;
+}
+
+mat-chip-set {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.attachment-button {
+  height: 36px;
+  line-height: 36px;
+  padding: 0 16px;
+}
+
+.black-header {
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 16px;
+  margin: -24px -24px 20px -24px; /* Negative margin to extend to dialog edges */
+  width: auto;
+  font-weight: 500;
+}
+
+mat-dialog-actions {
+  margin-bottom: 0;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between; /* This will space buttons evenly */
+}
+
+mat-dialog-actions button {
+  min-width: 120px; /* Make buttons wider */
+  padding: 8px 24px; /* Add more horizontal padding */
+}
+
+/* Make the primary button slightly larger for emphasis */
+mat-dialog-actions button[color="primary"] {
+  min-width: 140px;
+}

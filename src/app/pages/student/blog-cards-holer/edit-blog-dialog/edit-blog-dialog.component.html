@@ -1,0 +1,78 @@
+<div class="edit-blog-dialog">
+  <h2 mat-dialog-title class="black-header">EDIT BLOG POST</h2>
+  
+  <mat-dialog-content>
+    <form>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Blog Post Title</mat-label>
+        <input matInput [(ngModel)]="data.title" name="title" required 
+               placeholder="Enter a descriptive title for your blog">
+        <mat-hint>A clear title helps others find your blog</mat-hint>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Content</mat-label>
+        <textarea matInput [(ngModel)]="data.content" name="content" 
+                  rows="8" required placeholder="Share your thoughts, questions, or insights here..."></textarea>
+        <mat-hint align="end">{{data.content.length}} / 2000</mat-hint>
+      </mat-form-field>
+
+      <!-- File attachment section -->
+      <div class="attachment-section" *ngIf="data.attachments">
+        <div class="section-header">
+          <h3>Attachments ({{data.attachments.length || 0}})</h3>
+          <button mat-button color="primary" type="button" 
+                  (click)="fileInput.click()" class="attachment-button">
+            <mat-icon>attach_file</mat-icon> Add Files
+          </button>
+          <input #fileInput type="file" style="display: none;" multiple
+                 (change)="onFileSelected($event)">
+        </div>
+        
+        <!-- Existing attachments list -->
+        <div class="attachments-list" *ngIf="data.attachments && data.attachments.length > 0">
+          <mat-chip-set>
+            <mat-chip *ngFor="let file of data.attachments; let i = index" highlighted>
+              <mat-icon matChipAvatar>description</mat-icon>
+              {{file.name}}
+              <button matChipRemove (click)="removeAttachment(i)">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+
+        <!-- Newly selected files list -->
+        <div class="selected-files" *ngIf="selectedFiles.length > 0">
+          <h4>New files to be uploaded:</h4>
+          <mat-chip-set>
+            <mat-chip *ngFor="let file of selectedFiles; let i = index" color="accent">
+              <mat-icon matChipAvatar>upload_file</mat-icon>
+              {{file.name}}
+              <button matChipRemove (click)="removeSelectedFile(i)">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+      </div>
+      
+      <!-- Tags/Categories section - like tutors often have -->
+      
+    </form>
+  </mat-dialog-content>
+  
+  <!-- Upload progress indicator -->
+  <div *ngIf="isUploading" class="progress-section">
+    <p>Uploading files: {{uploadProgress}}%</p>
+    <mat-progress-bar mode="determinate" [value]="uploadProgress"></mat-progress-bar>
+  </div>
+  
+  <mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]="undefined" [disabled]="isUploading">Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="getSubmitData()" 
+            [disabled]="!isFormValid() || isUploading">
+       Post
+    </button>
+  </mat-dialog-actions>
+</div>
