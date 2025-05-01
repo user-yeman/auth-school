@@ -71,6 +71,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
   tutors: Tutor[] = [];
   students: { id: string | number; name: string; email: string }[] = [];
   dashboardData = { tutors: this.tutors };
+  userInfo: any;
   tutorDashboardData: any = null;
   studentDashboardData: any = null;
   isLoading: boolean = false; // Start as false
@@ -115,6 +116,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnDestroy {
     this.http.get('http://127.0.0.1:8000/api/admin/dashboard').subscribe({
       next: (response: any) => {
         const data = response.data || {};
+        this.userInfo = data.userInfo;
         this.totalTutors = data.total_tutors || 0;
         this.totalStudents = data.total_students || 0;
         this.unassignedStudents = data.total_unassigned_students || 0;
