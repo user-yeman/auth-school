@@ -1,18 +1,13 @@
 <!-- Main content container without fixed header (since sidebar layout handles that) -->
 <div class="dashboard-container">
   <!-- Replace the manual header with the StudentHeaderComponent -->
-  <app-student-header
-    [userName]="user.name || ''"
-    [lastLoginRaw]="user.lastLogin || ''"
-    [showWelcome]="true"
-    [isMeetingsMode]="false"
-    [fixedPosition]="false"
-  >
+  <app-student-header [userName]="user.name || ''" [lastLoginRaw]="user.lastLogin || ''" [showWelcome]="true"
+    [isMeetingsMode]="false" [fixedPosition]="false">
   </app-student-header>
 
   <!-- Main page title -->
   <div class="main-title"></div>
-
+  <p class="tutor-card-title">{{ user.name }}'s Personal Tutor</p>
   <!-- Cards Row with wider cards -->
   <div class="wider-cards-container">
     <!-- User Card -->
@@ -28,11 +23,7 @@
         </p>
 
         <div class="card-detail">
-          <img
-            src="assets/tutor_email_icon.png"
-            alt="User Icon"
-            class="detail-icon"
-          />
+          <img src="assets/tutor_email_icon.png" alt="User Icon" class="detail-icon" />
           <span class="status-value"></span>
           <span class="status-text">{{ tutor.email }}</span>
         </div>
@@ -91,16 +82,12 @@
     <h3 class="section-title">Meeting Reschedule Notifications</h3>
 
     <div class="notification-cards-wrapper">
-      <mat-card
-        *ngFor="let meeting of upcomingMeetings"
-        class="reschedule-card wider-notification-card"
-        [ngClass]="{
+      <mat-card *ngFor="let meeting of upcomingMeetings" class="reschedule-card wider-notification-card" [ngClass]="{
           approved: meeting.status === 'approved',
           pending: meeting.status === 'pending',
           rejected: meeting.status === 'reject',
           cancelled: meeting.status === 'cancelled'
-        }"
-      >
+        }">
         <div class="reschedule-topic">
           <strong>Topic: {{ meeting.topic }}</strong>
         </div>
@@ -111,8 +98,7 @@
               {{ formatDate(meeting.arrange_date) }} at
               {{ formatTime(meeting.arrange_date) }}
               <span class="status-label">
-                - {{ getDisplayStatus(meeting.status) }}</span
-              >
+                - {{ getDisplayStatus(meeting.status) }}</span>
             </span>
           </div>
         </div>
@@ -120,10 +106,7 @@
     </div>
 
     <!-- Show message when no meetings are available -->
-    <div
-      *ngIf="!upcomingMeetings || upcomingMeetings.length === 0"
-      class="empty-state"
-    >
+    <div *ngIf="!upcomingMeetings || upcomingMeetings.length === 0" class="empty-state">
       <p>No upcoming meetings found</p>
     </div>
   </div>
