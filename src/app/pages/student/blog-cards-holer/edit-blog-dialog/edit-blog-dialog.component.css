@@ -102,3 +102,86 @@ mat-dialog-actions button {
 mat-dialog-actions button[color="primary"] {
   min-width: 140px;
 }
+
+.blog-title-field {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.title-label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.required-asterisk {
+  color: #FF0000;
+  margin-left: 2px;
+}
+
+.title-input {
+  width: 100%;
+  padding: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  border: 1px solid #000000;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.title-input:focus {
+  outline: none;
+  border-color: #4540E1;
+}
+
+.title-input::placeholder {
+  color: #757575;
+}
+
+.blog-content-field {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.content-label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.required-asterisk {
+  color: #FF0000;
+  margin-left: 2px;
+}
+
+.content-textarea {
+  width: 100%;
+  padding: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  border: 1px solid #000000;
+  border-radius: 4px;
+  box-sizing: border-box;
+  min-height: 140px;
+  resize: vertical;
+}
+
+.content-textarea:focus {
+  outline: none;
+  border-color: #4540E1;
+}
+
+.content-textarea::placeholder {
+  color: #757575;
+}
+
+.character-count {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  text-align: right;
+  margin-top: 4px;
+}

@@ -2,12 +2,8 @@
   <!-- Header bar with search and student icon -->
   <div class="top-header-bar">
     <!-- Blog search component on left -->
-    <app-blog-search
-      class="search-container"
-      [initialQuery]="searchQuery"
-      (searchQuery)="handleSearch($event)"
-      (clearSearch)="handleClearSearch()"
-    >
+    <app-blog-search class="search-container" [initialQuery]="searchQuery" (searchQuery)="handleSearch($event)"
+      (clearSearch)="handleClearSearch()">
     </app-blog-search>
 
     <!-- Student header (with icon) on right -->
@@ -23,8 +19,9 @@
   <!-- Title row to keep title and button together -->
   <div class="title-row">
     <h1 class="main-title">Blogs</h1>
-    <button mat-raised-button class="action-btn" (click)="openAddDialog()">
-      <mat-icon>add</mat-icon> New Blog
+    <button mat-raised-button class="new-blog-btn" (click)="openAddDialog()">
+      <mat-icon class="new-blog-icon">add</mat-icon>
+      New Blog
     </button>
   </div>
 
@@ -51,10 +48,7 @@
 
     <!-- Blog cards list -->
     <div *ngIf="!isLoading" class="blog-list">
-      <div
-        *ngIf="filteredBlogs.length === 0 && !isLoading && searchQuery"
-        class="no-results"
-      >
+      <div *ngIf="filteredBlogs.length === 0 && !isLoading && searchQuery" class="no-results">
         <mat-icon>search_off</mat-icon>
         <p>No blogs found matching "{{ searchQuery }}"</p>
         <button mat-button color="primary" (click)="handleClearSearch()">
@@ -62,21 +56,13 @@
         </button>
       </div>
 
-      <div
-        *ngIf="filteredBlogs.length === 0 && !searchQuery"
-        class="no-blogs-message"
-      >
+      <div *ngIf="filteredBlogs.length === 0 && !searchQuery" class="no-blogs-message">
         No {{ filter === "new" ? "new" : "old" }} blogs to display.
       </div>
 
-      <app-blog-card
-        *ngFor="let blog of filteredBlogs"
-        [blog]="blog"
-        [isOldBlog]="filter === 'old'"
-        (addCommentEvent)="onAddComment($event.blogId, $event.content)"
-        (blogUpdated)="onBlogUpdated()"
-        (blogDeleted)="onBlogDeleted($event)"
-      >
+      <app-blog-card *ngFor="let blog of filteredBlogs" [blog]="blog" [isOldBlog]="filter === 'old'"
+        (addCommentEvent)="onAddComment($event.blogId, $event.content)" (blogUpdated)="onBlogUpdated()"
+        (blogDeleted)="onBlogDeleted($event)">
       </app-blog-card>
     </div>
   </div>
