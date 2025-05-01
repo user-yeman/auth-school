@@ -118,7 +118,7 @@ th.sorted[aria-sort="descending"]::before {
 }
 
 .pagination .page-item .page-link:hover:not(.disabled) {
-  background-color: #e9ecef;
+  background-color: #74787c;
 }
 
 /* Style for the ellipsis */
