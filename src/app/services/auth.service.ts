@@ -52,6 +52,9 @@ export class AuthService {
   getFirstLogin(): boolean {
     return this.cookieService.get('first_login') === 'true';
   }
+  getUserName(): string {
+    return this.cookieService.get('userName') || '';
+  }
 
   isAuthenticated(): Observable<boolean> {
     const token = this.cookieService.get('authToken');
