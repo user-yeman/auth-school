@@ -137,9 +137,14 @@
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">
-    <button mat-button (click)="onConfirm()" [disabled]="!scheduleForm.valid">
+    <button mat-button (click)="onCancel()">CANCEL</button>
+    <button
+      mat-raised-button
+      class="confirm"
+      (click)="onConfirm()"
+      [disabled]="!scheduleForm.valid"
+    >
       CONFIRM
     </button>
-    <button mat-button (click)="onCancel()">CANCEL</button>
   </mat-dialog-actions>
 </div>
