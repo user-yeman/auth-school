@@ -33,3 +33,7 @@
 mat-form-field {
   margin-bottom: 1px;
 }
+.confirm {
+  background: rgb(60, 161, 255);
+  color: white;
+}
