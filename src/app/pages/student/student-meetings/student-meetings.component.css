@@ -91,20 +91,18 @@ mat-card-content {
 }
 
 .meeting-type-text {
-  font-weight: 500;
-  margin-left: 5px; /* Add consistent spacing if needed */
+  font-weight: 400; /* Change from 500 (semi-bold) to 400 (normal) */
+  margin-left: 5px;
+  color: #111827;
+  font-family: 'Inter', sans-serif;
 }
 
-.meeting-type-text.online {
-  color: #2196F3; /* Updated to blue */
-}
-
-.meeting-type-text.offline {
-  color: #4F46E5; /* Blue */
-}
-
+/* Override the colored types */
+.meeting-type-text.online,
+.meeting-type-text.offline,
 .meeting-type-text.campus {
-  color: #4CAF50; /* Green */
+  color: #111827; /* Keep the text black */
+  font-weight: 400; /* Ensure normal font weight for all types */
 }
 
 /* For items with icons, ensure the spacing is also 5px */
@@ -191,9 +189,15 @@ mat-card-content {
   justify-content: space-between;
   flex-wrap: wrap;
   font-size: 14px;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  margin-bottom: 8px; /* adjust line between detail row and header */
+  padding-bottom: 0; /* Remove any bottom padding */
   border-bottom: 1px solid #eee;
+  line-height: 1.6;
+}
+
+.meeting-header-row > div:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .meeting-header-row div {
@@ -206,7 +210,14 @@ mat-card-content {
 .meeting-details {
   font-size: 14px;
   margin-bottom: 50px; /* Make space for the button */
+  margin-top: 0; /* Remove any top margin */
+  padding-top: 0; /* Remove any top padding */
   line-height: 1.6;
+}
+
+.meeting-details > div:first-child {
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .meeting-details div {
