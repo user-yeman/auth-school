@@ -28,6 +28,8 @@ import {
 } from '../../../model/student-blogs-model';
 import { AuthService } from '../../auth.service';
 import { ToastrService } from 'ngx-toastr';
+// Add these imports
+import { Router, NavigationStart, Event as RouterEvent } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -53,7 +55,8 @@ export class StudentBlogService implements OnDestroy {
   constructor(
     private http: HttpClient,
     private toast: ToastrService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router // Add router
   ) {
     this.loggedInUserId = this.authService.getUserId();
     this.loggedInUserRole = this.authService.getUserRole();
@@ -61,8 +64,32 @@ export class StudentBlogService implements OnDestroy {
     // Load blogs initially
     this.loadBlogs();
 
-    // Start polling for updates
-    this.startPolling();
+    // Start polling only if we're on the blog page
+    if (this.router.url.includes('/student/student-blog')) {
+      this.startPolling();
+    }
+
+    // Add navigation event listener
+    this.subscription.add(
+      this.router.events.subscribe((event: RouterEvent) => {
+        if (event instanceof NavigationStart) {
+          const navigatingToBlog = event.url.includes('/student/student-blog');
+          const currentlyOnBlog = this.router.url.includes('/student/student-blog');
+
+          // If navigating away from blog page, stop polling
+          if (currentlyOnBlog && !navigatingToBlog) {
+            console.log('Navigating away from blogs, stopping polling');
+            this.stopPolling();
+          }
+
+          // If navigating to blog page and not currently on it, start polling
+          if (!currentlyOnBlog && navigatingToBlog) {
+            console.log('Navigating to blogs, starting polling');
+            this.startPolling();
+          }
+        }
+      })
+    );
   }
 
   // Modify the loadBlogs method to preserve author information during refresh
@@ -661,7 +688,14 @@ export class StudentBlogService implements OnDestroy {
   }
 
   getLoggedInUserRole(): string | null {
-    return this.loggedInUserRole;
+    // Always get the fresh role directly from the auth service
+    const currentRole = this.authService.getUserRole();
+    
+    // Update our cached value
+    this.loggedInUserRole = currentRole;
+    
+    console.log('Current user role from auth service:', currentRole);
+    return currentRole;
   }
 
   // Add this to student-blog.service.ts
@@ -828,9 +862,12 @@ export class StudentBlogService implements OnDestroy {
 
   // Update the polling mechanism to be more efficient
   startPolling(): void {
-    // Poll every 30 seconds, but with smarter implementation
+    // First stop any existing polling to prevent duplicates
+    this.stopPolling();
+
+    console.log('Starting blog polling');
     this.pollingInterval = setInterval(() => {
-      console.log('Polling for updates...');
+      console.log('Polling for blog updates...');
       this.efficientPoll().subscribe({
         next: () => console.log('Blogs refreshed through polling'),
         error: (error) => console.error('Error polling blogs:', error),
@@ -899,7 +936,9 @@ export class StudentBlogService implements OnDestroy {
 
   stopPolling(): void {
     if (this.pollingInterval) {
+      console.log('Stopping blog polling');
       clearInterval(this.pollingInterval);
+      this.pollingInterval = null;
     }
   }
 
@@ -931,6 +970,34 @@ export class StudentBlogService implements OnDestroy {
 
     // Ultimate fallback
     return 'Anonymous User';
+  }
+
+  /**
+   * Checks if the current user is the author of a comment
+   * @param comment The comment to check
+   * @returns Boolean indicating if the user is the author
+   */
+  isCommentAuthor(comment: Comment): boolean {
+    const userId = this.getLoggedInUserId();
+    const userRole = this.getLoggedInUserRole();
+    
+    // Log for debugging
+    console.log('Checking comment author:', {
+      commentId: comment.id,
+      commentTutorId: comment.tutor_id,
+      commentStudentId: comment.student_id,
+      currentUserId: userId,
+      currentUserRole: userRole
+    });
+    
+    // Compare based on the current user's role
+    if (userRole === 'student') {
+      return comment.student_id === userId;
+    } else if (userRole === 'tutor') {
+      return comment.tutor_id === userId;
+    }
+    
+    return false;
   }
 
   // Add this method to ensure changes are reflected immediately in the UI
