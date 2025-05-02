@@ -21,13 +21,9 @@
       <div class="filter-title-container">
         <h3 class="filter-title">
           {{
-            activeFilter === "all"
-              ? "All"
-              : activeFilter === "upcoming"
+            activeFilter === "upcoming"
               ? "Upcoming"
-              : activeFilter === "pastdue"
-              ? "Past Due"
-              : "Rescheduled"
+              : "Past Due"
           }}
           Meetings
         </h3>
@@ -37,7 +33,7 @@
         <select class="filter-select" (change)="filterMeetings($event)">
           <option value="upcoming" selected>Upcoming</option>
           <option value="pastdue">Past Due</option>
-          <option value="rescheduled">Rescheduled</option>
+          <!-- Removed the "Rescheduled" option -->
         </select>
         <img src="assets/filter_icon.png" alt="Filter" class="filter-icon">
       </div>
@@ -117,12 +113,14 @@
               <strong>Status:</strong>
               <span
                 class="status-text"
-                [ngClass]="getStatusClass(meeting.status)"
+                [ngClass]="getStatusClass(meeting.filter_status || meeting.status)"
               >
                 {{
-                  meeting.status === "upcomming"
+                  meeting.filter_status === "upcoming" || meeting.status === "upcomming" 
                     ? "Upcoming"
-                    : (meeting.status | titlecase)
+                    : meeting.filter_status === "pastdue"
+                    ? "Past Due"
+                    : (meeting.filter_status || meeting.status | titlecase)
                 }}
               </span>
             </div>

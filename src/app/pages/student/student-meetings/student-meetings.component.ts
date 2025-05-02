@@ -54,8 +54,8 @@ interface ApiResponse {
   message: string;
 }
 
-// Update the FilterType to include 'rescheduled'
-type FilterType = 'all' | 'upcoming' | 'pastdue' | 'rescheduled';
+// Update the FilterType to remove 'rescheduled' and 'all'
+type FilterType = 'upcoming' | 'pastdue';
 
 @Component({
   selector: 'app-student-meetings',
@@ -372,32 +372,20 @@ export class StudentMeetingsComponent implements OnInit {
     const selectedValue = (event.target as HTMLSelectElement).value;
     this.activeFilter = selectedValue as FilterType;
 
-    if (selectedValue === 'all') {
-      this.filteredMeetings = [...this.upcomingMeetings, ...this.pastMeetings]; // Show all meetings
-    } else if (selectedValue === 'upcoming') {
-      this.filteredMeetings = this.upcomingMeetings.filter(m => m.status === 'upcomming');
+    if (selectedValue === 'upcoming') {
+      this.filteredMeetings = this.upcomingMeetings;
     } else if (selectedValue === 'pastdue') {
-      // Fix the comparison - use filter_status instead of status for pastdue
-      this.filteredMeetings = this.pastMeetings.filter(m => m.filter_status === 'pastdue');
-    } else if (selectedValue === 'rescheduled') {
-      this.filteredMeetings = [...this.upcomingMeetings, ...this.pastMeetings].filter(m => m.status === 'rescheduled');
+      this.filteredMeetings = this.pastMeetings;
     }
   }
 
   applyFilter(filterType: FilterType): void {
     this.activeFilter = filterType;
 
-    if (filterType === 'all') {
-      // Combine both lists but put upcoming first
-      this.filteredMeetings = [...this.upcomingMeetings, ...this.pastMeetings];
-    } else if (filterType === 'upcoming') {
+    if (filterType === 'upcoming') {
       this.filteredMeetings = this.upcomingMeetings;
     } else if (filterType === 'pastdue') {
       this.filteredMeetings = this.pastMeetings;
-    } else if (filterType === 'rescheduled') {
-      // Handle rescheduled filter
-      this.filteredMeetings = [...this.upcomingMeetings, ...this.pastMeetings]
-        .filter(m => m.status === 'rescheduled');
     }
   }
 
@@ -777,16 +765,17 @@ export class StudentMeetingsComponent implements OnInit {
   }
 
   getStatusClass(status: string): string {
-    switch (status) {
-      case 'completed':
-        return 'status-completed';
-      case 'rescheduled':
-        return 'status-rescheduled';
-      case 'upcomming':
-        return 'status-upcoming';
-      default:
-        return '';
+    // Normalize status strings for consistent class handling
+    if (status === 'upcomming' || status === 'upcoming') {
+      return 'upcoming';
+    } else if (status === 'pastdue') {
+      return 'pastdue';
+    } else if (status === 'rescheduled') {
+      return 'rescheduled';
+    } else if (status === 'completed') {
+      return 'completed';
     }
+    return 'default';
   }
 
   formatLastLogin(dateString: string): string {
