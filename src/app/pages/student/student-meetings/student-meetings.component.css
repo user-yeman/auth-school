@@ -127,33 +127,36 @@ mat-card-content {
 /* Reschedule button */
 .reschedule-button {
   position: absolute;
-  bottom: 16px;
-  right: 16px;
-  display: flex;
-  gap: 8px;
+  bottom: 20px;
+  right: 20px;
 }
 
-/* Custom button styling to match previous design */
+/* Custom button styling for reschedule button */
 .reschedule-button button {
-  background-color: #4F46E5;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 6px;
+  background-color: white;
+  color: #007BFF; /* Bright blue text */
+  padding: 8px 24px;
+  border-radius: 9999px; /* Fully rounded corners (pill shape) */
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: background-color 0.3s, transform 0.2s;
-  border: none;
+  border: none; /* No border */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06); /* Subtle shadow */
   cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  outline: none; /* Remove focus outline */
+  text-transform: none; /* Prevent uppercase text */
+  letter-spacing: normal;
+  min-width: 120px; /* Ensure minimum width */
+  height: 36px; /* Consistent height */
 }
 
 .reschedule-button button:hover {
-  background-color: #4338CA;
-  transform: translateY(-2px);
+  background-color: #f9fafb; /* Very subtle gray on hover */
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.12), 0px 2px 3px rgba(0, 0, 0, 0.08); /* Slightly stronger shadow on hover */
 }
 
 .reschedule-button mat-icon {
