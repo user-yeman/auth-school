@@ -138,27 +138,15 @@ export class StudentSwitchComponent {
       this.meetings = data.meetings || this.meetings;
       this.documentsTotal = data.documentsTotal || this.documentsTotal;
 
-      // Populate upcoming meetings
-      this.upcomingMeetings = [
-        {
-          topic: 'EWSD Coursework Discussion',
-          date: 'Tue March 18, 2025',
-          time: '10:00',
-          location: 'online',
-        },
-        {
-          topic: 'RM Coursework Discussion',
-          date: 'Tue March 18, 2025',
-          time: '1:00',
-          location: 'campus',
-        },
-        {
-          topic: 'Mobile Coursework Discussion',
-          date: 'Fri March 21, 2025',
-          time: '1:00',
-          location: 'online',
-        },
-      ];
+      // Transform upcoming meetings
+      this.upcomingMeetings = (data.upcoming_meetings || []).map(
+        (meeting: any) => ({
+          topic: meeting.topic,
+          date: meeting.arrange_date.split(' ')[0], // Extract date part
+          time: meeting.arrange_date.split(' ')[1]?.split('+')[0] || 'N/A', // Extract time part
+          location: meeting.meeting_type === 'online' ? 'Online' : 'Campus', // Transform location
+        })
+      );
     }
   }
 }

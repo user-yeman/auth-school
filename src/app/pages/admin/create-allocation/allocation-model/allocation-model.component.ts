@@ -57,8 +57,6 @@ export class AllocationModelComponent implements OnInit {
     console.log('ToastrService:', this.toastr);
   }
   ngOnInit(): void {
-    this.toastr.success('Test success message', 'Success');
-    this.toastr.error('Test error message', 'Error');
     // Subscribe to the BehaviorSubject to get real-time updates
     this.subscription = this.data.selectedStudents$.subscribe((students) => {
       if (Array.isArray(students)) {

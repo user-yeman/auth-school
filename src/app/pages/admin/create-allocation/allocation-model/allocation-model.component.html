@@ -14,11 +14,10 @@
             </div>
           </div>
         </div>
-
         <h4>Select Tutor</h4>
         <mat-form-field appearance="outline" class="tutor-select">
           <mat-label>Select Tutor</mat-label>
-          <mat-select formControlName="tutor" required>
+          <mat-select formControlName="tutor" required panelClass="tutor-panel">
             <mat-option *ngFor="let tutor of tutors || []" [value]="tutor">
               {{ tutor.name }}
             </mat-option>

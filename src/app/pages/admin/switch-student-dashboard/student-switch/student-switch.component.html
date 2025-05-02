@@ -115,7 +115,7 @@
 
       <div class="card-detail">
         <span class="status-value">{{ meetings.count_campus }}</span>
-        <span class="status-text">Campus</span>
+        <span class="status-text">Physical</span>
       </div>
     </mat-card-content>
   </mat-card>
@@ -132,8 +132,8 @@
           {{ meeting.date }} at {{ meeting.time }} -
           <span
             [ngClass]="{
-              online: meeting.location === 'online',
-              campus: meeting.location === 'campus'
+              online: meeting.location === 'Online',
+              campus: meeting.location === 'Campus'
             }"
           >
             {{ meeting.location }}

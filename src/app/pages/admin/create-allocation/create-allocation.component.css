@@ -1,3 +1,6 @@
+.search-bar {
+  width: clamp(30vw, 100vw, 120vw);
+}
 .mat-header-row {
   background: var(--background-color);
 }
@@ -37,14 +40,13 @@
   fill: white !important;
 }
 .mat-sort-header-arrow svg {
-  fill: white !important; /* Ensure the arrow is white */
+  fill: white !important;
 }
 
-/* Style inactive columns to indicate no active sort */
 .mat-sort-header:not(.mat-sort-header-sorted) .mat-sort-header-arrow {
-  color: rgba(0, 0, 0, 0.38); /* Light gray for inactive columns */
+  color: rgba(0, 0, 0, 0.38);
 }
-/* Style for table headers */
+
 .mat-mdc-header-cell {
   background-color: #2c2c2c !important;
   color: white;
@@ -52,16 +54,14 @@
   margin-left: 10px;
 }
 
-/* Style for the header checkbox container */
 .table-header .header-checkbox {
-  color: white !important; /* Makes the label text white */
+  color: white !important;
 }
 
-/* Style for the checkbox checkmark */
 .table-header .header-checkbox .mat-checkbox-frame {
-  border-color: white !important; /* Makes the checkbox border white */
+  border-color: white !important;
 }
 
 .table-header .header-checkbox .mat-checkbox-background {
-  background-color: white !important; /* Makes the checkbox background white when checked */
+  background-color: white !important;
 }

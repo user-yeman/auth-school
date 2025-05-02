@@ -155,19 +155,29 @@
 
 /* Highlight Value */
 .highlight-value {
-  color: #333;
+  color: #007bff;
   font-size: 1.3rem;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
   display: inline;
 }
-
+.status-value {
+  color: #007bff !important;
+}
 /* Upcoming Meetings Section */
 .student_display_container {
   margin-top: 20px;
 }
+.online {
+  color: green;
+  font-weight: 600;
+}
 
+.campus {
+  color: blue;
+  font-weight: 600;
+}
 .table_title {
   color: #333;
   text-align: left;
