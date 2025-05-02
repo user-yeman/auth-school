@@ -1,61 +1,8 @@
-/* Student List */
-.student-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
+/* Mobile-first approach */
+* {
+  box-sizing: border-box;
 }
 
-.student-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  font-size: 14px;
-  color: #333;
-}
-
-.student-name {
-  font-weight: bold;
-}
-
-.student-id {
-  color: #666;
-  font-size: 12px;
-}
-
-/* Tutor Select */
-.tutor-select {
-  width: 100%;
-  margin-bottom: 16px;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-outline {
-  border-radius: 8px;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-wrapper {
-  padding: 0 12px;
-}
-
-.mat-select-panel {
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.mat-option {
-  padding: 12px;
-  font-size: 14px;
-}
-
-.mat-option:hover {
-  background-color: #f0f4f8;
-}
-
-/* Dialog Layout */
 .model-overlay {
   display: flex;
   justify-content: center;
@@ -71,65 +18,40 @@
 
 .model-content {
   background-color: #fff;
-  padding: 24px;
+  padding: clamp(1rem, 3vw, 1.5rem);
   border-radius: 12px;
-  width: 800px;
-  max-width: 90%;
+  width: clamp(300px, 80vw, 800px);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative; /* Ensure positioning context for children */
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-mat-dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-button.mat-raised-button {
-  background-color: #1976d2;
-  color: #fff;
-  border-radius: 8px;
-}
-
-button.mat-raised-button:hover {
-  background-color: #1565c0;
-}
-
-button.mat-button {
-  color: #1976d2;
-}
-/* Dialog Content */
-.dialog-content {
-  overflow: hidden;
-  padding: 16px;
-}
 .dialog-header {
   margin: 0;
-  padding: 16px;
-  font-size: 24px;
-  font-weight: bold;
-  color: #fff; /* White text for contrast */
-  text-transform: uppercase; /* Optional: Makes the text look more formal */
-  letter-spacing: 1px; /* Adds spacing between letters for elegance */
-  background: linear-gradient(
-    90deg,
-    #6a11cb,
-    #2575fc
-  ); /* Gradient background */
-  border-radius: 8px 8px 0 0; /* Rounded corners at the top */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  padding: clamp(0.5rem, 2vw, 1rem);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  color: #fff;
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
-.selected_container {
-  background: #f9f9f9; /* Light gray background */
-  border: 1px solid #ddd; /* Subtle border */
-  border-radius: 8px; /* Rounded corners */
-  padding: 20px;
-  max-height: 200px; /* Limit height to enable scrolling */
-  overflow-y: auto; /* Enable vertical scrolling */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+
+.dialog-content {
+  padding: clamp(0.5rem, 2vw, 1rem);
 }
 
-/* Custom Scrollbar Styling (Optional) */
+.selected_container {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: clamp(0.5rem, 2vw, 1rem);
+  max-height: clamp(150px, 30vh, 200px);
+  overflow-y: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .selected_container::-webkit-scrollbar {
   width: 8px;
 }
@@ -142,16 +64,106 @@ button.mat-button {
 .selected_container::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
+
+.student-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 2vw, 0.75rem);
+}
+
+.student-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(0.5rem, 2vw, 0.75rem);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+}
+
+.student-name {
+  font-weight: bold;
+}
+
+.student-id {
+  color: #666;
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+}
+
 h4 {
-  margin-top: 16px;
-  margin-bottom: 8px;
-  font-size: 18px;
+  margin: clamp(0.5rem, 2vw, 1rem) 0;
+  font-size: clamp(1rem, 3vw, 1.25rem);
   font-weight: bold;
   color: #333;
 }
 
-/* Tutor Select */
 .tutor-select {
   width: 100%;
-  margin-bottom: 16px;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  border-radius: 8px;
+}
+
+/* Adjust mat-select-panel to align with trigger within dialog */
+::ng-deep .mat-select-panel.tutor-panel {
+  max-height: clamp(200px, 40vh, 400px) !important;
+  overflow-y: auto !important;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Remove conflicting transforms and let Angular Material handle positioning */
+  transform: none !important;
+  transform-origin: center top !important;
+  /* Ensure the panel stays within the dialog context */
+  position: absolute !important;
+  /* Remove bottom override to allow default behavior */
+  bottom: auto !important;
+}
+
+/* Ensure the overlay is positioned relative to the dialog */
+.cdk-overlay-container {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+/* Small devices (phones, 600px and up) */
+@media (min-width: 600px) {
+  .model-content {
+    width: clamp(400px, 70vw, 800px);
+  }
+
+  .selected_container {
+    max-height: clamp(200px, 40vh, 250px);
+  }
+
+  ::ng-deep .mat-select-panel.tutor-panel {
+    max-height: clamp(250px, 40vh, 400px) !important;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .model-content {
+    width: clamp(500px, 60vw, 800px);
+  }
+
+  ::ng-deep .mat-select-panel.tutor-panel {
+    max-height: clamp(300px, 40vh, 400px) !important;
+  }
+}
+
+/* Large devices (desktops, 1024px and up) */
+@media (min-width: 1024px) {
+  .model-content {
+    width: clamp(600px, 50vw, 800px);
+  }
+
+  ::ng-deep .mat-select-panel.tutor-panel {
+    max-height: 400px !important;
+  }
 }

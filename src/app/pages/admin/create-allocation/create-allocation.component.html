@@ -13,8 +13,8 @@
   *ngIf="!isLoading; else tableSkeleton"
 >
   <h2 class="title">{{ title }}</h2>
-  <div class="row counte_row d-flex align-content-center">
-    <div class="col-10 text-end">
+  <div class="row counte_row d-md-flex align-content-center">
+    <div class="col-md-10 text-md-end mb-3 text-sm-center">
       <div class="counte">
         <span class="counte_title">Selected Counts : </span>
         <span class="counte_number m-1">{{
@@ -46,56 +46,58 @@
       />
     </div>
     <mat-card>
-      <!-- Table -->
-      <table
-        mat-table
-        [dataSource]="dataSource"
-        matSort
-        (matSortChange)="sortData($event)"
-        class="mat-elevation-z8"
-      >
-        <!-- StudentID Column -->
-        <ng-container matColumnDef="StudentID">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Student ID</th>
-          <td mat-cell *matCellDef="let row">{{ row.StudentID }}</td>
-        </ng-container>
+      <div class="table-scroll-container">
+        <table
+          mat-table
+          [dataSource]="dataSource"
+          matSort
+          (matSortChange)="sortData($event)"
+          class="mat-elevation-z8 responsive-table"
+        >
+          <!-- Student ID Column -->
+          <ng-container matColumnDef="StudentID">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              Student ID
+            </th>
+            <td mat-cell *matCellDef="let row">{{ row.StudentID }}</td>
+          </ng-container>
 
-        <!-- Name Column -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-          <td mat-cell *matCellDef="let row">{{ row.name }}</td>
-        </ng-container>
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+          </ng-container>
 
-        <!-- Email Column -->
-        <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef>Email</th>
-          <td mat-cell *matCellDef="let row">{{ row.email }}</td>
-        </ng-container>
+          <!-- Email Column -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let row">{{ row.email }}</td>
+          </ng-container>
 
-        <!-- Select Column -->
-        <ng-container matColumnDef="select">
-          <th mat-header-cell *matHeaderCellDef class="table-header">
-            <mat-checkbox
-              [checked]="allSelected"
-              (change)="toggleAllCheckboxes()"
-              class="header-checkbox"
-            >
-            </mat-checkbox>
-          </th>
-          <td mat-cell *matCellDef="let row">
-            <mat-checkbox
-              [checked]="row.selected"
-              (change)="onCheckboxChange(row)"
-              [disabled]="isCheckboxDisabled(row)"
-            >
-            </mat-checkbox>
-          </td>
-        </ng-container>
+          <!-- Checkbox Column -->
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef class="table-header">
+              <mat-checkbox
+                [checked]="allSelected"
+                (change)="toggleAllCheckboxes()"
+                class="header-checkbox"
+              ></mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox
+                [checked]="row.selected"
+                (change)="onCheckboxChange(row)"
+                [disabled]="isCheckboxDisabled(row)"
+              ></mat-checkbox>
+            </td>
+          </ng-container>
 
-        <!-- Header and Row Declarations -->
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
+          <!-- Table Rows -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+
       <!-- Pagination -->
       <div class="pagination mt-3">
         <button
