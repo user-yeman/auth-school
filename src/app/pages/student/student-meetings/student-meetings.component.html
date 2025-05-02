@@ -21,11 +21,13 @@
       <div class="filter-title-container">
         <h3 class="filter-title">
           {{
-            activeFilter === "upcoming"
+            activeFilter === "all"
+              ? "All"
+              : activeFilter === "upcoming"
               ? "Upcoming"
               : activeFilter === "pastdue"
               ? "Past Due"
-              : "All"
+              : "Rescheduled"
           }}
           Meetings
         </h3>
@@ -33,11 +35,11 @@
       <!-- Fixed-width container for the dropdown -->
       <div class="filter-dropdown">
         <select class="filter-select" (change)="filterMeetings($event)">
-          <option value="all">All Meetings</option>
           <option value="upcoming" selected>Upcoming</option>
           <option value="pastdue">Past Due</option>
+          <option value="rescheduled">Rescheduled</option>
         </select>
-        <span class="filter-arrow">▼</span>
+        <img src="assets/filter_icon.png" alt="Filter" class="filter-icon">
       </div>
     </div>
   </div>

@@ -710,3 +710,28 @@ mat-card-content {
     margin-bottom: 8px;
   }
 }
+
+/* ===== NEW FILTER ICON STYLES ===== */
+.filter-icon {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Ensures clicks pass through to the select element */
+}
+
+/* Make sure the parent has proper positioning */
+.filter-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Remove default select arrow in most browsers */
+.filter-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 30px; /* Make space for the icon */
+}
