@@ -54,7 +54,8 @@ interface ApiResponse {
   message: string;
 }
 
-type FilterType = 'all' | 'upcoming' | 'pastdue';
+// Update the FilterType to include 'rescheduled'
+type FilterType = 'all' | 'upcoming' | 'pastdue' | 'rescheduled';
 
 @Component({
   selector: 'app-student-meetings',
@@ -87,7 +88,7 @@ export class StudentMeetingsComponent implements OnInit {
   filteredMeetings: Meeting[] = [];
   isLoading = true;
   errorMessage: string | null = null;
-  activeFilter: 'all' | 'upcoming' | 'pastdue' = 'upcoming'; // Default to upcoming
+  activeFilter: FilterType = 'upcoming'; // Default to upcoming
   lastLoginFromSession: string = '';
 
   private useMockData = false; // Set to false when backend is stable
@@ -368,9 +369,19 @@ export class StudentMeetingsComponent implements OnInit {
   }
 
   filterMeetings(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    this.activeFilter = select.value as 'all' | 'upcoming' | 'pastdue';
-    this.applyFilter(this.activeFilter);
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    this.activeFilter = selectedValue as FilterType;
+
+    if (selectedValue === 'all') {
+      this.filteredMeetings = [...this.upcomingMeetings, ...this.pastMeetings]; // Show all meetings
+    } else if (selectedValue === 'upcoming') {
+      this.filteredMeetings = this.upcomingMeetings.filter(m => m.status === 'upcomming');
+    } else if (selectedValue === 'pastdue') {
+      // Fix the comparison - use filter_status instead of status for pastdue
+      this.filteredMeetings = this.pastMeetings.filter(m => m.filter_status === 'pastdue');
+    } else if (selectedValue === 'rescheduled') {
+      this.filteredMeetings = [...this.upcomingMeetings, ...this.pastMeetings].filter(m => m.status === 'rescheduled');
+    }
   }
 
   applyFilter(filterType: FilterType): void {
@@ -381,8 +392,12 @@ export class StudentMeetingsComponent implements OnInit {
       this.filteredMeetings = [...this.upcomingMeetings, ...this.pastMeetings];
     } else if (filterType === 'upcoming') {
       this.filteredMeetings = this.upcomingMeetings;
-    } else {
+    } else if (filterType === 'pastdue') {
       this.filteredMeetings = this.pastMeetings;
+    } else if (filterType === 'rescheduled') {
+      // Handle rescheduled filter
+      this.filteredMeetings = [...this.upcomingMeetings, ...this.pastMeetings]
+        .filter(m => m.status === 'rescheduled');
     }
   }
 
