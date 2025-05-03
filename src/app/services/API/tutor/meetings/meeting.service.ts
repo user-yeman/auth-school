@@ -7,6 +7,32 @@ import {
   RescheduleResponse,
 } from '../../../../model/tutor-meeting-model';
 
+// Interface for POST /api/arranging response
+export interface ScheduleMeetingResponse {
+  message: string;
+  arranging: {
+    id: number;
+    tutor_id: number;
+    student_id: number;
+    status: string;
+    created_at: string;
+    updated_at: string;
+  };
+  meeting_detail: {
+    id: number;
+    arrange_id: number;
+    arrange_date: string;
+    meeting_type: string;
+    location: string | null;
+    meeting_link: string | null;
+    online_meeting_application_type: string | null;
+    description: string;
+    topic: string;
+    status: string;
+    created_at: string;
+    updated_at: string;
+  };
+}
 @Injectable({
   providedIn: 'root',
 })
