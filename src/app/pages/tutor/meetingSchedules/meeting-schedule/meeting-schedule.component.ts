@@ -4,7 +4,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MeetingService } from '../../../../services/API/tutor/meetings/meeting.service';
+import {
+  MeetingService,
+  ScheduleMeetingResponse,
+} from '../../../../services/API/tutor/meetings/meeting.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -23,6 +26,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SkeletonComponent } from '../../../../common/loading/skeleton/skeleton/skeleton.component';
 import { BlogComponent } from '../../blog-cards-holder/blogs/blog.component';
 import { BlogCardsHolderComponent } from '../../blog-cards-holder/blog-cards-holder.component';
+import { Meeting } from '../../../../model/tutor-meeting-model';
 
 @Component({
   selector: 'app-meeting-schedule',
@@ -317,7 +321,6 @@ export class MeetingScheduleComponent implements OnInit {
       },
     });
   }
-
   openAddDialog(): void {
     const dialogRef = this.dialog.open(MeetingComponent, {
       width: '500px',
@@ -330,22 +333,27 @@ export class MeetingScheduleComponent implements OnInit {
         console.log('Data being sent to backend:', result);
         this.isLoading = true;
         this.meetingService.scheduleMeeting(result).subscribe({
-          next: (response) => {
+          next: (response: Meeting | ScheduleMeetingResponse) => {
             console.log('Meeting scheduled successfully:', response);
             this.toastService.success('Meeting scheduled successfully!');
-            const newMeeting = {
-              id: response?.id || Date.now(),
-              meeting_detail_id: response?.meeting_detail_id || Date.now(),
+
+            const newMeeting: Meeting = {
+              id: 'arranging' in response ? response.arranging.id : response.id, // Handle both types
+              meeting_detail_id:
+                'meeting_detail' in response ? response.meeting_detail.id : 0, // Handle both types
               title: result.topic,
               date: result.arrange_date,
               time: result.arrange_date,
               meeting_type: result.meeting_type,
               description: result.description,
               meeting_link: result.meeting_link,
+              meeting_app: result.meeting_app || null,
               location: result.location,
               status: 'upcoming',
               filter_status: 'upcoming',
+              meetingRecord: [], // Initialize empty meeting notes
             };
+
             if (!this.data) {
               this.data = { meetings: { upcoming: [], pastdue: [] } };
             }
@@ -353,9 +361,10 @@ export class MeetingScheduleComponent implements OnInit {
             this.applyFilters();
             this.isLoading = false;
             this.cdr.detectChanges();
-            this.loadMeetings();
+            // Delay server reload to avoid race conditions
+            setTimeout(() => this.loadMeetings(), 1000);
           },
-          error: (error) => {
+          error: (error: HttpErrorResponse) => {
             console.error('Error scheduling meeting:', error);
             this.toastService.error(
               'Failed to schedule meeting: ' +
@@ -371,6 +380,7 @@ export class MeetingScheduleComponent implements OnInit {
   }
 
   rescheduleMeeting(meetingId: string): void {
+    debugger;
     const meetingToUpdate = this.filteredMeetings.find(
       (m) => m.id === parseInt(meetingId)
     );
